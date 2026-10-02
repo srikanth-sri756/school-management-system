@@ -1,4 +1,4 @@
-# Akansha Grammar High School: School Management System
+# Akanksha Grammar High School: School Management System
 
 A web application for running a school from Nursery to Class 10. It combines the school's public website with three sign-in areas:
 

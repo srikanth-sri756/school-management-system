@@ -13,7 +13,7 @@
     holidays: 'Holidays', announcements: 'Important Dates', import: 'Import Data',
     'teacher-dashboard': 'Dashboard', 'teacher-attendance-portal': 'Attendance', 'teacher-marks': 'Marks',
     'teacher-remarks': 'Remarks', 'teacher-notes': 'Notes', 'teacher-test-papers': 'Question Papers',
-    'teacher-dates': 'Important Dates'
+    'teacher-dates': 'Important Dates', 'account-password': 'Change Password'
   };
   // The teacher's own profile (photo in the top bar), when the page has it
   const me = isTeacher && typeof teacher !== 'undefined' ? teacher : null;
@@ -23,7 +23,7 @@
   <a href="<%= isTeacher ? '/teacher/dashboard' : '/dashboard' %>" class="sidebar-brand">
     <img src="/images/crest-mono.svg" alt="">
     <div>
-      <strong>Akansha Grammar</strong>
+      <strong>Akanksha Grammar</strong>
       <span><%= isTeacher ? 'Teacher Portal' : 'Admin Portal' %></span>
     </div>
   </a>
@@ -76,6 +76,7 @@
 
   <div class="sidebar-foot">
     <a href="/" class="btn-sidebar" target="_blank" rel="noopener"><%- icon('external-link') %>View website</a>
+    <a href="/account/password" class="btn-sidebar<%= current === 'account-password' ? ' active' : '' %>"><%- icon('key-round') %>Change password</a>
     <a href="/logout" class="btn-sidebar"><%- icon('log-out') %>Sign out</a>
   </div>
 </aside>
@@ -100,6 +101,15 @@
     <a href="/logout" class="icon-btn" title="Sign out" aria-label="Sign out"><%- icon('log-out') %></a>
   </div>
 </header>
+
+<% if (user.usesDefaultPassword && current !== 'account-password') { %>
+  <div class="notice-bar">
+    <div class="alert alert-warning" role="status">
+      <%- icon('triangle-alert') %>
+      <div><strong>You're still using the default password.</strong> Anyone who knows it could sign in as you. <a href="/account/password">Change it now</a>.</div>
+    </div>
+  </div>
+<% } %>
 
 <% const toastSuccess = typeof flash !== 'undefined' ? flash.success : []; const toastError = typeof flash !== 'undefined' ? flash.error : []; %>
 <% if ((toastSuccess && toastSuccess.length) || (toastError && toastError.length)) { %>

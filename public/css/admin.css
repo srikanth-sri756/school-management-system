@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Akansha Grammar High School - staff & admin portal
+   Akanksha Grammar High School - staff & admin portal
    Same monochrome system as the public site (site.css), modelled on
    moto-card.com: near-black canvas, off-white type, one grotesk at weight
    500, uppercase headings, pill buttons, hairline rules. Colour is used only
@@ -152,7 +152,7 @@ body.app {
   color: var(--text-3);
   transition: background-color 0.2s, color 0.2s;
 }
-.sidebar .btn-sidebar:hover { background: var(--panel); color: var(--fg); }
+.sidebar .btn-sidebar:hover, .sidebar .btn-sidebar.active { background: var(--panel); color: var(--fg); }
 .sidebar .btn-sidebar .icon { width: 17px; height: 17px; }
 
 .sidebar-backdrop { display: none; position: fixed; inset: 0; z-index: 55; background: rgba(0, 0, 0, 0.6); }
@@ -218,6 +218,10 @@ body.app {
 
 /* ---------- Content ---------- */
 .container { width: 100%; max-width: 1320px; margin: 0 auto; padding: 40px 40px 72px; }
+.notice-bar { max-width: 1320px; margin: 0 auto; padding: 24px 40px 0; }
+.notice-bar .alert { margin: 0; }
+.notice-bar + .container { padding-top: 24px; }
+.notice-bar a, .alert a { color: var(--fg); text-decoration: underline; text-underline-offset: 3px; }
 .container--narrow { max-width: 960px; }
 
 .page-header {
@@ -970,12 +974,14 @@ a.cell-strong:hover { text-decoration: underline; text-underline-offset: 3px; }
   .menu-btn { display: inline-flex; }
   .topbar { padding: 0 20px; }
   .container { padding: 32px 20px 56px; }
+  .notice-bar { padding: 20px 20px 0; }
 }
 
 @media (max-width: 720px) {
   .topbar { padding: 0 12px; gap: 8px; }
   .topbar-context span, .user-chip-text, .hide-sm { display: none; }
   .container { padding: 24px 16px 48px; }
+  .notice-bar { padding: 16px 16px 0; }
   .page-header { align-items: flex-start; margin-bottom: 28px; }
   .page-actions { width: 100%; }
   .card { padding: 20px; }
