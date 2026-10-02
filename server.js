@@ -117,15 +117,18 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(methodOverride('_method'));
 
-// Session configuration
+// Session configuration. In production (Render) the app runs behind an HTTPS proxy:
+// trust it so login cookies can be marked secure (sent over HTTPS only).
+const isProduction = process.env.NODE_ENV === 'production';
+if (isProduction) app.set('trust proxy', 1);
 app.use(session({
   secret: process.env.SESSION_SECRET || 'school_management_secret_key',
   resave: false,
   saveUninitialized: false,
-  cookie: { 
+  cookie: {
     maxAge: 3600000, // 1 hour
-    sameSite: 'lax', // Use 'lax' for local development (same-site requests)
-    secure: false, // Set to true in production with HTTPS
+    sameSite: 'lax',
+    secure: isProduction,
     httpOnly: true // Prevent XSS attacks
   }
 }));
