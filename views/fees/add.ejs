@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/admin-head', { title: 'Create Fee' }) %>
+</head>
+<body class="app">
+  <%- include('../partials/navbar', { page: 'fees' }) %>
+
+  <main class="container container--narrow" id="main">
+    <div class="page-header">
+      <div>
+        <a href="/fees" class="back-link"><%- icon('arrow-left') %>Fees</a>
+        <h2>Create Fee</h2>
+        <p>Bill a student in full or split the amount into instalments.</p>
+      </div>
+    </div>
+
+    <form method="POST" action="/fees/add" id="feeForm" class="card">
+      <div class="form-section">
+        <h3 class="form-section-title"><%- icon('users') %>Student</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="classFilter">Filter by class</label>
+            <select id="classFilter" class="form-control" onchange="filterStudents()">
+              <option value="">All classes</option>
+              <% GRADES.forEach(g => { %>
+                <option value="<%= g %>"><%= g %></option>
+              <% }) %>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="sectionFilter">Filter by section</label>
+            <select id="sectionFilter" class="form-control" onchange="filterStudents()">
+              <option value="">All sections</option>
+              <% SECTIONS.forEach(sec => { %><option value="<%= sec %>">Section <%= sec %></option><% }) %>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="studentSelect">Student <span class="req">*</span></label>
+          <select name="student" id="studentSelect" required class="form-control">
+            <option value="">Select student</option>
+            <% students.forEach(s => { %>
+              <option value="<%= s._id %>" data-class="<%= s.class ? s.class.name : '' %>" data-section="<%= s.class ? s.class.section : '' %>">
+                <%= s.firstName %> <%= s.lastName %> — <%= s.class ? classLabel(s.class) : 'No class' %>
+              </option>
+            <% }) %>
+          </select>
+          <span class="form-hint"><span id="studentCount"><%= students.length %></span> students available</span>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 class="form-section-title"><%- icon('receipt') %>Fee details</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="term">Term <span class="req">*</span></label>
+            <select name="term" id="term" required class="form-control">
+              <option value="">Select term</option>
+              <option value="Term 1">Term 1</option>
+              <option value="Term 2">Term 2</option>
+              <option value="Term 3">Term 3</option>
+              <option value="Annual">Annual</option>
+              <option value="Admission">Admission fee</option>
+              <option value="Development">Development fee</option>
+              <option value="Transport">Transport fee</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="totalAmount">Total amount (₹) <span class="req">*</span></label>
+            <input type="number" name="amount" id="totalAmount" required class="form-control" min="0" step="0.01" placeholder="0.00">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="notes">Notes</label>
+          <textarea name="notes" id="notes" class="form-control" rows="2" placeholder="Optional description"></textarea>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 class="form-section-title"><%- icon('wallet') %>Payment</h3>
+        <div class="choice-list">
+          <label class="choice">
+            <input type="radio" name="paymentType" value="full" checked onchange="toggleInstallmentOptions()">
+            <div><strong>Full payment</strong><span>The entire amount is due on one date.</span></div>
+          </label>
+          <label class="choice">
+            <input type="radio" name="paymentType" value="installment" onchange="toggleInstallmentOptions()">
+            <div><strong>Instalment plan</strong><span>Split the amount into equal instalments.</span></div>
+          </label>
+        </div>
+
+        <div class="form-group" id="singleDueDateGroup">
+          <label for="singleDueDate">Due date <span class="req">*</span></label>
+          <input type="date" name="dueDate" id="singleDueDate" class="form-control">
+        </div>
+
+        <div id="installmentOptions" class="subpanel" hidden>
+          <div class="form-row form-row--3">
+            <div class="form-group">
+              <label for="numberOfInstallments">Instalments <span class="req">*</span></label>
+              <select name="numberOfInstallments" id="numberOfInstallments" class="form-control" onchange="generateInstallmentSchedule()">
+                <option value="">Select</option>
+                <% [2, 3, 4, 6, 10, 12].forEach(n => { %><option value="<%= n %>"><%= n %> instalments</option><% }) %>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="firstInstallmentDate">First due date <span class="req">*</span></label>
+              <input type="date" name="firstInstallmentDate" id="firstInstallmentDate" class="form-control" onchange="generateInstallmentSchedule()">
+            </div>
+            <div class="form-group">
+              <label for="installmentFrequency">Frequency</label>
+              <select name="installmentFrequency" id="installmentFrequency" class="form-control" onchange="generateInstallmentSchedule()">
+                <option value="monthly">Monthly</option>
+                <option value="bimonthly">Every 2 months</option>
+                <option value="quarterly">Quarterly</option>
+              </select>
+            </div>
+          </div>
+          <div id="installmentPreview" hidden>
+            <p class="field-label">Schedule preview</p>
+            <div id="installmentSchedule"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary"><%- icon('check') %>Create Fee Record</button>
+        <a href="/fees" class="btn">Cancel</a>
+      </div>
+    </form>
+  </main>
+
+  <script>
+    const inr = (n) => '₹' + Number(n).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    function toggleInstallmentOptions() {
+      const isInstallment = document.querySelector('input[name="paymentType"]:checked').value === 'installment';
+      document.getElementById('installmentOptions').hidden = !isInstallment;
+      document.getElementById('singleDueDateGroup').hidden = isInstallment;
+      document.getElementById('singleDueDate').required = !isInstallment;
+      document.getElementById('numberOfInstallments').required = isInstallment;
+      document.getElementById('firstInstallmentDate').required = isInstallment;
+      if (!isInstallment) document.getElementById('installmentPreview').hidden = true;
+      else generateInstallmentSchedule();
+    }
+
+    function generateInstallmentSchedule() {
+      const total = parseFloat(document.getElementById('totalAmount').value);
+      const count = parseInt(document.getElementById('numberOfInstallments').value, 10);
+      const firstDate = document.getElementById('firstInstallmentDate').value;
+      const frequency = document.getElementById('installmentFrequency').value;
+      const preview = document.getElementById('installmentPreview');
+
+      if (!total || !count || !firstDate) {
+        preview.hidden = true;
+        return;
+      }
+
+      const each = (total / count).toFixed(2);
+      const last = (total - each * (count - 1)).toFixed(2);
+      const gap = frequency === 'quarterly' ? 3 : frequency === 'bimonthly' ? 2 : 1;
+      const date = new Date(firstDate);
+      let rows = '';
+      for (let i = 1; i <= count; i++) {
+        rows += `<tr><td class="cell-strong">Instalment ${i}</td><td class="num">${inr(i === count ? last : each)}</td>` +
+          `<td>${date.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}</td></tr>`;
+        date.setMonth(date.getMonth() + gap);
+      }
+      document.getElementById('installmentSchedule').innerHTML =
+        `<div class="table-container"><table><thead><tr><th>Instalment</th><th class="num">Amount</th><th>Due date</th></tr></thead><tbody>${rows}</tbody></table></div>` +
+        `<p class="form-hint">Total ${inr(total)} across ${count} instalments.</p>`;
+      preview.hidden = false;
+    }
+
+    document.getElementById('totalAmount').addEventListener('input', generateInstallmentSchedule);
+
+    function filterStudents() {
+      const classFilter = document.getElementById('classFilter').value;
+      const sectionFilter = document.getElementById('sectionFilter').value;
+      const select = document.getElementById('studentSelect');
+      let visible = 0;
+      Array.from(select.options).forEach((option, index) => {
+        if (index === 0) return;
+        const show = (!classFilter || option.dataset.class === classFilter) &&
+                     (!sectionFilter || option.dataset.section === sectionFilter);
+        option.hidden = !show;
+        if (show) visible++;
+      });
+      document.getElementById('studentCount').textContent = visible;
+      const selected = select.options[select.selectedIndex];
+      if (selected && selected.hidden) select.value = '';
+    }
+
+    toggleInstallmentOptions();
+  </script>
+</body>
+</html>

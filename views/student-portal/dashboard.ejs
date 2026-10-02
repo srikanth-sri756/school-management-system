@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/portal-head', { title: 'Dashboard' }) %>
+</head>
+<body class="app portal theme-light">
+  <%- include('../partials/student-shell', { page: 'dashboard' }) %>
+
+  <%
+    const s = studentDetails || student;
+    const hour = new Date().getHours();
+    const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+    const fmt = (d) => new Date(d).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+    const pct = (m) => (m.maxMarks > 0 ? (m.obtainedMarks / m.maxMarks) * 100 : 0);
+    const gradeFor = (m) => { const p = pct(m); return p >= 90 ? 'A+' : p >= 80 ? 'A' : p >= 70 ? 'B' : p >= 60 ? 'C' : (m.grade || 'D'); };
+    const scored = recentMarks.filter(m => m.maxMarks > 0);
+    const average = scored.length ? Math.round(scored.reduce((sum, m) => sum + pct(m), 0) / scored.length) : null;
+    const rate = Number(attendancePercentage) || 0;
+  %>
+  <main class="container" id="main">
+    <section class="welcome">
+      <div class="photo"><%- photo('bookshelf-light', { eager: true, decorative: true, sizes: '(max-width: 1240px) 100vw, 1160px' }) %></div>
+      <div>
+        <div class="eyebrow">Student Portal</div>
+        <h2><%= greeting %>,<br><%= s.firstName %></h2>
+        <p>Here’s your academic overview.</p>
+        <div class="meta-row">
+          <span><%= s.class ? s.class.name : 'No class' %><%= s.section ? ' – ' + s.section : '' %></span>
+          <span>Roll <%= s.rollNumber || '—' %></span>
+          <span><%= s.studentId %></span>
+        </div>
+      </div>
+    </section>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-icon"><%- icon('calendar-check') %></span>
+        <div class="stat-body">
+          <p class="stat-label">Attendance</p>
+          <div class="stat-value"><%= rate %>%</div>
+          <div class="mini-bar"><span style="width: <%= Math.min(rate, 100) %>%"></span></div>
+          <p class="stat-sub"><%= attendanceStats.present %> of <%= attendanceStats.total %> school <%= attendanceStats.total == 1 ? 'day' : 'days' %> present</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon"><%- icon('chart-column') %></span>
+        <div class="stat-body">
+          <p class="stat-label">Recent average</p>
+          <div class="stat-value"><%= average === null ? '—' : average + '%' %></div>
+          <p class="stat-sub">Across your latest assessments</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon"><%- icon('notebook-pen') %></span>
+        <div class="stat-body">
+          <p class="stat-label">Assessments</p>
+          <div class="stat-value"><%= recentMarks.length %></div>
+          <p class="stat-sub">Recently recorded</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon"><%- icon('book-open') %></span>
+        <div class="stat-body">
+          <p class="stat-label">Subjects</p>
+          <div class="stat-value"><%= subjects.length %></div>
+          <p class="stat-sub">Offered this year</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-2">
+      <section class="card card--flush">
+        <div class="card-header">
+          <h3><%- icon('calendar-check') %>Recent attendance</h3>
+          <a href="/student/attendance" class="btn btn-sm">View all <%- icon('arrow-right') %></a>
+        </div>
+        <% if (recentAttendance.length) { %>
+          <div class="table-container">
+            <table>
+              <thead><tr><th>Date</th><th class="num">Status</th></tr></thead>
+              <tbody>
+                <% recentAttendance.forEach(record => { %>
+                  <tr><td><%= fmt(record.date) %></td><td class="num"><%- statusBadge(record.status) %></td></tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        <% } else { %>
+          <div class="empty-state"><strong>No attendance yet</strong><p>Your attendance will appear here once it’s marked.</p></div>
+        <% } %>
+      </section>
+
+      <section class="card card--flush">
+        <div class="card-header">
+          <h3><%- icon('notebook-pen') %>Recent marks</h3>
+          <a href="/student/marks" class="btn btn-sm">View all <%- icon('arrow-right') %></a>
+        </div>
+        <% if (recentMarks.length) { %>
+          <div class="table-container">
+            <table>
+              <thead><tr><th>Subject</th><th>Exam</th><th class="num">Score</th><th class="num">Grade</th></tr></thead>
+              <tbody>
+                <% recentMarks.forEach(mark => { %>
+                  <tr>
+                    <td class="cell-strong"><%= mark.subject ? mark.subject.name : '—' %></td>
+                    <td><%= mark.examType || '—' %></td>
+                    <td class="num"><%= mark.obtainedMarks %> / <%= mark.maxMarks || mark.totalMarks %></td>
+                    <td class="num"><%- gradeBadge(gradeFor(mark)) %></td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        <% } else { %>
+          <div class="empty-state"><strong>No marks yet</strong><p>Results will appear here once your teachers enter them.</p></div>
+        <% } %>
+      </section>
+    </div>
+
+    <section class="card card--flush mt-3" id="important-dates">
+      <div class="card-header">
+        <h3><%- icon('megaphone') %>Important dates</h3>
+        <a href="/student/dates" class="btn btn-sm">See all</a>
+      </div>
+      <%- include('../partials/important-dates', { dates: importantDates, emptyText: 'Exams, holidays and events announced by the school will appear here.' }) %>
+    </section>
+
+    <section class="card mt-3">
+      <div class="card-header"><h3><%- icon('list-checks') %>Quick links</h3></div>
+      <div class="quick-actions quick-actions--3">
+        <a href="/student/attendance" class="quick-action"><span class="stat-icon"><%- icon('calendar-check') %></span><span>Attendance</span></a>
+        <a href="/student/marks" class="quick-action"><span class="stat-icon"><%- icon('notebook-pen') %></span><span>Marks &amp; grades</span></a>
+        <a href="/student/fees" class="quick-action"><span class="stat-icon"><%- icon('wallet') %></span><span>Fees</span></a>
+        <a href="/student/notes" class="quick-action"><span class="stat-icon"><%- icon('sticky-note') %></span><span>Study notes</span></a>
+        <a href="/student/testpapers" class="quick-action"><span class="stat-icon"><%- icon('file-text') %></span><span>Test papers</span></a>
+        <a href="/student/profile" class="quick-action"><span class="stat-icon"><%- icon('user-round') %></span><span>My profile</span></a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

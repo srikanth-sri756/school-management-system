@@ -1,0 +1,25 @@
+<%# Subject, class teacher flag and class + section, shared by teachers/add and teachers/edit.
+    Pass { subjectId, isClassTeacher, grade, section } (subjects comes from the page). %>
+<div class="form-section">
+  <h3 class="form-section-title"><%- icon('graduation-cap') %>Teaching assignment</h3>
+  <div class="form-row">
+    <div class="form-group">
+      <label for="subject">Subject</label>
+      <select id="subject" name="subject" class="form-control">
+        <option value="">Select subject</option>
+        <% subjects.forEach(sub => { %>
+          <option value="<%= sub._id %>" <%= subjectId && String(sub._id) === String(subjectId) ? 'selected' : '' %>><%= sub.name %></option>
+        <% }) %>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="isClassTeacher">Class teacher?</label>
+      <select id="isClassTeacher" name="isClassTeacher" class="form-control" data-class-teacher>
+        <option value="no">No</option>
+        <option value="yes" <%= isClassTeacher ? 'selected' : '' %>>Yes</option>
+      </select>
+    </div>
+  </div>
+  <%- include('../partials/class-section-fields', { grade, section, required: isClassTeacher }) %>
+  <span class="form-hint form-hint--tight">A class teacher needs a class and section; the teacher portal then shows that class’s students.</span>
+</div>

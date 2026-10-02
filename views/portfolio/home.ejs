@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/public-head', { title: 'Excellence in Education Since 1995' }) %>
+</head>
+<body class="site">
+  <%- include('../partials/public-navbar') %>
+
+  <main id="main">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="photo"><%- photo('home-hero', { eager: true, decorative: true }) %></div>
+      <div class="hero-content on-photo container">
+        <span class="label label--light">Akansha Grammar High School</span>
+        <h1 class="display display-xl">Empowering minds.<br>Building futures.</h1>
+        <p class="lede">Excellence in education since 1995, from first steps in Nursery to the Class 10 board examinations.</p>
+        <div class="pills pills--center">
+          <a href="/portfolio/admissions" class="pill pill--light">Apply for Admission</a>
+          <a href="/portfolio/academics" class="pill pill--dark">Explore Academics</a>
+        </div>
+      </div>
+      <div class="hero-meta">
+        <span class="label label--light">Est. 1995</span>
+        <span class="label label--light">Nursery – Class 10</span>
+        <span class="label label--light">Telangana, India</span>
+      </div>
+    </section>
+
+    <!-- Important dates (shown only when something is announced) -->
+    <%- include('../partials/public-dates', { dates: importantDates }) %>
+
+    <!-- Statement -->
+    <section class="section">
+      <div class="container statement">
+        <h2 class="display display-xl" data-reveal>Where tradition<br>meets innovation</h2>
+        <p class="lede" data-reveal>For over 25 years we have nurtured young minds, with dedicated teachers, a rigorous curriculum and a school community that knows every child by name.</p>
+        <div class="pills pills--center" data-reveal><a href="/portfolio/about" class="pill pill--dark">Discover Our Story</a></div>
+
+        <div class="showcase" data-reveal="fade">
+          <div class="photo"><%- photo('campus-dusk', { decorative: true }) %></div>
+          <span class="chip chip--1"><%- icon('circle-check') %>Attendance marked</span>
+          <span class="chip chip--2"><%- icon('circle-check') %>Report card published</span>
+          <span class="chip chip--3"><%- icon('circle-check') %>Fee receipt sent</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Collage -->
+    <section class="section">
+      <div class="container">
+        <div class="collage">
+          <figure class="c1" data-parallax="-40"><%- photo('program-primary', { sizes: '(max-width: 1080px) 33vw, 16vw' }) %><figcaption>Primary</figcaption></figure>
+          <figure class="c2" data-parallax="30"><%- photo('library-warm', { sizes: '(max-width: 1080px) 33vw, 16vw' }) %><figcaption>Library</figcaption></figure>
+          <figure class="c3" data-parallax="-24"><%- photo('program-stem', { sizes: '(max-width: 1080px) 33vw, 16vw' }) %><figcaption>STEM</figcaption></figure>
+          <figure class="c4" data-parallax="36"><%- photo('program-sports', { sizes: '16vw' }) %><figcaption>Sports</figcaption></figure>
+          <figure class="c5" data-parallax="-30"><%- photo('program-arts', { sizes: '16vw' }) %><figcaption>Arts</figcaption></figure>
+          <figure class="c6" data-parallax="24"><%- photo('blackboard', { sizes: '16vw' }) %><figcaption>High School</figcaption></figure>
+          <div class="collage-text" data-reveal>
+            <span class="label">Programs</span>
+            <h2 class="display display-l">The classroom is<br>only the beginning</h2>
+            <div class="pills"><a href="/portfolio/academics" class="pill pill--light">Explore Academics</a></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Figures -->
+    <section class="section section--mist">
+      <div class="container">
+        <div class="figures-head" data-reveal>
+          <h2 class="display display-l">Every subject.<br>Every talent. One school.</h2>
+        </div>
+        <div class="figures" data-reveal="fade">
+          <div class="ticker-col" aria-hidden="true">
+            <ul>
+              <% const subjects = ['Mathematics', 'Physics', 'English', 'Chemistry', 'Hindi', 'Biology', 'Social Studies', 'Computer Science', 'Economics', 'Accountancy'];
+                 [...subjects, ...subjects].forEach(s => { %><li><%= s %></li><% }) %>
+            </ul>
+          </div>
+          <div class="figures-center">
+            <strong>1,000+</strong>
+            <span>Students</span>
+            <span class="muted">Nursery to Class 10</span>
+            <span class="muted">Science · Commerce · Humanities</span>
+          </div>
+          <div class="ticker-col ticker-col--down" aria-hidden="true">
+            <ul>
+              <% const activities = ['Cricket', 'Robotics', 'Music', 'Debate', 'Football', 'Drama', 'Athletics', 'Dance', 'Olympiads', 'Fine Arts'];
+                 [...activities, ...activities].forEach(a => { %><li><%= a %></li><% }) %>
+            </ul>
+          </div>
+        </div>
+        <dl class="stats-row" data-reveal>
+          <div><dt>Years of excellence</dt><dd>25+</dd></div>
+          <div><dt>Students</dt><dd>1,000+</dd></div>
+          <div><dt>Expert teachers</dt><dd>50+</dd></div>
+          <div><dt>Success rate</dt><dd>95%</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- Every child -->
+    <section class="feature-photo">
+      <div class="photo photo--left"><%- photo('guidance', { decorative: true }) %></div>
+      <div class="on-photo" data-reveal>
+        <h2 class="display display-xl">Every child.<br>Seen. Heard.<br>Guided.</h2>
+      </div>
+      <div class="feature-foot">
+        <ul class="feature-list" data-reveal>
+          <li>Small class sizes</li>
+          <li>Dedicated, experienced teachers</li>
+          <li>Regular parent–teacher conferences</li>
+        </ul>
+        <div class="ticker" aria-label="Campus information">
+          <div class="ticker-track">
+            <% for (let i = 0; i < 2; i++) { %>
+              <span data-clock>Campus time</span>
+              <span>Office · Mon–Fri 8:00 AM – 5:00 PM</span>
+              <span>Saturday · 9:00 AM – 2:00 PM</span>
+              <span>Admissions · +91 98765 43211</span>
+              <span>info@akanshaschool.edu</span>
+              <span>Knowledge Park · Telangana</span>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Highlight list -->
+    <section class="highlight">
+      <div class="photo photo--right"><%- photo('hallway', { decorative: true }) %></div>
+      <ul class="highlight-list" data-highlight>
+        <li>Academic excellence<small>A comprehensive curriculum focused on holistic development and critical thinking.</small></li>
+        <li>Expert faculty<small>Highly qualified, experienced teachers dedicated to every student’s success.</small></li>
+        <li>Sports &amp; activities<small>A wide range of extracurriculars that build well-rounded personalities.</small></li>
+        <li>Modern facilities<small>Well-equipped classrooms, laboratories and technology.</small></li>
+        <li>Global perspective<small>International standards that prepare students for global opportunities.</small></li>
+        <li>Community values<small>A strong emphasis on ethics, values and social responsibility.</small></li>
+      </ul>
+    </section>
+
+    <!-- Programs -->
+    <section class="section section--light">
+      <div class="container">
+        <div class="rows-head" data-reveal>
+          <h2 class="display display-m">Made for every stage<br>of learning.</h2>
+          <span class="count">06</span>
+        </div>
+        <div class="rows" data-reveal>
+          <a class="row" href="/portfolio/programs/primary"><h3>Primary School<small>Nursery – Class 5</small></h3><p>Play-based learning in Nursery, LKG and UKG, then strong foundations in literacy, numeracy and curiosity.</p><%- icon('arrow-right', 'row-arrow') %></a>
+          <a class="row" href="/portfolio/programs/middle"><h3>Middle School<small>Classes 6 – 8</small></h3><p>Guiding students through the crucial transition years with labs, languages and projects.</p><%- icon('arrow-right', 'row-arrow') %></a>
+          <a class="row" href="/portfolio/programs/high"><h3>High School<small>Classes 9 – 10</small></h3><p>Board examination preparation, foundation courses and career guidance for the choices after Class 10.</p><%- icon('arrow-right', 'row-arrow') %></a>
+          <a class="row" href="/portfolio/programs/stem"><h3>STEM Education<small>Specialised program</small></h3><p>Hands-on science, technology, engineering and mathematics in dedicated labs.</p><%- icon('arrow-right', 'row-arrow') %></a>
+          <a class="row" href="/portfolio/programs/sports"><h3>Sports Academy<small>Specialised program</small></h3><p>Professional coaching in cricket, football, basketball, athletics and more.</p><%- icon('arrow-right', 'row-arrow') %></a>
+          <a class="row" href="/portfolio/programs/arts"><h3>Arts &amp; Culture<small>Specialised program</small></h3><p>Music, dance, drama and visual arts, from classroom to stage.</p><%- icon('arrow-right', 'row-arrow') %></a>
+        </div>
+      </div>
+    </section>
+
+    <%- include('../partials/cta-photo', {
+      ctaPhoto: 'classroom-light',
+      ctaLabels: ['Admissions', 'Primary School', 'Middle School', 'High School'],
+      ctaTitle: 'Join our<br>school family',
+      ctaText: 'We welcome applications throughout the year. Our admissions process is transparent, fair and student-friendly.',
+      ctaHref: '/portfolio/admissions',
+      ctaButton: 'Apply for Admission'
+    }) %>
+
+    <!-- FAQ -->
+    <section class="section section--light" id="faq">
+      <div class="container">
+        <div class="rows-head" data-reveal>
+          <h2 class="display display-m">Frequently<br>asked questions</h2>
+          <span class="count">10</span>
+        </div>
+
+        <div class="faq-group" data-reveal>
+          <span class="label">Admissions</span>
+          <div class="faq-list">
+            <details>
+              <summary>When can I apply?</summary>
+              <div class="answer"><p>We welcome applications throughout the year, subject to seat availability. Start with an inquiry: visit the campus or contact our admissions team.</p></div>
+            </details>
+            <details>
+              <summary>How does the admission process work?</summary>
+              <div class="answer"><p>There are four steps: inquiry and registration, the application with documents and fee, an age-appropriate entrance assessment and interview, and finally confirmation and enrolment.</p></div>
+            </details>
+            <details>
+              <summary>Which documents do I need?</summary>
+              <div class="answer"><p>The completed application form, birth certificate, recent passport-size photos, previous school records, Aadhaar cards for the student and parents, and a transfer certificate if applicable.</p></div>
+            </details>
+            <details>
+              <summary>What are the fees?</summary>
+              <div class="answer"><p>Total first-year fees range from ₹60,000 for Classes 1–5 to ₹88,000 for Classes 9–10, covering admission, tuition and development fees; the admissions office shares fees for Nursery, LKG and UKG. Fees can be paid in instalments, and scholarships are available for deserving students.</p><p><a class="text-link" href="/portfolio/admissions#fees">See the full fee structure <%- icon('arrow-right') %></a></p></div>
+            </details>
+          </div>
+        </div>
+
+        <div class="faq-group" data-reveal>
+          <span class="label">Academics</span>
+          <div class="faq-list">
+            <details>
+              <summary>Which classes do you offer?</summary>
+              <div class="answer"><p>Pre-primary (Nursery, LKG and UKG) and Primary School up to Class 5, Middle School for Classes 6–8 and High School for Classes 9–10, ending with the Class 10 board examinations.</p></div>
+            </details>
+            <details>
+              <summary>What happens beyond the syllabus?</summary>
+              <div class="answer"><p>Olympiad training, debate and public speaking, STEM labs, a language club, creative arts and a sports academy.</p></div>
+            </details>
+            <details>
+              <summary>How can parents follow their child’s progress?</summary>
+              <div class="answer"><p>Through the Student Portal, families can see attendance, marks, fees, class notes and test papers online, alongside regular parent–teacher conferences.</p></div>
+            </details>
+          </div>
+        </div>
+
+        <div class="faq-group" data-reveal>
+          <span class="label">School life</span>
+          <div class="faq-list">
+            <details>
+              <summary>What are the office hours?</summary>
+              <div class="answer"><p>Monday to Friday, 8:00 AM – 5:00 PM, and Saturday, 9:00 AM – 2:00 PM. The office is closed on Sundays.</p></div>
+            </details>
+            <details>
+              <summary>Is school transport available?</summary>
+              <div class="answer"><p>Yes. The school runs a bus service with GPS tracking.</p></div>
+            </details>
+            <details>
+              <summary>Can I visit the campus?</summary>
+              <div class="answer"><p>Yes. Book a campus tour and our team will arrange a time that suits you.</p><p><a class="text-link" href="/portfolio/contact">Book a visit <%- icon('arrow-right') %></a></p></div>
+            </details>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/admin-head', { title: isEdit ? 'Edit Important Date' : 'Add Important Date' }) %>
+</head>
+<body class="app">
+  <%- include('../partials/navbar', { page: 'announcements' }) %>
+
+  <%
+    const audience = item.audience || {};
+    const places = {
+      website: 'The home page and the Admissions page.',
+      students: 'Student dashboard and the Important dates page.',
+      teachers: 'Teacher dashboard.'
+    };
+  %>
+  <main class="container container--narrow" id="main">
+    <div class="page-header">
+      <div>
+        <a href="/announcements" class="back-link"><%- icon('arrow-left') %>Important Dates</a>
+        <h2><%= isEdit ? 'Edit Important Date' : 'Add Important Date' %></h2>
+        <p>Fields marked <span class="req">*</span> are required.</p>
+      </div>
+    </div>
+
+    <% if (formErrors.length) { %>
+      <div class="alert alert-error" role="alert">
+        <%- icon('circle-alert') %>
+        <div>
+          <strong>Please check the form.</strong>
+          <ul class="alert-list"><% formErrors.forEach(message => { %><li><%= message %></li><% }) %></ul>
+        </div>
+      </div>
+    <% } %>
+
+    <form method="POST" action="<%= isEdit ? '/announcements/' + item._id + '/edit' : '/announcements/add' %>" class="card">
+      <div class="form-section">
+        <h3 class="form-section-title"><%- icon('megaphone') %>What’s happening</h3>
+        <div class="form-group">
+          <label for="title">Title <span class="req">*</span></label>
+          <input type="text" id="title" name="title" class="form-control" value="<%= item.title || '' %>" maxlength="120" required placeholder="e.g. Half-yearly examinations">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="date">Date <span class="req">*</span></label>
+            <input type="date" id="date" name="date" class="form-control" value="<%= dayValue(item.date) %>" required>
+          </div>
+          <div class="form-group">
+            <label for="endDate">End date</label>
+            <input type="date" id="endDate" name="endDate" class="form-control" value="<%= dayValue(item.endDate) %>" min="<%= dayValue(item.date) %>">
+            <span class="form-hint">Only for something that runs over several days.</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="details">Details</label>
+          <textarea id="details" name="details" class="form-control" rows="4" maxlength="1000" placeholder="Timings, venue, what to bring…"><%= item.details || '' %></textarea>
+          <span class="form-hint">Optional, up to 1000 characters.</span>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 class="form-section-title"><%- icon('globe') %>Show on</h3>
+        <div class="choice-list choice-list--3">
+          <% Object.entries(audiences).forEach(([key, label]) => { %>
+            <label class="choice">
+              <input type="checkbox" name="audience" value="<%= key %>" <%= audience[key] ? 'checked' : '' %>>
+              <div><strong><%= label %></strong><span><%= places[key] %></span></div>
+            </label>
+          <% }) %>
+        </div>
+        <span class="form-hint form-hint--tight">It is taken down automatically after its last day.</span>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary"><%- icon('check') %><%= isEdit ? 'Save Changes' : 'Add Date' %></button>
+        <a href="/announcements" class="btn">Cancel</a>
+      </div>
+    </form>
+  </main>
+
+  <script>
+    // The end date can't be before the start date
+    (function () {
+      const start = document.getElementById('date');
+      const end = document.getElementById('endDate');
+      start.addEventListener('change', () => {
+        end.min = start.value;
+        if (end.value && end.value < start.value) end.value = '';
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/portal-head', { title: 'Important Dates' }) %>
+</head>
+<body class="app portal theme-light">
+  <%- include('../partials/student-shell', { page: 'dates' }) %>
+
+  <main class="container container--narrow" id="main">
+    <div class="page-header">
+      <div>
+        <h2>Important dates</h2>
+        <p>Exams, holidays, meetings and events announced by the school office.</p>
+      </div>
+    </div>
+
+    <section class="card card--flush">
+      <div class="card-header">
+        <h3><%- icon('megaphone') %>Coming up</h3>
+        <span class="result-count"><%= importantDates.length %> <%= importantDates.length === 1 ? 'date' : 'dates' %></span>
+      </div>
+      <%- include('../partials/important-dates', { dates: importantDates, emptyText: 'Nothing has been announced right now. Check back soon.' }) %>
+    </section>
+  </main>
+</body>
+</html>

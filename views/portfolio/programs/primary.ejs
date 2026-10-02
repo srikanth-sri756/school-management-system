@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../../partials/public-head', { title: 'Primary School', description: 'Primary School Program at Akansha Grammar High School - Building strong foundations for young learners from Nursery to Class 5' }) %>
+</head>
+<body class="site program-page">
+    <%- include('../../partials/public-navbar') %>
+
+    <main id="main">
+    <%- include('../../partials/page-hero', {
+      heroPhoto: 'program-primary',
+      heroCrumbs: [{ href: '/', label: 'Home' }, { href: '/portfolio/academics', label: 'Academics' }, { label: 'Primary School' }],
+      heroTitle: 'Primary<br>School',
+      heroText: 'Building strong foundations for young learners from Nursery to Class 5'
+    }) %>
+
+    <div class="program-content program-body">
+        <section>
+            <h2>Overview</h2>
+            <p>Our Primary School program focuses on nurturing young minds through a holistic approach to education. We provide a safe, supportive, and stimulating environment where children develop essential academic, social, and emotional skills that form the foundation for lifelong learning.</p>
+        </section>
+
+        <div class="stats-container">
+            <div class="stat-box">
+                <div class="stat-number">8</div>
+                <div class="stat-label">Classes (Nursery – 5)</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">20:1</div>
+                <div class="stat-label">Student-Teacher Ratio</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">15+</div>
+                <div class="stat-label">Specialist Teachers</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Success Rate</div>
+            </div>
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon"><%- icon('book-open') %></div>
+                <h3>Academic Excellence</h3>
+                <p>Comprehensive curriculum covering English, Mathematics, Science, Social Studies, and Hindi. Focus on building strong literacy and numeracy skills through engaging, hands-on learning experiences.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><%- icon('palette') %></div>
+                <h3>Creative Development</h3>
+                <p>Regular art, music, and drama classes to nurture creativity and self-expression. Students explore various mediums and develop their artistic talents from an early age.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><%- icon('activity') %></div>
+                <h3>Physical Education</h3>
+                <p>Daily physical activities, sports, and games to promote healthy development, coordination, and teamwork. Modern playground and indoor sports facilities.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><%- icon('lightbulb') %></div>
+                <h3>Smart Classrooms</h3>
+                <p>Technology-integrated learning with interactive whiteboards, educational apps, and digital resources to enhance engagement and understanding.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><%- icon('heart-handshake') %></div>
+                <h3>Value Education</h3>
+                <p>Character development program focusing on values like honesty, respect, empathy, and responsibility. Cultural awareness and social skills development.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><%- icon('users') %></div>
+                <h3>Individual Attention</h3>
+                <p>Small class sizes ensuring personalized attention to each child. Regular parent-teacher conferences and progress updates to track development.</p>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2>Curriculum Structure</h2>
+            <div class="grade-list">
+                <div class="grade-item">
+                    <h4>Nursery</h4>
+                    <p><strong>Age:</strong> 3-4 years</p>
+                    <ul>
+                        <li>Play-based learning</li>
+                        <li>Rhymes, stories and early language</li>
+                        <li>Social interaction and basic manners</li>
+                        <li>Motor skills development</li>
+                    </ul>
+                </div>
+                <div class="grade-item">
+                    <h4>LKG</h4>
+                    <p><strong>Age:</strong> 4-5 years</p>
+                    <ul>
+                        <li>Pre-literacy: letters and sounds</li>
+                        <li>Pre-numeracy: counting and shapes</li>
+                        <li>Art, music and movement</li>
+                        <li>Fine motor skills and pencil grip</li>
+                    </ul>
+                </div>
+                <div class="grade-item">
+                    <h4>UKG</h4>
+                    <p><strong>Age:</strong> 5-6 years</p>
+                    <ul>
+                        <li>Early reading and writing</li>
+                        <li>Numbers, addition and patterns</li>
+                        <li>Exploring the world around us</li>
+                        <li>Readiness for Class 1</li>
+                    </ul>
+                </div>
+                <div class="grade-item">
+                    <h4>Class 1</h4>
+                    <p><strong>Age:</strong> 6-7 years</p>
+                    <ul>
+                        <li>Introduction to reading and writing</li>
+                        <li>Basic arithmetic operations</li>
+                        <li>Environmental awareness</li>
+                        <li>Art and craft activities</li>
+                    </ul>
+                </div>
+                <div class="grade-item">
+                    <h4>Class 2</h4>
+                    <p><strong>Age:</strong> 7-8 years</p>
+                    <ul>
+                        <li>Enhanced reading comprehension</li>
+                        <li>Introduction to multiplication</li>
+                        <li>Basic science concepts</li>
+                        <li>Computer fundamentals</li>
+                    </ul>
+                </div>
+                <div class="grade-item">
+                    <h4>Class 3</h4>
+                    <p><strong>Age:</strong> 8-9 years</p>
+                    <ul>
+                        <li>Advanced literacy skills</li>
+                        <li>Problem-solving in math</li>
+                        <li>Introduction to social studies</li>
+                        <li>Scientific inquiry methods</li>
+                    </ul>
+                </div>
+                <div class="grade-item">
+                    <h4>Class 4</h4>
+                    <p><strong>Age:</strong> 9-10 years</p>
+                    <ul>
+                        <li>Critical thinking and analysis</li>
+                        <li>Fractions and decimals</li>
+                        <li>India's history and geography</li>
+                        <li>Science experiments and projects</li>
+                    </ul>
+                </div>
+                <div class="grade-item">
+                    <h4>Class 5</h4>
+                    <p><strong>Age:</strong> 10-11 years</p>
+                    <ul>
+                        <li>Preparation for middle school</li>
+                        <li>Advanced mathematical concepts</li>
+                        <li>Research skills development</li>
+                        <li>Leadership opportunities</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <section>
+            <h2>Facilities & Resources</h2>
+            <ul class="check-list check-list--cols">
+                <li>Air-conditioned classrooms with modern furniture</li>
+                <li>Well-stocked library with age-appropriate books</li>
+                <li>Science laboratory with safety equipment</li>
+                <li>Computer lab with latest software</li>
+                <li>Art and craft studio</li>
+                <li>Music and dance rooms</li>
+                <li>Indoor games area</li>
+                <li>Outdoor playground with safety equipment</li>
+                <li>Medical room with trained staff</li>
+                <li>School bus service with GPS tracking</li>
+                <li>Cafeteria with nutritious meals</li>
+                <li>After-school care programs</li>
+            </ul>
+        </section>
+
+        <section class="panel">
+            <h2>Admission Process</h2>
+            <p>We welcome students throughout the year based on seat availability. For admissions, please:</p>
+            <ol>
+                <li>Visit our <a href="/portfolio/admissions">Admissions page</a> to download the application form</li>
+                <li>Submit completed form with required documents</li>
+                <li>Schedule an interaction meeting with the child and parents</li>
+                <li>Receive admission decision within 3-5 working days</li>
+            </ol>
+            <p><strong>Required Documents:</strong> Birth certificate, previous school records (if applicable), medical certificate, passport-size photographs, address proof</p>
+        </section>
+
+        <section class="program-cta">
+            <h2>Ready to Join Our Primary School?</h2>
+            <p>Contact us today to schedule a campus tour and meet our dedicated faculty!</p>
+            <div class="hero-actions">
+                <a href="/portfolio/contact" class="pill pill--light">Contact Us <%- icon('arrow-right') %></a>
+                <a href="/portfolio/admissions" class="pill pill--dark">Admissions</a>
+            </div>
+        </section>
+    </div>
+    </main>
+
+
+    <%- include('../../partials/footer') %>
+</body>
+</html>

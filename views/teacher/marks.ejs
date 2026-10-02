@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/admin-head', { title: 'Marks' }) %>
+</head>
+<body class="app">
+  <%- include('../partials/navbar', { page }) %>
+
+  <%
+    const canEdit = teacher.isClassTeacher && !!teacher.class;
+    const shortDate = (d) => d ? new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
+    const subjectNames = [...new Set(marks.map(m => m.subject && m.subject.name).filter(Boolean))].sort();
+    const examNames = [...new Set(marks.map(m => m.examType).filter(Boolean))];
+  %>
+  <main class="container" id="main">
+    <div class="page-header">
+      <div>
+        <h2>Marks</h2>
+        <p><%= canEdit ? classLabel(teacher.class) + ' · add, edit and review marks for your class' : (teacher.subject ? teacher.subject.name + ' marks across the school' : 'Marks for your subject') %></p>
+      </div>
+    </div>
+
+    <% if (!canEdit) { %>
+      <div class="alert alert-info">
+        <%- icon('info') %>
+        <div>Only the <strong>class teacher</strong> can add or change marks. You can review <%= teacher.subject ? teacher.subject.name : 'your subject’s' %> marks here; for corrections, please contact the class teacher.</div>
+      </div>
+    <% } %>
+
+    <% if (canEdit) { %>
+      <form method="POST" action="/teacher/marks/add" enctype="multipart/form-data" class="card">
+        <div class="card-header"><h3><%- icon('plus') %>Add marks</h3></div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="student">Student <span class="req">*</span></label>
+            <select id="student" name="student" class="form-control" required>
+              <option value=""><%= students.length ? 'Select student' : 'No students in your class' %></option>
+              <% students.forEach(s => { %><option value="<%= s._id %>"><%= s.firstName %> <%= s.lastName %> (Roll <%= s.rollNumber || '—' %>)</option><% }) %>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="subject">Subject <span class="req">*</span></label>
+            <select id="subject" name="subject" class="form-control" required>
+              <option value="">Select subject</option>
+              <% subjects.forEach(sub => { %><option value="<%= sub._id %>" <%= teacher.subject && String(teacher.subject._id) === String(sub._id) ? 'selected' : '' %>><%= sub.name %></option><% }) %>
+            </select>
+          </div>
+        </div>
+        <div class="form-row form-row--3">
+          <div class="form-group">
+            <label for="examType">Exam type <span class="req">*</span></label>
+            <select id="examType" name="examType" class="form-control" required>
+              <option value="">Select type</option>
+              <% examTypes.forEach(t => { %><option value="<%= t %>"><%= t %></option><% }) %>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="maxMarks">Maximum marks <span class="req">*</span></label>
+            <input type="number" id="maxMarks" name="maxMarks" class="form-control" min="1" step="any" value="100" required>
+          </div>
+          <div class="form-group">
+            <label for="obtainedMarks">Marks obtained <span class="req">*</span></label>
+            <input type="number" id="obtainedMarks" name="obtainedMarks" class="form-control" min="0" step="any" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="remarks">Remarks</label>
+            <input type="text" id="remarks" name="remarks" class="form-control" maxlength="500" placeholder="Optional, e.g. Good improvement">
+          </div>
+          <div class="form-group">
+            <label for="answerSheet">Answer sheet</label>
+            <input type="file" id="answerSheet" name="answerSheet" class="form-control" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+            <span class="form-hint">Optional. PDF, image or Word file, up to 10 MB.</span>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" <%= students.length ? '' : 'disabled' %>><%- icon('check') %>Save marks</button>
+        </div>
+      </form>
+    <% } %>
+
+    <% if (marks.length) { %>
+      <section class="card">
+        <div class="filter-bar" data-filter-for="marksTable">
+          <div class="form-group">
+            <label for="filterStudent">Student</label>
+            <div class="search-input"><%- icon('search') %><input type="text" id="filterStudent" class="form-control" placeholder="Name or roll number" data-col="0"></div>
+          </div>
+          <div class="form-group">
+            <label for="filterSubject">Subject</label>
+            <select id="filterSubject" class="form-control" data-col="1" data-match="equals">
+              <option value="">All subjects</option>
+              <% subjectNames.forEach(n => { %><option value="<%= n %>"><%= n %></option><% }) %>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="filterExam">Exam</label>
+            <select id="filterExam" class="form-control" data-col="2" data-match="equals">
+              <option value="">All exams</option>
+              <% examNames.forEach(n => { %><option value="<%= n %>"><%= n %></option><% }) %>
+            </select>
+          </div>
+          <div class="form-group">
+            <button type="button" class="btn btn-block" data-filter-reset><%- icon('x') %>Clear filters</button>
+          </div>
+        </div>
+      </section>
+    <% } %>
+
+    <section class="card card--flush">
+      <div class="card-header">
+        <h3><%- icon('notebook-pen') %>Marks entered</h3>
+        <span class="result-count" data-filter-count="marksTable"><%= marks.length %> <%= marks.length === 1 ? 'record' : 'records' %></span>
+      </div>
+      <% if (marks.length) { %>
+        <div class="table-container">
+          <table id="marksTable">
+            <thead>
+              <tr><th>Student</th><th>Subject</th><th>Exam</th><th class="num">Marks</th><th class="num">%</th><th>Grade</th><th>Date</th><th>Sheet</th><% if (canEdit) { %><th class="num">Actions</th><% } %></tr>
+            </thead>
+            <tbody>
+              <% marks.forEach(m => { const s = m.student; %>
+                <tr>
+                  <td data-value="<%= s ? s.firstName + ' ' + s.lastName + ' ' + (s.rollNumber || '') : '' %>">
+                    <span class="cell-strong"><%= s ? s.firstName + ' ' + s.lastName : 'Former student' %></span>
+                    <span class="cell-sub"><%= s ? (s.class && s.class.name ? classLabel(s.class) + ' · ' : '') + 'Roll ' + (s.rollNumber || '—') : '' %></span>
+                  </td>
+                  <td><%= m.subject ? m.subject.name : '—' %></td>
+                  <td><%= m.examType || '—' %></td>
+                  <td class="num"><%= m.obtainedMarks %> / <%= m.maxMarks %></td>
+                  <td class="num"><%= m.percentage != null ? Math.round(m.percentage * 10) / 10 : '—' %></td>
+                  <td><%- gradeBadge(m.grade) %></td>
+                  <td><%= shortDate(m.date) %></td>
+                  <td><% if (m.answerSheetFile) { %><a href="/uploads/<%= m.answerSheetFile %>" target="_blank" rel="noopener" class="btn btn-sm btn-ghost" title="Open answer sheet" aria-label="Open answer sheet"><%- icon('file-text') %></a><% } else { %><span class="text-muted">—</span><% } %></td>
+                  <% if (canEdit) { %>
+                    <td class="num">
+                      <div class="actions actions--end">
+                        <button type="button" class="btn btn-sm btn-ghost" title="Edit" aria-label="Edit marks"
+                                data-edit-mark="<%= JSON.stringify({ id: m._id, student: s ? s.firstName + ' ' + s.lastName : '', subject: m.subject ? m.subject._id : '', examType: m.examType, maxMarks: m.maxMarks, obtainedMarks: m.obtainedMarks, remarks: m.remarks || '' }) %>"><%- icon('pencil') %></button>
+                        <form method="POST" action="/teacher/marks/delete/<%= m._id %>" data-confirm="Delete this mark entry? This cannot be undone.">
+                          <button type="submit" class="btn btn-sm btn-danger" title="Delete" aria-label="Delete marks"><%- icon('trash-2') %></button>
+                        </form>
+                      </div>
+                    </td>
+                  <% } %>
+                </tr>
+              <% }) %>
+              <tr data-filter-empty hidden><td colspan="<%= canEdit ? 9 : 8 %>" class="text-center text-muted">No marks match these filters.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      <% } else { %>
+        <div class="empty-state">
+          <span class="stat-icon"><%- icon('notebook-pen') %></span>
+          <strong>No marks yet</strong>
+          <p><%= canEdit ? 'Marks you add for your class will appear here.' : 'Marks entered for your subject will appear here.' %></p>
+        </div>
+      <% } %>
+    </section>
+  </main>
+
+  <% if (canEdit) { %>
+    <div class="modal" id="editModal" role="dialog" aria-modal="true" aria-labelledby="editTitle">
+      <div class="modal-dialog">
+        <h3 id="editTitle">Edit marks</h3>
+        <form method="POST" action="/teacher/marks/edit" enctype="multipart/form-data">
+          <input type="hidden" name="markId" id="editMarkId">
+          <div class="form-group">
+            <span class="field-label">Student</span>
+            <p class="cell-strong" id="editStudent"></p>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="editSubject">Subject</label>
+              <select id="editSubject" name="subject" class="form-control" required>
+                <% subjects.forEach(sub => { %><option value="<%= sub._id %>"><%= sub.name %></option><% }) %>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="editExamType">Exam type</label>
+              <select id="editExamType" name="examType" class="form-control" required>
+                <% examTypes.forEach(t => { %><option value="<%= t %>"><%= t %></option><% }) %>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="editMaxMarks">Maximum marks</label>
+              <input type="number" id="editMaxMarks" name="maxMarks" class="form-control" min="1" step="any" required>
+            </div>
+            <div class="form-group">
+              <label for="editObtainedMarks">Marks obtained</label>
+              <input type="number" id="editObtainedMarks" name="obtainedMarks" class="form-control" min="0" step="any" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="editRemarks">Remarks</label>
+            <input type="text" id="editRemarks" name="remarks" class="form-control" maxlength="500">
+          </div>
+          <div class="form-group">
+            <label for="editSheet">Replace answer sheet</label>
+            <input type="file" id="editSheet" name="answerSheet" class="form-control" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary"><%- icon('check') %>Save changes</button>
+            <button type="button" class="btn" data-close-modal>Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        const modal = document.getElementById('editModal');
+        const set = (id, value) => { document.getElementById(id).value = value; };
+        const close = () => modal.classList.remove('is-open');
+        document.querySelectorAll('[data-edit-mark]').forEach((button) => {
+          button.addEventListener('click', () => {
+            const mark = JSON.parse(button.dataset.editMark);
+            set('editMarkId', mark.id);
+            set('editSubject', mark.subject);
+            set('editExamType', mark.examType);
+            set('editMaxMarks', mark.maxMarks);
+            set('editObtainedMarks', mark.obtainedMarks);
+            set('editRemarks', mark.remarks);
+            document.getElementById('editStudent').textContent = mark.student;
+            modal.classList.add('is-open');
+            document.getElementById('editObtainedMarks').focus();
+          });
+        });
+        modal.querySelector('[data-close-modal]').addEventListener('click', close);
+        modal.addEventListener('click', (e) => { if (e.target === modal) close(); });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+      })();
+    </script>
+  <% } %>
+</body>
+</html>

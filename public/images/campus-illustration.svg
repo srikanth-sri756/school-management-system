@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 400" width="520" height="400" role="img" aria-label="Line drawing of the school building">
+  <g fill="none" stroke="#c9a227" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">
+    <!-- Halo -->
+    <circle cx="260" cy="210" r="168" stroke="#faf8f3" stroke-opacity="0.08" stroke-width="1.5"/>
+    <circle cx="260" cy="210" r="140" stroke="#faf8f3" stroke-opacity="0.05" stroke-width="1"/>
+
+    <!-- Ground -->
+    <path d="M24 350 H496" stroke-opacity="0.6"/>
+
+    <!-- Trees -->
+    <g stroke="#faf8f3" stroke-opacity="0.35" stroke-width="1.6">
+      <circle cx="40" cy="296" r="20"/>
+      <circle cx="28" cy="312" r="13"/>
+      <path d="M40 316 V350"/>
+      <circle cx="480" cy="296" r="20"/>
+      <circle cx="492" cy="312" r="13"/>
+      <path d="M480 316 V350"/>
+    </g>
+
+    <!-- Left wing -->
+    <rect x="64" y="208" width="96" height="102"/>
+    <rect x="58" y="200" width="108" height="8"/>
+    <g fill="#faf8f3" fill-opacity="0.08">
+      <path d="M78 248 V232 A8 8 0 0 1 94 232 V248 Z"/>
+      <path d="M104 248 V232 A8 8 0 0 1 120 232 V248 Z"/>
+      <path d="M130 248 V232 A8 8 0 0 1 146 232 V248 Z"/>
+      <path d="M78 294 V278 A8 8 0 0 1 94 278 V294 Z"/>
+      <path d="M104 294 V278 A8 8 0 0 1 120 278 V294 Z"/>
+      <path d="M130 294 V278 A8 8 0 0 1 146 278 V294 Z"/>
+    </g>
+    <path d="M64 260 H160" stroke-opacity="0.45"/>
+
+    <!-- Right wing -->
+    <rect x="360" y="208" width="96" height="102"/>
+    <rect x="354" y="200" width="108" height="8"/>
+    <g fill="#faf8f3" fill-opacity="0.08">
+      <path d="M374 248 V232 A8 8 0 0 1 390 232 V248 Z"/>
+      <path d="M400 248 V232 A8 8 0 0 1 416 232 V248 Z"/>
+      <path d="M426 248 V232 A8 8 0 0 1 442 232 V248 Z"/>
+      <path d="M374 294 V278 A8 8 0 0 1 390 278 V294 Z"/>
+      <path d="M400 294 V278 A8 8 0 0 1 416 278 V294 Z"/>
+      <path d="M426 294 V278 A8 8 0 0 1 442 278 V294 Z"/>
+    </g>
+    <path d="M360 260 H456" stroke-opacity="0.45"/>
+
+    <!-- Central portico: pediment -->
+    <path d="M150 166 L260 110 L370 166 Z" fill="#0b2545"/>
+    <path d="M178 159 L260 118 L342 159 Z" stroke-opacity="0.5" stroke-width="1.5"/>
+    <circle cx="260" cy="143" r="11" fill="#0b2545"/>
+    <path d="M260 136 V143 L265 146" stroke-width="1.8"/>
+
+    <!-- Flag -->
+    <path d="M260 110 V70"/>
+    <path d="M260 72 L288 80 L260 88 Z" fill="#c9a227" fill-opacity="0.85"/>
+
+    <!-- Entablature -->
+    <rect x="156" y="166" width="208" height="18" fill="#0b2545"/>
+    <path d="M164 175 H356" stroke-opacity="0.45" stroke-width="1.2"/>
+
+    <!-- Back wall of the portico -->
+    <rect x="166" y="184" width="188" height="126" fill="#0b2545" stroke-opacity="0.35"/>
+
+    <!-- Door -->
+    <path d="M246 310 V272 A14 14 0 0 1 274 272 V310" fill="#faf8f3" fill-opacity="0.1"/>
+    <path d="M260 258 V310" stroke-opacity="0.5" stroke-width="1.4"/>
+
+    <!-- Columns -->
+    <g fill="#0b2545">
+      <rect x="176" y="184" width="24" height="8"/>
+      <rect x="181" y="192" width="14" height="110"/>
+      <rect x="178" y="302" width="20" height="8"/>
+
+      <rect x="206" y="184" width="24" height="8"/>
+      <rect x="211" y="192" width="14" height="110"/>
+      <rect x="208" y="302" width="20" height="8"/>
+
+      <rect x="290" y="184" width="24" height="8"/>
+      <rect x="295" y="192" width="14" height="110"/>
+      <rect x="292" y="302" width="20" height="8"/>
+
+      <rect x="320" y="184" width="24" height="8"/>
+      <rect x="325" y="192" width="14" height="110"/>
+      <rect x="322" y="302" width="20" height="8"/>
+    </g>
+    <path d="M188 196 V298 M218 196 V298 M302 196 V298 M332 196 V298" stroke-opacity="0.35" stroke-width="1"/>
+
+    <!-- Steps -->
+    <rect x="150" y="310" width="220" height="10" fill="#0b2545"/>
+    <rect x="140" y="320" width="240" height="10" fill="#0b2545"/>
+    <rect x="130" y="330" width="260" height="10" fill="#0b2545"/>
+    <path d="M60 310 H150 M370 310 H460" />
+    <path d="M60 310 V350 M460 310 V350" stroke-opacity="0.6"/>
+
+    <!-- Stars -->
+    <g fill="#c9a227" stroke="none" opacity="0.7">
+      <circle cx="110" cy="96" r="1.8"/>
+      <circle cx="420" cy="84" r="1.8"/>
+      <circle cx="160" cy="58" r="1.2"/>
+      <circle cx="372" cy="46" r="1.2"/>
+      <circle cx="456" cy="140" r="1.2"/>
+      <circle cx="72" cy="150" r="1.2"/>
+    </g>
+  </g>
+</svg>

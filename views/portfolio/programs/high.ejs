@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../../partials/public-head', { title: 'High School', description: 'High School Program at Akansha Grammar High School - Preparing students for the Class 10 board examinations and the choices that follow' }) %>
+</head>
+<body class="site program-page">
+    <%- include('../../partials/public-navbar') %>
+
+    <main id="main">
+    <%- include('../../partials/page-hero', {
+      heroPhoto: 'program-high',
+      heroCrumbs: [{ href: '/', label: 'Home' }, { href: '/portfolio/academics', label: 'Academics' }, { label: 'High School' }],
+      heroTitle: 'High<br>School',
+      heroText: 'Preparing students for the Class 10 board examinations and the choices that follow'
+    }) %>
+
+    <div class="program-content program-body">
+        <section>
+            <h2>Overview</h2>
+            <p>Our High School program covers Classes 9 and 10, the two years that lead to the board examinations. A rigorous curriculum, regular practice tests and close mentoring help every student perform with confidence, while career guidance helps students and parents choose the right stream for Class 11 and beyond.</p>
+        </section>
+
+        <div class="stats-container">
+            <div class="stat-box">
+                <div class="stat-number">2</div>
+                <div class="stat-label">Classes (9–10)</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">5</div>
+                <div class="stat-label">Core Board Subjects</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">10+</div>
+                <div class="stat-label">Mock Board Exams in Class 10</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">15:1</div>
+                <div class="stat-label">Student-Teacher Ratio</div>
+            </div>
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon"><%- icon('book-open-text') %></div>
+                <h3>Board Preparation</h3>
+                <p>Comprehensive preparation for CBSE/State Board examinations with experienced faculty, regular mock tests, and personalized study plans.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><%- icon('target') %></div>
+                <h3>Foundation Courses</h3>
+                <p>Early foundation classes in Mathematics and Science for students who plan to prepare for JEE, NEET and Olympiads, plus guidance for NTSE and scholarship exams.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><%- icon('laptop') %></div>
+                <h3>Digital Learning</h3>
+                <p>Access to online learning platforms, virtual labs, educational apps, and digital libraries to enhance learning experiences.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><%- icon('compass') %></div>
+                <h3>Career Guidance</h3>
+                <p>Aptitude assessments and one-to-one counselling that help students and parents choose between Science, Commerce and Humanities for Class 11.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><%- icon('medal') %></div>
+                <h3>Leadership Development</h3>
+                <p>Student council, clubs, societies, and leadership programs that develop critical soft skills and teamwork abilities.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><%- icon('microscope') %></div>
+                <h3>Science Projects</h3>
+                <p>Science fairs, exhibitions and hands-on investigations that build curiosity, reasoning and research skills.</p>
+            </div>
+        </div>
+
+        <section>
+            <h2>Class-wise Curriculum</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>Class 9</h4>
+                    <p><strong>Foundation Year</strong></p>
+                    <ul>
+                        <li>English, Hindi, Mathematics, Science, Social Science</li>
+                        <li>Introduction to all subjects in depth</li>
+                        <li>Career awareness programs</li>
+                        <li>Building study habits and time management</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h4>Class 10</h4>
+                    <p><strong>Board Examination Year</strong></p>
+                    <ul>
+                        <li>CBSE/State Board curriculum</li>
+                        <li>Intensive board exam preparation</li>
+                        <li>Stream selection counselling for Class 11</li>
+                        <li>Mock examinations and practice tests</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Special Programs & Opportunities</h2>
+            <ul class="check-list check-list--cols">
+                <li>Science and Math Olympiads</li>
+                <li>NTSE and scholarship exam guidance</li>
+                <li>Model United Nations (MUN)</li>
+                <li>Debate and public speaking competitions</li>
+                <li>Science fairs and exhibitions</li>
+                <li>Entrepreneurship and innovation workshops</li>
+                <li>Community service and social impact projects</li>
+                <li>Sports teams and inter-school tournaments</li>
+                <li>Arts, music, and theater productions</li>
+                <li>Educational trips and industry visits</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Facilities & Resources</h2>
+            <ul class="check-list check-list--cols">
+                <li>Well-equipped science laboratories</li>
+                <li>Computer labs with up-to-date software</li>
+                <li>Digital library with 20,000+ books and e-resources</li>
+                <li>Smart classrooms with interactive technology</li>
+                <li>Dedicated study halls and group work spaces</li>
+                <li>Career guidance cell</li>
+                <li>Examination hall for mock board exams</li>
+                <li>Sports complex with professional equipment</li>
+                <li>Auditorium for performances and events</li>
+                <li>24/7 online learning platform access</li>
+            </ul>
+        </section>
+
+        <section class="panel">
+            <h2>After Class 10</h2>
+            <p>Our counsellors meet every Class 10 student and their family to plan the next step, whether that is Science, Commerce or Humanities in Class 11, a diploma course, or preparation for competitive examinations. Transfer certificates, mark sheets and character certificates are issued promptly after the results.</p>
+        </section>
+
+        <section class="program-cta">
+            <h2>Start Your Journey to Success</h2>
+            <p>Join a high school that prepares you for the board examinations and the years beyond.</p>
+            <div class="hero-actions">
+                <a href="/portfolio/contact" class="pill pill--light">Contact Us <%- icon('arrow-right') %></a>
+                <a href="/portfolio/admissions" class="pill pill--dark">Admissions</a>
+            </div>
+        </section>
+    </div>
+    </main>
+
+
+    <%- include('../../partials/footer') %>
+</body>
+</html>

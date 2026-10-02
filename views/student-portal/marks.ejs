@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/portal-head', { title: 'Marks' }) %>
+</head>
+<body class="app portal theme-light">
+  <%- include('../partials/student-shell', { page: 'marks' }) %>
+
+  <%
+    const pct = (m) => (m.maxMarks > 0 ? (m.obtainedMarks / m.maxMarks) * 100 : 0);
+    const gradeFor = (m) => { const p = pct(m); return p >= 90 ? 'A+' : p >= 80 ? 'A' : p >= 70 ? 'B' : p >= 60 ? 'C' : (m.grade || 'D'); };
+    const overall = Number(stats.percentage) || 0;
+  %>
+  <main class="container" id="main">
+    <div class="page-header">
+      <div>
+        <h2>Marks &amp; grades</h2>
+        <p>Every assessment your teachers have recorded.</p>
+      </div>
+    </div>
+
+    <form method="GET" action="/student/marks" class="card">
+      <div class="filter-bar">
+        <div class="form-group">
+          <label for="subject">Subject</label>
+          <select id="subject" name="subject" class="form-control">
+            <option value="">All subjects</option>
+            <% subjects.forEach(subject => { %>
+              <option value="<%= subject._id %>" <%= filters.subject === subject._id.toString() ? 'selected' : '' %>><%= subject.name %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="exam">Exam</label>
+          <select id="exam" name="exam" class="form-control">
+            <option value="">All exams</option>
+            <% exams.forEach(exam => { %>
+              <option value="<%= exam.name %>" <%= filters.exam === exam.name ? 'selected' : '' %>><%= exam.name %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="form-group"><button type="submit" class="btn btn-primary btn-block"><%- icon('filter') %>Apply</button></div>
+        <div class="form-group"><a href="/student/marks" class="btn btn-block"><%- icon('x') %>Clear</a></div>
+      </div>
+    </form>
+
+    <div class="stats-grid stats-grid--3">
+      <div class="stat-card">
+        <span class="stat-icon"><%- icon('list-checks') %></span>
+        <div class="stat-body"><p class="stat-label">Marks available</p><div class="stat-value"><%= stats.total %></div><p class="stat-sub">Maximum possible</p></div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon"><%- icon('notebook-pen') %></span>
+        <div class="stat-body"><p class="stat-label">Marks obtained</p><div class="stat-value"><%= stats.obtained %></div><p class="stat-sub">Your total score</p></div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon"><%- icon('chart-column') %></span>
+        <div class="stat-body">
+          <p class="stat-label">Overall</p>
+          <div class="stat-value"><%= overall %>%</div>
+          <div class="mini-bar"><span style="width: <%= Math.min(overall, 100) %>%"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <section class="card card--flush">
+      <div class="card-header">
+        <h3><%- icon('notebook-pen') %>Results</h3>
+        <span class="result-count"><%= marks.length %> <%= marks.length === 1 ? 'assessment' : 'assessments' %></span>
+      </div>
+      <% if (marks.length) { %>
+        <div class="table-container">
+          <table>
+            <thead><tr><th>Subject</th><th>Exam</th><th class="num">Marks</th><th>Percentage</th><th class="num">Grade</th></tr></thead>
+            <tbody>
+              <% marks.forEach(mark => { const p = pct(mark); %>
+                <tr>
+                  <td class="cell-strong"><%= mark.subject ? mark.subject.name : '—' %></td>
+                  <td><%= mark.examType || '—' %></td>
+                  <td class="num"><%= mark.obtainedMarks %> / <%= mark.maxMarks %></td>
+                  <td>
+                    <span><%= p.toFixed(1) %>%</span>
+                    <div class="mini-bar"><span style="width: <%= Math.min(p, 100) %>%"></span></div>
+                  </td>
+                  <td class="num"><%- gradeBadge(gradeFor(mark)) %></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } else { %>
+        <div class="empty-state">
+          <span class="stat-icon"><%- icon('notebook-pen') %></span>
+          <strong>No marks found</strong>
+          <p>Try a different subject or exam, or check back once your teachers enter results.</p>
+        </div>
+      <% } %>
+    </section>
+  </main>
+</body>
+</html>

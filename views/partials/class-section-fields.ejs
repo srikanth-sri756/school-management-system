@@ -1,0 +1,23 @@
+<%# Class + section pickers; the form sends "grade" (e.g. "Class 5") and "section" (e.g. "B").
+    Include with { grade, section, required, gradeLabel?, sectionLabel? }. When the pair is
+    optional, a section becomes required as soon as a class is chosen (public/js/admin.js). %>
+<div class="form-row">
+  <div class="form-group">
+    <label for="grade"><%= locals.gradeLabel || 'Class' %><% if (required) { %> <span class="req">*</span><% } %></label>
+    <select id="grade" name="grade" class="form-control" <%= required ? 'required' : '' %> data-grade-select>
+      <option value=""><%= required ? 'Select class' : 'No class' %></option>
+      <% GRADES.forEach(g => { %>
+        <option value="<%= g %>" <%= g === grade ? 'selected' : '' %>><%= g %></option>
+      <% }) %>
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="section"><%= locals.sectionLabel || 'Section' %> <span class="req">*</span></label>
+    <select id="section" name="section" class="form-control" <%= required || grade ? 'required' : '' %> data-section-select>
+      <option value="">Select section</option>
+      <% SECTIONS.forEach(sec => { %>
+        <option value="<%= sec %>" <%= sec === section ? 'selected' : '' %>>Section <%= sec %></option>
+      <% }) %>
+    </select>
+  </div>
+</div>

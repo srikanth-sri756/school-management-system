@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/admin-head', { title: 'Teacher Attendance' }) %>
+</head>
+<body class="app">
+  <%- include('../partials/navbar', { page: 'teacher-attendance' }) %>
+
+  <% const count = (status) => todayAttendance.filter(a => a.status === status).length; %>
+  <main class="container" id="main">
+    <div class="page-header">
+      <div>
+        <h2>Teacher Attendance</h2>
+        <p>Today’s summary · <%= selectedDate %></p>
+      </div>
+      <div class="page-actions">
+        <a href="/teacher-attendance/report" class="btn"><%- icon('chart-column') %>View Report</a>
+        <a href="/teacher-attendance/mark" class="btn btn-primary"><%- icon('user-check') %>Mark Attendance</a>
+      </div>
+    </div>
+
+    <div class="stats-grid stats-grid--5">
+      <div class="stat-card"><span class="stat-icon stat-icon--green"><%- icon('user-check') %></span><div class="stat-body"><p class="stat-label">Present</p><div class="stat-value"><%= count('Present') %></div></div></div>
+      <div class="stat-card"><span class="stat-icon stat-icon--amber"><%- icon('clock') %></span><div class="stat-body"><p class="stat-label">Late</p><div class="stat-value"><%= count('Late') %></div></div></div>
+      <div class="stat-card"><span class="stat-icon stat-icon--blue"><%- icon('hourglass') %></span><div class="stat-body"><p class="stat-label">Half-day</p><div class="stat-value"><%= count('Half-Day') %></div></div></div>
+      <div class="stat-card"><span class="stat-icon stat-icon--violet"><%- icon('calendar-x') %></span><div class="stat-body"><p class="stat-label">On leave</p><div class="stat-value"><%= count('Leave') %></div></div></div>
+      <div class="stat-card"><span class="stat-icon stat-icon--red"><%- icon('user-x') %></span><div class="stat-body"><p class="stat-label">Absent</p><div class="stat-value"><%= count('Absent') %></div></div></div>
+    </div>
+
+    <section class="card card--flush">
+      <div class="card-header"><h3><%- icon('user-check') %>Today’s Records</h3><span class="result-count"><%= todayAttendance.length %> marked</span></div>
+      <% if (todayAttendance.length) { %>
+        <div class="table-container">
+          <table>
+            <thead><tr><th>Teacher</th><th>Subject</th><th>Class</th><th>Status</th><th>Check-in</th><th>Check-out</th><th class="num">Actions</th></tr></thead>
+            <tbody>
+              <% todayAttendance.forEach(record => { const t = record.teacher; %>
+                <tr>
+                  <td><div class="cell-person"><%- avatar('teacher', t) %><span class="cell-strong"><%= t ? t.name : 'Unknown' %></span></div></td>
+                  <td><%= t && t.subject ? t.subject.name : '—' %></td>
+                  <td><%= t && t.class ? t.class.name : '—' %><%= t && t.section ? ' – ' + t.section : '' %></td>
+                  <td><%- statusBadge(record.status) %></td>
+                  <td><%= record.checkIn || '—' %></td>
+                  <td><%= record.checkOut || '—' %></td>
+                  <td class="num"><a href="/teacher-attendance/edit/<%= record._id %>" class="btn btn-sm"><%- icon('pencil') %>Edit</a></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } else { %>
+        <div class="empty-state">
+          <span class="stat-icon"><%- icon('user-check') %></span>
+          <strong>No teacher attendance marked today</strong>
+          <p>Record who is present, late or on leave.</p>
+          <a href="/teacher-attendance/mark" class="btn btn-primary"><%- icon('user-check') %>Mark Attendance</a>
+        </div>
+      <% } %>
+    </section>
+  </main>
+</body>
+</html>

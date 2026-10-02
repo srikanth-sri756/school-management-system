@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marks Report - School Management System</title>
+  <link rel="stylesheet" href="/css/modern.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <h1>🎓 School Management System</h1>
+      <div class="user-info">
+        <span>Welcome, <%= user.name %></span>
+        <a href="/logout" class="btn-logout">Logout</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="nav-content">
+      <a href="/">Dashboard</a>
+      <a href="/students">Students</a>
+      <a href="/attendance">Attendance</a>
+      <a href="/marks" class="active">Marks</a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <h2>Marks Report</h2>
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <a href="/marks/export" class="btn btn-primary" style="background: linear-gradient(135deg, #10b981, #059669);">
+          📥 Export to Excel
+        </a>
+        <a href="/marks" class="btn btn-secondary">← Back</a>
+      </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="card" style="margin-bottom: 1.5rem;">
+      <h3 style="margin-bottom: 1rem;">Filter Records</h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+        <div>
+          <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem;">Student Name:</label>
+          <input type="text" id="filterStudent" placeholder="Search student..." style="width: 100%; padding: 0.6rem; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem;">
+        </div>
+        <div>
+          <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem;">Subject:</label>
+          <input type="text" id="filterSubject" placeholder="Search subject..." style="width: 100%; padding: 0.6rem; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem;">
+        </div>
+        <div>
+          <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem;">Exam Type:</label>
+          <select id="filterExamType" style="width: 100%; padding: 0.6rem; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem;">
+            <option value="">All</option>
+            <option value="Unit Test">Unit Test</option>
+            <option value="Midterm">Midterm</option>
+            <option value="Final">Final</option>
+            <option value="Assignment">Assignment</option>
+          </select>
+        </div>
+        <div>
+          <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem;">Minimum Percentage:</label>
+          <input type="number" id="filterMinPercentage" placeholder="Min %" min="0" max="100" style="width: 100%; padding: 0.6rem; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem;">
+        </div>
+        <div>
+          <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem;">Grade:</label>
+          <select id="filterGrade" style="width: 100%; padding: 0.6rem; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem;">
+            <option value="">All</option>
+            <option value="A+">A+</option>
+            <option value="A">A</option>
+            <option value="B+">B+</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+            <option value="D">D</option>
+            <option value="F">F</option>
+          </select>
+        </div>
+        <div style="display: flex; align-items: flex-end;">
+          <button onclick="clearFilters()" class="btn btn-secondary" style="width: 100%; padding: 0.6rem;">
+            Clear Filters
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="mb-3">All Marks Records</h3>
+      <% if (marks.length > 0) { %>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Student Name</th>
+                <th>Roll Number</th>
+                <th>Subject</th>
+                <th>Exam Type</th>
+                <th>Obtained Marks</th>
+                <th>Max Marks</th>
+                <th>Percentage</th>
+                <th>Grade</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% marks.forEach(mark => { %>
+                <tr>
+                  <td><%= mark.student ? (mark.student.firstName + ' ' + mark.student.lastName) : 'Unknown' %></td>
+                  <td><%= mark.student ? mark.student.rollNumber : '-' %></td>
+                  <td><%= mark.subject ? mark.subject.name : 'N/A' %></td>
+                  <td><%= mark.examType %></td>
+                  <td><%= mark.obtainedMarks %></td>
+                  <td><%= mark.maxMarks %></td>
+                  <td>
+                    <span class="badge <%= mark.percentage >= 60 ? 'badge-success' : mark.percentage >= 40 ? 'badge-warning' : 'badge-danger' %>">
+                      <%= mark.percentage %>%
+                    </span>
+                  </td>
+                  <td>
+                    <% if (mark.grade) { %>
+                      <span style="padding: 4px 8px; border-radius: 4px; font-weight: 600; background: <%= mark.grade.startsWith('A') ? '#10b981' : (mark.grade === 'B' || mark.grade === 'B+' ? '#3b82f6' : (mark.grade === 'C' ? '#fbbf24' : '#ef4444')) %>; color: white;">
+                        <%= mark.grade %>
+                      </span>
+                    <% } else { %>
+                      <span style="color: #9ca3af;">N/A</span>
+                    <% } %>
+                  </td>
+                  <td><%= mark.date ? new Date(mark.date).toLocaleDateString('en-IN') : (mark.examDate || 'N/A') %></td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      <% } else { %>
+        <p>No marks records found.</p>
+      <% } %>
+    </div>
+  </div>
+
+  <script>
+    // Filter functionality
+    const filterStudent = document.getElementById('filterStudent');
+    const filterSubject = document.getElementById('filterSubject');
+    const filterExamType = document.getElementById('filterExamType');
+    const filterMinPercentage = document.getElementById('filterMinPercentage');
+    const filterGrade = document.getElementById('filterGrade');
+    const tableRows = document.querySelectorAll('tbody tr');
+
+    function applyFilters() {
+      const studentValue = filterStudent.value.toLowerCase();
+      const subjectValue = filterSubject.value.toLowerCase();
+      const examTypeValue = filterExamType.value.toLowerCase();
+      const minPercentageValue = filterMinPercentage.value ? parseFloat(filterMinPercentage.value) : null;
+      const gradeValue = filterGrade.value.toLowerCase();
+
+      tableRows.forEach(row => {
+        if (row.cells.length === 1) return; // Skip "no records found" row
+
+        const student = row.cells[0].textContent.toLowerCase();
+        const subject = row.cells[2].textContent.toLowerCase();
+        const examType = row.cells[3].textContent.toLowerCase();
+        const percentageText = row.cells[6].textContent.replace('%', '').trim();
+        const percentage = parseFloat(percentageText);
+        const grade = row.cells[7].textContent.trim().toLowerCase();
+
+        const studentMatch = student.includes(studentValue);
+        const subjectMatch = subject.includes(subjectValue);
+        const examTypeMatch = !examTypeValue || examType.includes(examTypeValue);
+        const percentageMatch = minPercentageValue === null || percentage >= minPercentageValue;
+        const gradeMatch = !gradeValue || grade === gradeValue;
+
+        if (studentMatch && subjectMatch && examTypeMatch && percentageMatch && gradeMatch) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    }
+
+    function clearFilters() {
+      filterStudent.value = '';
+      filterSubject.value = '';
+      filterExamType.value = '';
+      filterMinPercentage.value = '';
+      filterGrade.value = '';
+      applyFilters();
+    }
+
+    // Add event listeners
+    filterStudent.addEventListener('input', applyFilters);
+    filterSubject.addEventListener('input', applyFilters);
+    filterExamType.addEventListener('change', applyFilters);
+    filterMinPercentage.addEventListener('input', applyFilters);
+    filterGrade.addEventListener('change', applyFilters);
+  </script>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

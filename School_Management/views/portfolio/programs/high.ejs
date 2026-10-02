@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="High School Program at Akansha Grammar High School - Preparing students for college and career success in Grades 9-12">
+    <title>High School | Akansha Grammar High School</title>
+    <link rel="stylesheet" href="/css/modern.css">
+    <link rel="stylesheet" href="/css/portfolio.css">
+    <style>
+        .program-hero {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            padding: 4rem 0;
+            margin-bottom: 3rem;
+        }
+        .program-hero h1 {
+            color: white;
+            margin-bottom: 1rem;
+        }
+        .program-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 16px rgba(220, 38, 38, 0.2);
+        }
+        .feature-card h3 {
+            color: #dc2626;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .stream-section {
+            background: #fef2f2;
+            padding: 3rem;
+            border-radius: 12px;
+            margin: 3rem 0;
+        }
+        .stream-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .stream-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            border-top: 4px solid #dc2626;
+        }
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+            text-align: center;
+        }
+        .stat-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #dc2626;
+            margin-bottom: 0.5rem;
+        }
+        .stat-label {
+            color: #64748b;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <%- include('../../partials/public-navbar') %>
+
+    <div class="program-hero">
+        <div class="program-content">
+            <h1>🎓 High School Program</h1>
+            <p style="font-size: 1.25rem; max-width: 800px;">Preparing students for college and career success in Grades 9-12</p>
+        </div>
+    </div>
+
+    <div class="program-content">
+        <section>
+            <h2>Overview</h2>
+            <p>Our High School program offers a rigorous, college-preparatory curriculum designed to prepare students for success in higher education and beyond. With multiple academic streams, advanced placement courses, and comprehensive college counseling, we ensure every student is equipped with the knowledge, skills, and experiences needed to achieve their goals.</p>
+        </section>
+
+        <div class="stats-container">
+            <div class="stat-box">
+                <div class="stat-number">4</div>
+                <div class="stat-label">Grade Levels (9-12)</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">98%</div>
+                <div class="stat-label">College Acceptance</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">30+</div>
+                <div class="stat-label">AP & Elective Courses</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">15:1</div>
+                <div class="stat-label">Student-Teacher Ratio</div>
+            </div>
+        </div>
+
+        <div class="stream-section">
+            <h2>Academic Streams (Grades 11-12)</h2>
+            <div class="stream-grid">
+                <div class="stream-card">
+                    <h4>🔬 Science Stream</h4>
+                    <p><strong>Subjects:</strong></p>
+                    <ul>
+                        <li>Physics</li>
+                        <li>Chemistry</li>
+                        <li>Mathematics/Biology</li>
+                        <li>English</li>
+                        <li>Computer Science (Optional)</li>
+                    </ul>
+                    <p style="margin-top: 1rem;"><strong>Career Paths:</strong> Engineering, Medicine, Research, Technology</p>
+                </div>
+                <div class="stream-card">
+                    <h4>💼 Commerce Stream</h4>
+                    <p><strong>Subjects:</strong></p>
+                    <ul>
+                        <li>Accountancy</li>
+                        <li>Business Studies</li>
+                        <li>Economics</li>
+                        <li>English</li>
+                        <li>Mathematics/Informatics</li>
+                    </ul>
+                    <p style="margin-top: 1rem;"><strong>Career Paths:</strong> Business, Finance, Law, Management</p>
+                </div>
+                <div class="stream-card">
+                    <h4>📚 Humanities Stream</h4>
+                    <p><strong>Subjects:</strong></p>
+                    <ul>
+                        <li>History</li>
+                        <li>Political Science</li>
+                        <li>Economics/Psychology</li>
+                        <li>English</li>
+                        <li>Sociology (Optional)</li>
+                    </ul>
+                    <p style="margin-top: 1rem;"><strong>Career Paths:</strong> Social Sciences, Journalism, Civil Services, Arts</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📖</div>
+                <h3>Board Preparation</h3>
+                <p>Comprehensive preparation for CBSE/State Board examinations with experienced faculty, regular mock tests, and personalized study plans.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>Competitive Exams</h3>
+                <p>Dedicated coaching for JEE, NEET, CLAT, and other competitive entrance examinations with expert mentors and study materials.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💻</div>
+                <h3>Digital Learning</h3>
+                <p>Access to online learning platforms, virtual labs, educational apps, and digital libraries to enhance learning experiences.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🌐</div>
+                <h3>College Counseling</h3>
+                <p>Expert guidance on college applications, entrance exams, career planning, and scholarship opportunities both in India and abroad.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🏅</div>
+                <h3>Leadership Development</h3>
+                <p>Student government, clubs, societies, and leadership programs that develop critical soft skills and teamwork abilities.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔬</div>
+                <h3>Research Opportunities</h3>
+                <p>Independent research projects, science fairs, and opportunities to publish papers or present at conferences.</p>
+            </div>
+        </div>
+
+        <section>
+            <h2>Grade-wise Curriculum</h2>
+            <div class="feature-grid">
+                <div class="feature-card" style="border-left: 4px solid #dc2626;">
+                    <h4>📘 Grade 9</h4>
+                    <p><strong>Foundation Year</strong></p>
+                    <ul>
+                        <li>English, Hindi, Mathematics, Science, Social Science</li>
+                        <li>Introduction to all subjects in depth</li>
+                        <li>Career awareness programs</li>
+                        <li>Building study habits and time management</li>
+                    </ul>
+                </div>
+                <div class="feature-card" style="border-left: 4px solid #dc2626;">
+                    <h4>📗 Grade 10</h4>
+                    <p><strong>Board Preparation Year</strong></p>
+                    <ul>
+                        <li>CBSE/State Board curriculum</li>
+                        <li>Intensive board exam preparation</li>
+                        <li>Stream selection counseling</li>
+                        <li>Mock examinations and practice tests</li>
+                    </ul>
+                </div>
+                <div class="feature-card" style="border-left: 4px solid #dc2626;">
+                    <h4>📙 Grade 11</h4>
+                    <p><strong>Stream Specialization</strong></p>
+                    <ul>
+                        <li>Science/Commerce/Humanities streams</li>
+                        <li>Advanced subject-specific learning</li>
+                        <li>Competitive exam preparation begins</li>
+                        <li>College research and planning</li>
+                    </ul>
+                </div>
+                <div class="feature-card" style="border-left: 4px solid #dc2626;">
+                    <h4>📕 Grade 12</h4>
+                    <p><strong>Final Year & College Prep</strong></p>
+                    <ul>
+                        <li>Board examination focus</li>
+                        <li>Entrance exam intensive coaching</li>
+                        <li>College applications and essays</li>
+                        <li>Interview preparation and skill development</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section style="margin-top: 3rem;">
+            <h2>Special Programs & Opportunities</h2>
+            <ul style="columns: 2; column-gap: 2rem; margin: 1.5rem 0;">
+                <li>✅ Advanced Placement (AP) Courses</li>
+                <li>✅ Dual Enrollment with partner universities</li>
+                <li>✅ Research internships and mentorship programs</li>
+                <li>✅ Model United Nations (MUN)</li>
+                <li>✅ Science and Math Olympiads</li>
+                <li>✅ Debate and public speaking competitions</li>
+                <li>✅ National and international exchange programs</li>
+                <li>✅ Entrepreneurship and innovation workshops</li>
+                <li>✅ Community service and social impact projects</li>
+                <li>✅ Sports teams and athletic scholarships</li>
+                <li>✅ Arts, music, and theater productions</li>
+                <li>✅ Career internships and job shadowing</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Facilities & Resources</h2>
+            <ul style="columns: 2; column-gap: 2rem; margin: 1.5rem 0;">
+                <li>✅ State-of-the-art science laboratories</li>
+                <li>✅ Advanced computer labs with latest software</li>
+                <li>✅ Digital library with 20,000+ books and e-resources</li>
+                <li>✅ Smart classrooms with interactive technology</li>
+                <li>✅ Dedicated study halls and group work spaces</li>
+                <li>✅ College counseling center</li>
+                <li>✅ Career resource library</li>
+                <li>✅ Mock interview rooms</li>
+                <li>✅ Seminar and conference halls</li>
+                <li>✅ Sports complex with professional equipment</li>
+                <li>✅ Auditorium for performances and events</li>
+                <li>✅ 24/7 online learning platform access</li>
+            </ul>
+        </section>
+
+        <section style="margin-top: 3rem; background: #fef2f2; padding: 2rem; border-radius: 12px;">
+            <h2>College Placement Success</h2>
+            <p>Our students have been accepted to top universities and colleges including:</p>
+            <ul style="columns: 2; column-gap: 2rem; margin: 1.5rem 0;">
+                <li>IITs (Indian Institutes of Technology)</li>
+                <li>NITs (National Institutes of Technology)</li>
+                <li>AIIMS (All India Institute of Medical Sciences)</li>
+                <li>Delhi University</li>
+                <li>Jawaharlal Nehru University</li>
+                <li>Symbiosis International University</li>
+                <li>BITS Pilani</li>
+                <li>International universities (US, UK, Canada, Australia)</li>
+            </ul>
+            <p><strong>Scholarship Achievement:</strong> Over 60% of our students receive merit-based scholarships</p>
+        </section>
+
+        <section style="margin: 3rem 0; text-align: center;">
+            <h2>Start Your Journey to Success</h2>
+            <p style="margin: 1rem 0 2rem;">Join a high school that prepares you for excellence in college and life!</p>
+            <a href="/portfolio/contact" class="btn btn-primary" style="display: inline-block; padding: 1rem 2rem; background: #dc2626; color: white; text-decoration: none; border-radius: 8px; font-weight: 600;">Contact Us</a>
+        </section>
+    </div>
+
+    <%- include('../../partials/footer') %>
+</body>
+</html>

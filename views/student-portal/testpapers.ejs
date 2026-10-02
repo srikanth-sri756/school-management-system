@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/portal-head', { title: 'Test Papers' }) %>
+</head>
+<body class="app portal theme-light">
+  <%- include('../partials/student-shell', { page: 'testpapers' }) %>
+
+  <main class="container" id="main">
+    <div class="page-header">
+      <div>
+        <h2>Test papers</h2>
+        <p>Question papers and practice tests for your class.</p>
+      </div>
+    </div>
+
+    <form method="GET" action="/student/testpapers" class="card">
+      <div class="filter-bar">
+        <div class="form-group">
+          <label for="subject">Subject</label>
+          <select id="subject" name="subject" class="form-control" onchange="this.form.submit()">
+            <option value="">All subjects</option>
+            <% subjects.forEach(subject => { %>
+              <option value="<%= subject._id %>" <%= filters.subject === subject._id.toString() ? 'selected' : '' %>><%= subject.name %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="examType">Exam type</label>
+          <select id="examType" name="examType" class="form-control" onchange="this.form.submit()">
+            <option value="">All types</option>
+            <% examTypes.forEach(type => { %>
+              <option value="<%= type %>" <%= filters.examType === type ? 'selected' : '' %>><%= type %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="form-group"><span class="result-count"><%= testPapers.length %> <%= testPapers.length === 1 ? 'paper' : 'papers' %></span></div>
+      </div>
+    </form>
+
+    <% if (testPapers && testPapers.length) { %>
+      <div class="card-grid">
+        <% testPapers.forEach(paper => { %>
+          <article class="item-card">
+            <div class="tags">
+              <% if (paper.subject) { %><span class="badge badge-navy badge--plain"><%= paper.subject.name %></span><% } %>
+              <span class="badge badge--plain"><%= paper.examType %></span>
+            </div>
+            <h3><%= paper.title %></h3>
+            <% if (paper.description) { %><p><%= paper.description %></p><% } %>
+            <div class="item-foot">
+              <% if (paper.file && paper.file.path) { %>
+                <span class="attachment"><%- icon('file-text') %><span><%= (paper.file.size / 1024).toFixed(1) %> KB</span></span>
+                <a href="/student/testpapers/<%= paper._id %>/download" class="btn btn-sm btn-primary"><%- icon('download') %>Download</a>
+              <% } else { %>
+                <span class="attachment text-warning"><%- icon('triangle-alert') %><span>File not available</span></span>
+              <% } %>
+            </div>
+            <div class="item-meta">
+              <span><%- icon('calendar') %><%= new Date(paper.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %></span>
+              <span><%- icon('list-checks') %>Max marks <%= paper.maxMarks %></span>
+              <% if (paper.teacher) { %><span><%- icon('user-round') %><%= paper.teacher.name %></span><% } %>
+              <span><%- icon('download') %><%= paper.downloads || 0 %> downloads</span>
+            </div>
+          </article>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <section class="card">
+        <div class="empty-state">
+          <span class="stat-icon"><%- icon('file-text') %></span>
+          <strong>No test papers yet</strong>
+          <p><%= filters.subject || filters.examType ? 'Nothing matches these filters. Try clearing them.' : 'Your teachers haven’t uploaded any test papers for your class yet.' %></p>
+        </div>
+      </section>
+    <% } %>
+  </main>
+</body>
+</html>

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Notes | Akansha Grammar High School</title>
+    <link rel="stylesheet" href="/css/modern.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8fafc;
+        }
+
+        .student-navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .navbar-brand .logo {
+            font-size: 2rem;
+        }
+
+        .navbar-brand h2 {
+            font-size: 1.25rem;
+        }
+
+        .navbar-menu {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .navbar-menu a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+
+        .navbar-menu a:hover,
+        .navbar-menu a.active {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
+        .navbar-user {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 600;
+        }
+
+        .user-id {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.5rem 1.25rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-logout:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .page-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .breadcrumb {
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        .breadcrumb a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .filters-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .filter-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .filter-item label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .filter-item select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .filter-item select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .note-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .note-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .note-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .note-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .note-subject {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .note-content {
+            color: #475569;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            max-height: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .note-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid #e2e8f0;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        .note-teacher {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .note-date {
+            color: #94a3b8;
+        }
+
+        .note-attachment {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: #f1f5f9;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .attachment-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .attachment-icon {
+            font-size: 1.25rem;
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.2s;
+        }
+
+        .btn-download:hover {
+            transform: scale(1.05);
+        }
+
+        .no-notes {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #64748b;
+        }
+
+        .no-notes-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .navbar-menu {
+                display: none;
+            }
+
+            .notes-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-group {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="student-navbar">
+        <div class="navbar-content">
+            <div class="navbar-brand">
+                <div class="logo">🎓</div>
+                <h2>Akansha Grammar High School</h2>
+            </div>
+            <div class="navbar-menu">
+                <a href="/student/dashboard">Dashboard</a>
+                <a href="/student/marks">Marks</a>
+                <a href="/student/fees">Fees</a>
+                <a href="/student/notes" class="active">Notes</a>
+                <a href="/student/testpapers">Test Papers</a>
+                <a href="/student/profile">Profile</a>
+            </div>
+            <div class="navbar-user">
+                <div class="user-info">
+                    <div class="user-name"><%= student.firstName %> <%= student.lastName %></div>
+                    <div class="user-id"><%= student.studentId %></div>
+                </div>
+                <a href="/student/logout" class="btn-logout">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="page-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>📚 Study Notes</h1>
+            <div class="breadcrumb">
+                <a href="/student/dashboard">Dashboard</a> / Notes
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-section">
+            <form method="GET" action="/student/notes">
+                <div class="filter-group">
+                    <div class="filter-item">
+                        <label for="subject">Filter by Subject</label>
+                        <select id="subject" name="subject" onchange="this.form.submit()">
+                            <option value="">All Subjects</option>
+                            <% subjects.forEach(subject => { %>
+                                <option value="<%= subject._id %>" <%= filters.subject === subject._id.toString() ? 'selected' : '' %>>
+                                    <%= subject.name %>
+                                </option>
+                            <% }) %>
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Notes Grid -->
+        <% if (notes && notes.length > 0) { %>
+            <div class="notes-grid">
+                <% notes.forEach(note => { %>
+                    <div class="note-card">
+                        <div class="note-header">
+                            <div>
+                                <h3 class="note-title"><%= note.title %></h3>
+                                <% if (note.subject) { %>
+                                    <span class="note-subject"><%= note.subject.name %></span>
+                                <% } %>
+                            </div>
+                        </div>
+
+                        <div class="note-content">
+                            <%= note.content.substring(0, 200) %><% if (note.content.length > 200) { %>...<% } %>
+                        </div>
+
+                        <% if (note.attachment && note.attachment.path) { %>
+                            <div class="note-attachment">
+                                <div class="attachment-info">
+                                    <span class="attachment-icon">📎</span>
+                                    <span><%= note.attachment.originalName %></span>
+                                </div>
+                                <a href="/student/notes/<%= note._id %>/download" class="btn-download">Download</a>
+                            </div>
+                        <% } %>
+
+                        <div class="note-meta">
+                            <div class="note-teacher">
+                                <span>👨‍🏫</span>
+                                <span><%= note.teacher ? note.teacher.name : 'Admin' %></span>
+                            </div>
+                            <div class="note-date">
+                                <%= new Date(note.createdAt).toLocaleDateString('en-US', { 
+                                    year: 'numeric', 
+                                    month: 'short', 
+                                    day: 'numeric' 
+                                }) %>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        <% } else { %>
+            <div class="no-notes">
+                <div class="no-notes-icon">📚</div>
+                <h3>No Notes Available</h3>
+                <p>There are no study notes available for your class at this time.</p>
+            </div>
+        <% } %>
+    </div>
+</body>
+</html>

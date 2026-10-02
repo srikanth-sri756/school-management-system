@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/admin-head', { title: 'Important Dates' }) %>
+</head>
+<body class="app">
+  <%- include('../partials/navbar', { page: 'announcements' }) %>
+
+  <main class="container" id="main">
+    <div class="page-header">
+      <div>
+        <h2>Important Dates</h2>
+        <p>Announce exams, meetings, events and deadlines. Each one appears where you choose until its last day has passed.</p>
+      </div>
+      <div class="page-actions">
+        <a href="/announcements/add" class="btn btn-primary"><%- icon('plus') %>Add Date</a>
+      </div>
+    </div>
+
+    <section class="card card--flush">
+      <div class="card-header">
+        <h3><%- icon('calendar-days') %>Upcoming</h3>
+        <span class="result-count"><%= upcoming.length %> <%= upcoming.length === 1 ? 'date' : 'dates' %></span>
+      </div>
+      <%- include('../partials/important-dates', {
+            dates: upcoming,
+            manage: true,
+            emptyTitle: 'Nothing announced yet',
+            emptyText: 'Add exam dates, parent–teacher meetings, events or deadlines and they will appear on the website and in the student and teacher portals.'
+          }) %>
+    </section>
+
+    <% if (past.length) { %>
+      <section class="card card--flush">
+        <div class="card-header">
+          <div>
+            <h3><%- icon('clock') %>Past</h3>
+            <p>These are no longer shown anywhere.</p>
+          </div>
+        </div>
+        <%- include('../partials/important-dates', { dates: past, manage: true, ended: true }) %>
+      </section>
+    <% } %>
+  </main>
+</body>
+</html>

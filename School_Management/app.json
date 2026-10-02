@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "3ea15ab5-fbf7-4be7-a9b8-06b999553d16"
+      }
+    },
+    "android": {
+      "package": "com.srikanth756.schoolmanagement"
+    }
+  }
+}

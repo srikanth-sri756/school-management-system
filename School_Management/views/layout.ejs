@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof title !== 'undefined' ? title : 'School Management System' %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <img src="/images/school-main.jpg" alt="Gautham Grammer High School" class="hero-img" />
+    <div class="hero-text">
+      <h1>Gautham Grammer High School</h1>
+      <p>Empowering students for a brighter future. Explore records, attendance, marks, and more!</p>
+    </div>
+  </section>
+
+  <% if (typeof user !== 'undefined' && user) { %>
+    <!-- Header -->
+    <header class="header">
+      <div class="header-content">
+        <h1>🎓 School Management System</h1>
+        <div class="user-info">
+          <span>Welcome, <%= user.name %></span>
+          <a href="/logout" class="btn-logout">Logout</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="nav">
+      <div class="nav-content">
+        <a href="/" class="<%= typeof page !== 'undefined' && page === 'dashboard' ? 'active' : '' %>">Dashboard</a>
+        <a href="/students" class="<%= typeof page !== 'undefined' && page === 'students' ? 'active' : '' %>">Students</a>
+        <a href="/attendance" class="<%= typeof page !== 'undefined' && page === 'attendance' ? 'active' : '' %>">Attendance</a>
+        <a href="/marks" class="<%= typeof page !== 'undefined' && page === 'marks' ? 'active' : '' %>">Marks</a>
+        <a href="/fees" class="<%= typeof page !== 'undefined' && page === 'fees' ? 'active' : '' %>">Fees</a>
+        <a href="/teachers" class="<%= typeof page !== 'undefined' && page === 'teachers' ? 'active' : '' %>">Teachers</a>
+      </div>
+    </nav>
+  <% } %>
+
+  <!-- Flash messages -->
+  <% if (typeof success !== 'undefined' && success.length > 0) { %>
+    <div class="container">
+      <div class="alert alert-success"><%= success %></div>
+    </div>
+  <% } %>
+  <% if (typeof error !== 'undefined' && error.length > 0) { %>
+    <div class="container">
+      <div class="alert alert-error"><%= error %></div>
+    </div>
+  <% } %>
+
+  <!-- Main content -->
+  <%- body %>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

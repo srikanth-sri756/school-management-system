@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard | Akansha Grammar High School</title>
+    <link rel="stylesheet" href="/css/modern.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8fafc;
+        }
+
+        .student-navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .navbar-brand .logo {
+            font-size: 2rem;
+        }
+
+        .navbar-brand h2 {
+            font-size: 1.25rem;
+        }
+
+        .navbar-menu {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .navbar-menu a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+
+        .navbar-menu a:hover {
+            opacity: 0.8;
+        }
+
+        .navbar-user {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 600;
+        }
+
+        .user-id {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.5rem 1.25rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-logout:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .welcome-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .welcome-section h1 {
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-section p {
+            color: #64748b;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid;
+        }
+
+        .stat-card.attendance {
+            border-left-color: #3b82f6;
+        }
+
+        .stat-card.marks {
+            border-left-color: #10b981;
+        }
+
+        .stat-card.subjects {
+            border-left-color: #f59e0b;
+        }
+
+        .stat-card h3 {
+            color: #64748b;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .data-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .section-header h2 {
+            color: #1e293b;
+            font-size: 1.25rem;
+        }
+
+        .btn-view-all {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .btn-view-all:hover {
+            text-decoration: underline;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 0.75rem;
+            background: #f8fafc;
+            color: #64748b;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .data-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-present {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-absent {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-late {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 2rem;
+            color: #94a3b8;
+        }
+
+        .quick-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .quick-link-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            text-decoration: none;
+            color: #1e293b;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .quick-link-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .quick-link-card .icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .quick-link-card h3 {
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+
+        .quick-link-card p {
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .navbar-menu {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="student-navbar">
+        <div class="navbar-content">
+            <div class="navbar-brand">
+                <div class="logo">🎓</div>
+                <h2>Akansha Grammar High School</h2>
+            </div>
+            <div class="navbar-menu">
+                <a href="/student/dashboard">Dashboard</a>
+                <a href="/student/marks">Marks</a>
+                <a href="/student/fees">Fees</a>
+                <a href="/student/notes">Notes</a>
+                <a href="/student/testpapers">Test Papers</a>
+                <a href="/student/profile">Profile</a>
+            </div>
+            <div class="navbar-user">
+                <div class="user-info">
+                    <div class="user-name"><%= student.firstName %> <%= student.lastName %></div>
+                    <div class="user-id"><%= student.studentId %></div>
+                </div>
+                <a href="/student/logout" class="btn-logout">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard-container">
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <h1>Welcome back, <%= student.firstName %>! 👋</h1>
+            <p>Here's your academic overview for <%= student.class.name %> - <%= student.section %></p>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="stats-grid">
+            <div class="stat-card attendance">
+                <h3>ATTENDANCE RATE</h3>
+                <div class="stat-value"><%= attendancePercentage %>%</div>
+                <div class="stat-label"><%= attendanceStats.present %> out of <%= attendanceStats.total %> classes</div>
+            </div>
+            <div class="stat-card marks">
+                <h3>RECENT PERFORMANCE</h3>
+                <div class="stat-value"><%= recentMarks.length %></div>
+                <div class="stat-label">Recent assessments recorded</div>
+            </div>
+            <div class="stat-card subjects">
+                <h3>ENROLLED SUBJECTS</h3>
+                <div class="stat-value"><%= subjects.length %></div>
+                <div class="stat-label">Active subjects this semester</div>
+            </div>
+        </div>
+
+        <!-- Recent Data Grid -->
+        <div class="content-grid">
+            <!-- Recent Attendance -->
+            <div class="data-section">
+                <div class="section-header">
+                    <h2>Recent Attendance</h2>
+                    <a href="/student/attendance" class="btn-view-all">View All →</a>
+                </div>
+                <% if (recentAttendance.length > 0) { %>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% recentAttendance.forEach(record => { %>
+                                <tr>
+                                    <td><%= new Date(record.date).toLocaleDateString() %></td>
+                                    <td>
+                                        <span class="status-badge status-<%= record.status.toLowerCase() %>">
+                                            <%= record.status %>
+                                        </span>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                <% } else { %>
+                    <div class="no-data">No attendance records found</div>
+                <% } %>
+            </div>
+
+            <!-- Recent Marks -->
+            <div class="data-section">
+                <div class="section-header">
+                    <h2>Recent Marks</h2>
+                    <a href="/student/marks" class="btn-view-all">View All →</a>
+                </div>
+                <% if (recentMarks.length > 0) { %>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Exam</th>
+                                <th>Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% recentMarks.forEach(mark => { %>
+                                <tr>
+                                    <td><%= mark.subject ? mark.subject.name : 'N/A' %></td>
+                                    <td><%= mark.examType || 'N/A' %></td>
+                                    <td><strong><%= mark.obtainedMarks %>/<%= mark.maxMarks || mark.totalMarks %></strong></td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                <% } else { %>
+                    <div class="no-data">No marks records found</div>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="quick-links">
+            <a href="/student/attendance" class="quick-link-card">
+                <div class="icon">📅</div>
+                <h3>View Attendance</h3>
+                <p>Check your attendance records</p>
+            </a>
+            <a href="/student/marks" class="quick-link-card">
+                <div class="icon">📊</div>
+                <h3>View Marks</h3>
+                <p>See your exam results</p>
+            </a>
+            <a href="/student/profile" class="quick-link-card">
+                <div class="icon">👤</div>
+                <h3>My Profile</h3>
+                <p>Update your information</p>
+            </a>
+            <a href="/student/logout" class="quick-link-card">
+                <div class="icon">🚪</div>
+                <h3>Logout</h3>
+                <p>Sign out of your account</p>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

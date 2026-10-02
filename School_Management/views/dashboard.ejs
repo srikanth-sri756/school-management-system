@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Akansha Grammer High School</title>
+  <link rel="stylesheet" href="/css/modern.css">
+</head>
+<body>
+  <%- include('partials/navbar') %>
+  
+  <div class="container">
+    <div class="page-header">
+      <h2>📊 Admin Dashboard</h2>
+    </div>
+
+    <!-- School Welcome Section -->
+    <div class="card" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(124, 58, 237, 0.05)); border: none; border-left: 6px solid #4f46e5;">
+      <div class="school-welcome-content" style="display: flex; align-items: center; gap: 2rem;">
+        <img src="/images/school-logo.svg" alt="Akansha Grammer High School" style="width: 120px; height: 120px; filter: drop-shadow(0 8px 16px rgba(79, 70, 229, 0.3));" />
+        <div>
+          <h2 style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #ec4899 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem;">
+            Welcome to Akansha Grammer High School
+          </h2>
+          <p style="color: var(--gray-700); font-size: 1.1rem; font-weight: 500;">
+            Excellence in Education Since 1995 - Empowering minds, Building futures
+          </p>
+          <p style="color: var(--gray-600); margin-top: 0.5rem;">
+            Discover our vibrant campus, dedicated staff, and enthusiastic students committed to academic excellence.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="card">
+      <h3 style="color: var(--gray-900); margin-bottom: 1.5rem; font-size: 1.5rem; font-weight: 700;">
+        🚀 Quick Access
+      </h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem;">
+        <a href="/students" class="quick-link" style="text-decoration: none; display: flex; flex-direction: column; align-items: center; padding: 1.5rem 1rem; background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(99, 102, 241, 0.1)); border-radius: 12px; transition: all 0.3s ease; border: 2px solid transparent;">
+          <span style="font-size: 2.5rem; margin-bottom: 0.5rem;">👨‍🎓</span>
+          <div style="font-weight: 600; color: var(--gray-900);">Students</div>
+        </a>
+        <a href="/attendance" class="quick-link" style="text-decoration: none; display: flex; flex-direction: column; align-items: center; padding: 1.5rem 1rem; background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1)); border-radius: 12px; transition: all 0.3s ease; border: 2px solid transparent;">
+          <span style="font-size: 2.5rem; margin-bottom: 0.5rem;">�</span>
+          <div style="font-weight: 600; color: var(--gray-900);">Attendance</div>
+        </a>
+        <a href="/marks" class="quick-link" style="text-decoration: none; display: flex; flex-direction: column; align-items: center; padding: 1.5rem 1rem; background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.1)); border-radius: 12px; transition: all 0.3s ease; border: 2px solid transparent;">
+          <span style="font-size: 2.5rem; margin-bottom: 0.5rem;">📊</span>
+          <div style="font-weight: 600; color: var(--gray-900);">Marks</div>
+        </a>
+        <a href="/fees" class="quick-link" style="text-decoration: none; display: flex; flex-direction: column; align-items: center; padding: 1.5rem 1rem; background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(124, 58, 237, 0.1)); border-radius: 12px; transition: all 0.3s ease; border: 2px solid transparent;">
+          <span style="font-size: 2.5rem; margin-bottom: 0.5rem;">💰</span>
+          <div style="font-weight: 600; color: var(--gray-900);">Fees</div>
+        </a>
+        <a href="/teachers" class="quick-link" style="text-decoration: none; display: flex; flex-direction: column; align-items: center; padding: 1.5rem 1rem; background: linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(219, 39, 119, 0.1)); border-radius: 12px; transition: all 0.3s ease; border: 2px solid transparent;">
+          <span style="font-size: 2.5rem; margin-bottom: 0.5rem;">👩‍🏫</span>
+          <div style="font-weight: 600; color: var(--gray-900);">Teachers</div>
+        </a>
+        <a href="/admin/import" class="quick-link" style="text-decoration: none; display: flex; flex-direction: column; align-items: center; padding: 1.5rem 1rem; background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.1)); border-radius: 12px; transition: all 0.3s ease; border: 2px solid transparent;">
+          <span style="font-size: 2.5rem; margin-bottom: 0.5rem;">⬆️</span>
+          <div style="font-weight: 600; color: var(--gray-900);">Import</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="card">
+      <h3 style="color: var(--gray-900); margin-bottom: 1.5rem; font-size: 1.5rem; font-weight: 700;">
+        📈 School Statistics
+      </h3>
+      <h3 style="color: var(--gray-900); margin-bottom: 1.5rem; font-size: 1.5rem; font-weight: 700;">
+        📈 School Statistics
+      </h3>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h4>Total Students</h4>
+          <div class="stat-value"><%= stats.totalStudents %></div>
+          <p class="stat-label">Enrolled students</p>
+        </div>
+        <div class="stat-card">
+          <h4>Active Students</h4>
+          <div class="stat-value"><%= stats.activeStudents %></div>
+          <p class="stat-label">Currently active</p>
+        </div>
+        <div class="stat-card">
+          <h4>Total Classes</h4>
+          <div class="stat-value"><%= stats.totalClasses %></div>
+          <p class="stat-label">Class divisions</p>
+        </div>
+        <div class="stat-card">
+          <h4>Total Subjects</h4>
+          <div class="stat-value"><%= stats.totalSubjects %></div>
+          <p class="stat-label">Subjects offered</p>
+        </div>
+        <div class="stat-card">
+          <h4>Attendance Records</h4>
+          <div class="stat-value"><%= stats.totalAttendance %></div>
+          <p class="stat-label">Total records</p>
+        </div>
+        <div class="stat-card">
+          <h4>Marks Recorded</h4>
+          <div class="stat-value"><%= stats.totalMarks %></div>
+          <p class="stat-label">Assessment entries</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

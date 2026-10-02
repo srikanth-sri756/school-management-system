@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/admin-head', { title: 'Add Marks' }) %>
+</head>
+<body class="app">
+  <%- include('../partials/navbar', { page: 'marks' }) %>
+
+  <main class="container container--narrow" id="main">
+    <div class="page-header">
+      <div>
+        <a href="/marks" class="back-link"><%- icon('arrow-left') %>Marks</a>
+        <h2>Add Marks</h2>
+        <p>Pick a class first to load its students.</p>
+      </div>
+    </div>
+
+    <form action="/marks/add" method="POST" class="card">
+      <div class="form-section">
+        <h3 class="form-section-title"><%- icon('users') %>Student</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="classId">Class</label>
+            <select id="classId" class="form-control" onchange="if (this.value) window.location.href = '/marks/add?classId=' + this.value">
+              <option value="">Choose a class</option>
+              <% classes.forEach(cls => { %>
+                <option value="<%= cls.id %>" <%= selectedClassId == cls.id ? 'selected' : '' %>><%= cls.name %> – <%= cls.section %></option>
+              <% }) %>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="studentId">Student <span class="req">*</span></label>
+            <select id="studentId" name="studentId" class="form-control" required>
+              <option value=""><%= students.length ? 'Select student' : 'Choose a class first' %></option>
+              <% students.forEach(student => { %>
+                <option value="<%= student.id %>"><%= student.firstName %> <%= student.lastName %> (Roll <%= student.rollNumber %>)</option>
+              <% }) %>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 class="form-section-title"><%- icon('notebook-pen') %>Assessment</h3>
+        <div class="form-row form-row--3">
+          <div class="form-group">
+            <label for="subjectId">Subject <span class="req">*</span></label>
+            <select id="subjectId" name="subjectId" class="form-control" required>
+              <option value="">Select subject</option>
+              <% subjects.forEach(subject => { %>
+                <option value="<%= subject.id %>"><%= subject.name %></option>
+              <% }) %>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="examType">Exam type <span class="req">*</span></label>
+            <select id="examType" name="examType" class="form-control" required>
+              <option value="">Select type</option>
+              <% ['Quiz', 'Unit Test', 'Mid-term', 'Final', 'Assignment'].forEach(t => { %>
+                <option value="<%= t %>"><%= t %></option>
+              <% }) %>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="examDate">Exam date <span class="req">*</span></label>
+            <input type="date" id="examDate" name="examDate" class="form-control" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="maxMarks">Maximum marks <span class="req">*</span></label>
+            <input type="number" id="maxMarks" name="maxMarks" class="form-control" required min="1" placeholder="e.g. 100">
+          </div>
+          <div class="form-group">
+            <label for="obtainedMarks">Marks obtained <span class="req">*</span></label>
+            <input type="number" id="obtainedMarks" name="obtainedMarks" class="form-control" required min="0">
+            <span class="form-hint" id="percentHint"></span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="remarks">Remarks</label>
+          <textarea id="remarks" name="remarks" class="form-control" rows="3" placeholder="Optional"></textarea>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary"><%- icon('check') %>Save Marks</button>
+        <a href="/marks" class="btn">Cancel</a>
+      </div>
+    </form>
+  </main>
+
+  <script>
+    (function () {
+      const max = document.getElementById('maxMarks');
+      const got = document.getElementById('obtainedMarks');
+      const hint = document.getElementById('percentHint');
+      const update = () => {
+        const m = parseFloat(max.value), g = parseFloat(got.value);
+        got.max = m > 0 ? m : '';
+        hint.textContent = m > 0 && g >= 0 ? `${((g / m) * 100).toFixed(1)}%` : '';
+      };
+      max.addEventListener('input', update);
+      got.addEventListener('input', update);
+    })();
+  </script>
+</body>
+</html>

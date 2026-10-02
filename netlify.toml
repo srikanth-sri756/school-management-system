@@ -1,0 +1,43 @@
+# Netlify Configuration
+# NOTE: This project is a Node.js backend server and CANNOT run on Netlify
+# Netlify can only host static files (HTML/CSS/JS)
+# 
+# This configuration serves a static landing page only.
+# Deploy the actual backend to Render/Railway instead.
+
+[build]
+  # No build command needed - we're serving static files only
+  command = "echo 'No build needed - serving static files'"
+  publish = "public"
+
+# Redirect all non-static routes to external server
+# Update this URL after deploying to Render
+[[redirects]]
+  from = "/api/*"
+  to = "https://your-app-name.onrender.com/api/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/auth/*"
+  to = "https://your-app-name.onrender.com/auth/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/student/*"
+  to = "https://your-app-name.onrender.com/student/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/teacher/*"
+  to = "https://your-app-name.onrender.com/teacher/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/admin/*"
+  to = "https://your-app-name.onrender.com/admin/:splat"
+  status = 200
+  force = true

@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fee Structure | Akansha Grammar High School</title>
+    <link rel="stylesheet" href="/css/modern.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8fafc;
+        }
+
+        .student-navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .navbar-brand .logo {
+            font-size: 2rem;
+        }
+
+        .navbar-brand h2 {
+            font-size: 1.25rem;
+        }
+
+        .navbar-menu {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .navbar-menu a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+
+        .navbar-menu a:hover,
+        .navbar-menu a.active {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
+        .navbar-user {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 600;
+        }
+
+        .user-id {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.5rem 1.25rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-logout:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .page-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .page-header {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .page-header h1 {
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .breadcrumb {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .student-info-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            color: white;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .student-info-card h2 {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .student-info-card p {
+            opacity: 0.95;
+            font-size: 1.05rem;
+        }
+
+        .fee-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 1.75rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid;
+        }
+
+        .summary-card.total {
+            border-left-color: #3b82f6;
+        }
+
+        .summary-card.paid {
+            border-left-color: #10b981;
+        }
+
+        .summary-card.pending {
+            border-left-color: #f59e0b;
+        }
+
+        .summary-label {
+            color: #64748b;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .summary-amount {
+            color: #1e293b;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .fee-breakdown {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            color: #1e293b;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .breakdown-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .breakdown-table th {
+            text-align: left;
+            padding: 1rem;
+            background: #f8fafc;
+            color: #64748b;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .breakdown-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            color: #1e293b;
+        }
+
+        .breakdown-table tr:hover {
+            background: #f8fafc;
+        }
+
+        .breakdown-table tr.total-row {
+            background: #f8fafc;
+            font-weight: bold;
+        }
+
+        .breakdown-table tr.total-row td {
+            border-top: 2px solid #e2e8f0;
+            padding-top: 1.25rem;
+            padding-bottom: 1.25rem;
+            font-size: 1.1rem;
+            color: #667eea;
+        }
+
+        .payment-status {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .progress-container {
+            margin: 1.5rem 0;
+        }
+
+        .progress-bar {
+            height: 30px;
+            background: #f1f5f9;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 1rem;
+            color: white;
+            font-weight: bold;
+            transition: width 0.5s ease;
+        }
+
+        .payment-history {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .payment-card {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #10b981;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .payment-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .payment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .payment-amount {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #10b981;
+        }
+
+        .payment-date {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .payment-method {
+            display: inline-block;
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .payment-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.75rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .payment-detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-label {
+            color: #64748b;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .detail-value {
+            color: #1e293b;
+            font-size: 0.95rem;
+        }
+
+        .no-payments {
+            text-align: center;
+            padding: 3rem;
+            color: #64748b;
+        }
+
+        .no-payments-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .notice-card {
+            background: #fef3c7;
+            border: 1px solid #fcd34d;
+            border-left: 4px solid #f59e0b;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .notice-icon {
+            font-size: 1.5rem;
+        }
+
+        .notice-content h3 {
+            color: #92400e;
+            margin-bottom: 0.5rem;
+        }
+
+        .notice-content p {
+            color: #78350f;
+            line-height: 1.6;
+        }
+
+        /* Installment Notifications */
+        .installment-notifications {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .notification-card {
+            display: flex;
+            gap: 1rem;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            border-left: 4px solid;
+        }
+
+        .notification-danger {
+            background: #fef2f2;
+            border-color: #ef4444;
+        }
+
+        .notification-warning {
+            background: #fef3c7;
+            border-color: #f59e0b;
+        }
+
+        .notification-info {
+            background: #eff6ff;
+            border-color: #3b82f6;
+        }
+
+        .notification-icon {
+            font-size: 1.5rem;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-content h3 {
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .notification-details {
+            margin-top: 0.75rem;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .notification-details p {
+            margin: 0.25rem 0;
+        }
+
+        .btn-pay-installment {
+            margin-top: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-pay-installment:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Make Payment Section */
+        .make-payment {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .payment-form-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .payment-form .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .payment-form label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .payment-form select,
+        .payment-form input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .payment-form select:focus,
+        .payment-form input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-help {
+            display: block;
+            margin-top: 0.25rem;
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn-submit,
+        .btn-reset {
+            flex: 1;
+            padding: 0.875rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-reset {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .btn-reset:hover {
+            background: #e2e8f0;
+        }
+
+        @media (max-width: 768px) {
+            .navbar-menu {
+                display: none;
+            }
+
+            .fee-summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .breakdown-table {
+                font-size: 0.9rem;
+            }
+
+            .breakdown-table th,
+            .breakdown-table td {
+                padding: 0.75rem 0.5rem;
+            }
+
+            .notification-card {
+                flex-direction: column;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="student-navbar">
+        <div class="navbar-content">
+            <div class="navbar-brand">
+                <div class="logo">🎓</div>
+                <h2>Akansha Grammar High School</h2>
+            </div>
+            <div class="navbar-menu">
+                <a href="/student/dashboard">Dashboard</a>
+                <a href="/student/marks">Marks</a>
+                <a href="/student/fees" class="active">Fees</a>
+                <a href="/student/notes">Notes</a>
+                <a href="/student/testpapers">Test Papers</a>
+                <a href="/student/profile">Profile</a>
+            </div>
+            <div class="navbar-user">
+                <div class="user-info">
+                    <div class="user-name"><%= student.firstName %> <%= student.lastName %></div>
+                    <div class="user-id"><%= student.studentId %></div>
+                </div>
+                <a href="/student/logout" class="btn-logout">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="page-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>💰 Fee Structure & Payment History</h1>
+            <div class="breadcrumb">
+                <a href="/student/dashboard">Dashboard</a> / Fees
+            </div>
+        </div>
+
+        <!-- Student Info Card -->
+        <div class="student-info-card">
+            <h2><%= student.firstName %> <%= student.lastName %></h2>
+            <p><%= student.class.name %> - Section <%= student.section %> | Roll No: <%= student.rollNumber %></p>
+            <p style="opacity: 0.9; margin-top: 0.5rem;">Student ID: <%= student.studentId %></p>
+        </div>
+
+        <!-- Pending Fee Notice -->
+        <% if (feeStructure.pending > 0) { %>
+        <div class="notice-card">
+            <div class="notice-icon">⚠️</div>
+            <div class="notice-content">
+                <h3>Payment Due</h3>
+                <p>You have a pending fee of ₹<%= feeStructure.pending.toLocaleString() %>. Please contact the administration office for payment details or visit the school office during working hours.</p>
+            </div>
+        </div>
+        <% } %>
+
+        <!-- Fee Summary Cards -->
+        <div class="fee-summary-grid">
+            <div class="summary-card total">
+                <div class="summary-label">
+                    <span>💳</span>
+                    Total Fee
+                </div>
+                <div class="summary-amount">₹<%= feeStructure.total.toLocaleString() %></div>
+            </div>
+
+            <div class="summary-card paid">
+                <div class="summary-label">
+                    <span>✅</span>
+                    Paid Amount
+                </div>
+                <div class="summary-amount">₹<%= feeStructure.paid.toLocaleString() %></div>
+            </div>
+
+            <div class="summary-card pending">
+                <div class="summary-label">
+                    <span>⏳</span>
+                    Pending Amount
+                </div>
+                <div class="summary-amount">₹<%= feeStructure.pending.toLocaleString() %></div>
+            </div>
+        </div>
+
+        <!-- Fee Breakdown -->
+        <div class="fee-breakdown">
+            <h2 class="section-title">📊 Fee Breakdown</h2>
+            <table class="breakdown-table">
+                <thead>
+                    <tr>
+                        <th>Fee Type</th>
+                        <th style="text-align: right;">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (feeStructure.tuitionFee > 0) { %>
+                    <tr>
+                        <td>Tuition Fee</td>
+                        <td style="text-align: right;">₹<%= feeStructure.tuitionFee.toLocaleString() %></td>
+                    </tr>
+                    <% } %>
+                    <% if (feeStructure.transportFee > 0) { %>
+                    <tr>
+                        <td>Transport Fee</td>
+                        <td style="text-align: right;">₹<%= feeStructure.transportFee.toLocaleString() %></td>
+                    </tr>
+                    <% } %>
+                    <% if (feeStructure.libraryFee > 0) { %>
+                    <tr>
+                        <td>Library Fee</td>
+                        <td style="text-align: right;">₹<%= feeStructure.libraryFee.toLocaleString() %></td>
+                    </tr>
+                    <% } %>
+                    <% if (feeStructure.labFee > 0) { %>
+                    <tr>
+                        <td>Laboratory Fee</td>
+                        <td style="text-align: right;">₹<%= feeStructure.labFee.toLocaleString() %></td>
+                    </tr>
+                    <% } %>
+                    <% if (feeStructure.sportsFee > 0) { %>
+                    <tr>
+                        <td>Sports Fee</td>
+                        <td style="text-align: right;">₹<%= feeStructure.sportsFee.toLocaleString() %></td>
+                    </tr>
+                    <% } %>
+                    <% if (feeStructure.otherFees > 0) { %>
+                    <tr>
+                        <td>Other Fees</td>
+                        <td style="text-align: right;">₹<%= feeStructure.otherFees.toLocaleString() %></td>
+                    </tr>
+                    <% } %>
+                    <tr class="total-row">
+                        <td>Total Fee</td>
+                        <td style="text-align: right;">₹<%= feeStructure.total.toLocaleString() %></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Payment Status Progress -->
+        <div class="payment-status">
+            <h2 class="section-title">📈 Payment Progress</h2>
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: <%= (feeStructure.paid / feeStructure.total * 100).toFixed(1) %>%">
+                        <%= (feeStructure.paid / feeStructure.total * 100).toFixed(1) %>%
+                    </div>
+                </div>
+                <p style="text-align: center; margin-top: 1rem; color: #64748b;">
+                    ₹<%= feeStructure.paid.toLocaleString() %> paid out of ₹<%= feeStructure.total.toLocaleString() %>
+                </p>
+            </div>
+        </div>
+
+        <!-- Installment Notifications -->
+        <% if (installmentNotifications && installmentNotifications.length > 0) { %>
+        <div class="installment-notifications">
+            <h2 class="section-title">🔔 Installment Reminders</h2>
+            <% installmentNotifications.forEach(notification => { %>
+            <div class="notification-card notification-<%= notification.type %>">
+                <div class="notification-icon">
+                    <% if (notification.type === 'danger') { %>⚠️
+                    <% } else if (notification.type === 'warning') { %>⏰
+                    <% } else { %>ℹ️<% } %>
+                </div>
+                <div class="notification-content">
+                    <h3><%= notification.message %></h3>
+                    <div class="notification-details">
+                        <p><strong>Amount:</strong> ₹<%= notification.amount.toLocaleString() %> 
+                        <% if (notification.paidAmount > 0) { %>
+                        (Paid: ₹<%= notification.paidAmount.toLocaleString() %>, Remaining: ₹<%= (notification.amount - notification.paidAmount).toLocaleString() %>)
+                        <% } %>
+                        </p>
+                        <p><strong>Due Date:</strong> <%= new Date(notification.dueDate).toLocaleDateString('en-US', { 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric' 
+                        }) %></p>
+                    </div>
+                    <button class="btn-pay-installment" 
+                            data-fee-id="<%= notification.feeId %>" 
+                            data-installment-id="<%= notification.installmentId %>"
+                            data-amount="<%= notification.amount - notification.paidAmount %>"
+                            data-term="<%= notification.feeTerm %>">
+                        Pay Installment
+                    </button>
+                </div>
+            </div>
+            <% }) %>
+        </div>
+        <% } %>
+
+        <!-- Make Payment Section -->
+        <% if (feeStructure.pending > 0 && fees && fees.length > 0) { %>
+        <div class="make-payment">
+            <h2 class="section-title">💳 Make Payment</h2>
+            
+            <div class="payment-form-container">
+                <form id="paymentForm" class="payment-form">
+                    <div class="form-group">
+                        <label for="feeSelect">Select Fee</label>
+                        <select id="feeSelect" name="feeId" required>
+                            <option value="">-- Select Fee --</option>
+                            <% fees.forEach(fee => { %>
+                                <% if (fee.amount - fee.paid > 0) { %>
+                                <option value="<%= fee._id %>" 
+                                        data-amount="<%= fee.amount %>" 
+                                        data-paid="<%= fee.paid %>"
+                                        data-has-installment="<%= fee.hasInstallmentPlan %>">
+                                    <%= fee.term %> - Pending: ₹<%= (fee.amount - fee.paid).toLocaleString() %>
+                                </option>
+                                <% } %>
+                            <% }) %>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="paymentType">Payment Type</label>
+                        <select id="paymentType" name="paymentType" required>
+                            <option value="full">Full Payment</option>
+                            <option value="installment" disabled>Installment Payment</option>
+                        </select>
+                    </div>
+
+                    <div id="installmentSection" style="display: none;">
+                        <div class="form-group">
+                            <label for="installmentSelect">Select Installment</label>
+                            <select id="installmentSelect" name="installmentId">
+                                <option value="">-- Select Installment --</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="amount">Amount (₹)</label>
+                        <input type="number" id="amount" name="amount" min="1" step="0.01" required>
+                        <small class="form-help">Maximum amount you can pay will be shown when you select a fee</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="paymentMethod">Payment Method</label>
+                        <select id="paymentMethod" name="paymentMethod" required>
+                            <option value="Online">Online Payment</option>
+                            <option value="Card">Card</option>
+                            <option value="Cash">Cash</option>
+                            <option value="Cheque">Cheque</option>
+                        </select>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-submit">Process Payment</button>
+                        <button type="reset" class="btn-reset">Reset</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <% } %>
+
+        <!-- Payment History -->
+        <div class="payment-history">
+            <h2 class="section-title">💳 Payment History</h2>
+            
+            <% if (feeStructure.payments && feeStructure.payments.length > 0) { %>
+                <% feeStructure.payments.forEach(payment => { %>
+                <div class="payment-card">
+                    <div class="payment-header">
+                        <div>
+                            <div class="payment-amount">₹<%= payment.amount.toLocaleString() %></div>
+                            <div class="payment-date">
+                                <%= new Date(payment.date).toLocaleDateString('en-US', { 
+                                    weekday: 'short', 
+                                    year: 'numeric', 
+                                    month: 'short', 
+                                    day: 'numeric' 
+                                }) %>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="payment-method"><%= payment.paymentMethod %></span>
+                        </div>
+                    </div>
+                    
+                    <div class="payment-details">
+                        <% if (payment.feeTerm) { %>
+                        <div class="payment-detail-item">
+                            <span class="detail-label">Fee Term</span>
+                            <span class="detail-value"><%= payment.feeTerm %></span>
+                        </div>
+                        <% } %>
+                        
+                        <% if (payment.transactionId) { %>
+                        <div class="payment-detail-item">
+                            <span class="detail-label">Transaction ID</span>
+                            <span class="detail-value"><%= payment.transactionId %></span>
+                        </div>
+                        <% } %>
+                        
+                        <% if (payment.receivedBy) { %>
+                        <div class="payment-detail-item">
+                            <span class="detail-label">Received By</span>
+                            <span class="detail-value"><%= payment.receivedBy %></span>
+                        </div>
+                        <% } %>
+                        
+                        <% if (payment.remarks) { %>
+                        <div class="payment-detail-item">
+                            <span class="detail-label">Remarks</span>
+                            <span class="detail-value"><%= payment.remarks %></span>
+                        </div>
+                        <% } %>
+                    </div>
+                </div>
+                <% }) %>
+            <% } else { %>
+                <div class="no-payments">
+                    <div class="no-payments-icon">📝</div>
+                    <p style="font-size: 1.1rem; margin-bottom: 0.5rem;">No Payment History</p>
+                    <p>No payments have been recorded yet.</p>
+                </div>
+            <% } %>
+        </div>
+    </div>
+
+    <script>
+        // Fee selection handling
+        const feeSelect = document.getElementById('feeSelect');
+        const paymentTypeSelect = document.getElementById('paymentType');
+        const installmentSection = document.getElementById('installmentSection');
+        const installmentSelect = document.getElementById('installmentSelect');
+        const amountInput = document.getElementById('amount');
+        const paymentForm = document.getElementById('paymentForm');
+
+        const feesData = <%- JSON.stringify(fees || []) %>;
+
+        // Handle fee selection
+        if (feeSelect) {
+            feeSelect.addEventListener('change', function() {
+                const selectedOption = this.options[this.selectedIndex];
+                const hasInstallment = selectedOption.dataset.hasInstallment === 'true';
+                const paid = parseFloat(selectedOption.dataset.paid || 0);
+                const total = parseFloat(selectedOption.dataset.amount || 0);
+                const pending = total - paid;
+
+                // Update amount input max value
+                amountInput.max = pending;
+                amountInput.value = pending;
+                amountInput.placeholder = `Max: ₹${pending.toFixed(2)}`;
+
+                // Enable/disable installment option
+                const installmentOption = paymentTypeSelect.querySelector('option[value="installment"]');
+                if (hasInstallment) {
+                    installmentOption.disabled = false;
+                    
+                    // Populate installments
+                    const selectedFee = feesData.find(f => f._id.toString() === this.value);
+                    if (selectedFee && selectedFee.installments) {
+                        installmentSelect.innerHTML = '<option value="">-- Select Installment --</option>';
+                        selectedFee.installments.forEach(inst => {
+                            if (inst.status !== 'Paid') {
+                                const remaining = inst.amount - inst.paidAmount;
+                                const option = document.createElement('option');
+                                option.value = inst._id;
+                                option.dataset.amount = remaining;
+                                option.textContent = `Installment ${inst.installmentNumber} - ₹${remaining.toLocaleString()} (Due: ${new Date(inst.dueDate).toLocaleDateString()})`;
+                                installmentSelect.appendChild(option);
+                            }
+                        });
+                    }
+                } else {
+                    installmentOption.disabled = true;
+                    paymentTypeSelect.value = 'full';
+                    installmentSection.style.display = 'none';
+                }
+            });
+        }
+
+        // Handle payment type selection
+        if (paymentTypeSelect) {
+            paymentTypeSelect.addEventListener('change', function() {
+                if (this.value === 'installment') {
+                    installmentSection.style.display = 'block';
+                } else {
+                    installmentSection.style.display = 'none';
+                    // Reset to full pending amount
+                    const selectedOption = feeSelect.options[feeSelect.selectedIndex];
+                    const paid = parseFloat(selectedOption.dataset.paid || 0);
+                    const total = parseFloat(selectedOption.dataset.amount || 0);
+                    amountInput.value = total - paid;
+                }
+            });
+        }
+
+        // Handle installment selection
+        if (installmentSelect) {
+            installmentSelect.addEventListener('change', function() {
+                const selectedOption = this.options[this.selectedIndex];
+                const installmentAmount = parseFloat(selectedOption.dataset.amount || 0);
+                amountInput.value = installmentAmount;
+                amountInput.max = installmentAmount;
+            });
+        }
+
+        // Handle installment pay buttons
+        const payInstallmentBtns = document.querySelectorAll('.btn-pay-installment');
+        payInstallmentBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const feeId = this.dataset.feeId;
+                const installmentId = this.dataset.installmentId;
+                const amount = parseFloat(this.dataset.amount);
+                const term = this.dataset.term;
+
+                // Pre-fill the form
+                feeSelect.value = feeId;
+                feeSelect.dispatchEvent(new Event('change'));
+                
+                setTimeout(() => {
+                    paymentTypeSelect.value = 'installment';
+                    paymentTypeSelect.dispatchEvent(new Event('change'));
+                    
+                    setTimeout(() => {
+                        installmentSelect.value = installmentId;
+                        installmentSelect.dispatchEvent(new Event('change'));
+                        
+                        // Scroll to form
+                        document.querySelector('.make-payment').scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                }, 100);
+            });
+        });
+
+        // Handle form submission
+        if (paymentForm) {
+            paymentForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const formData = new FormData(this);
+                const data = Object.fromEntries(formData.entries());
+
+                try {
+                    const response = await fetch('/student/fees/pay', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        alert('Payment processed successfully!\\n\\n' +
+                              `Total: ₹${result.fee.total.toLocaleString()}\\n` +
+                              `Paid: ₹${result.fee.paid.toLocaleString()}\\n` +
+                              `Pending: ₹${result.fee.pending.toLocaleString()}\\n` +
+                              `Status: ${result.fee.status}`);
+                        window.location.reload();
+                    } else {
+                        alert('Error: ' + result.message);
+                    }
+                } catch (error) {
+                    console.error('Payment error:', error);
+                    alert('Failed to process payment. Please try again.');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

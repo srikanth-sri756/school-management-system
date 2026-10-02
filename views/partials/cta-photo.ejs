@@ -1,0 +1,12 @@
+<%# Full-bleed call to action over a photo. Pass ctaPhoto, ctaLabels (array), ctaTitle, ctaText, ctaHref, ctaButton. %>
+<section class="cta-photo">
+  <div class="photo photo--even"><%- photo(ctaPhoto, { decorative: true }) %></div>
+  <div class="on-photo container" data-reveal>
+    <span class="label label--light rotator" data-rotate>
+      <% ctaLabels.forEach(word => { %><span><%= word %></span><% }) %>
+    </span>
+    <h2 class="display display-xl"><%- ctaTitle %></h2>
+    <p class="lede"><%= ctaText %></p>
+    <div class="pills"><a href="<%= ctaHref %>" class="pill pill--light"><%= ctaButton %></a></div>
+  </div>
+</section>

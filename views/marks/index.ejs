@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/admin-head', { title: 'Marks' }) %>
+</head>
+<body class="app">
+  <%- include('../partials/navbar', { page: 'marks' }) %>
+
+  <main class="container" id="main">
+    <div class="page-header">
+      <div>
+        <h2>Marks</h2>
+        <p>The most recently recorded assessment results.</p>
+      </div>
+      <div class="page-actions">
+        <a href="/marks/report" class="btn"><%- icon('chart-column') %>Full Report</a>
+        <a href="/marks/add" class="btn btn-primary"><%- icon('plus') %>Add Marks</a>
+      </div>
+    </div>
+
+    <section class="card card--flush">
+      <div class="card-header"><h3><%- icon('notebook-pen') %>Recent Marks</h3></div>
+      <% if (marks.length) { %>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr><th>Student</th><th>Subject</th><th>Exam</th><th class="num">Marks</th><th class="num">%</th><th>Grade</th><th>Date</th></tr>
+            </thead>
+            <tbody>
+              <% marks.forEach(mark => { const s = mark.student; %>
+                <tr>
+                  <td>
+                    <span class="cell-strong"><%= s ? s.firstName + ' ' + s.lastName : 'Unknown' %></span>
+                    <span class="cell-sub">Roll <%= s ? s.rollNumber : '—' %></span>
+                  </td>
+                  <td><%= mark.subject ? mark.subject.name : '—' %></td>
+                  <td><%= mark.examType %></td>
+                  <td class="num"><%= mark.obtainedMarks %> / <%= mark.maxMarks %></td>
+                  <td class="num"><%= mark.percentage %>%</td>
+                  <td><%- gradeBadge(mark.grade) %></td>
+                  <td><%= mark.date ? new Date(mark.date).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : (mark.examDate || '—') %></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } else { %>
+        <div class="empty-state">
+          <span class="stat-icon"><%- icon('notebook-pen') %></span>
+          <strong>No marks recorded yet</strong>
+          <p>Enter exam and assessment results to see them here.</p>
+          <a href="/marks/add" class="btn btn-primary"><%- icon('plus') %>Add Marks</a>
+        </div>
+      <% } %>
+    </section>
+  </main>
+</body>
+</html>

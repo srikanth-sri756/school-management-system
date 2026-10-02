@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Students - School Management System</title>
+  <link rel="stylesheet" href="/css/modern.css">
+</head>
+<body>
+  <%- include('../partials/navbar') %>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="page-header">
+      <h2>Student Management</h2>
+      <div>
+        <a href="/students/export" class="btn btn-success" style="margin-right: 10px;">📥 Export to Excel</a>
+        <a href="/students/add" class="btn btn-primary">+ Add Student</a>
+      </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="card" style="margin-bottom: 1.5rem;">
+      <h3 style="margin-bottom: 1rem; font-size: 1.1rem;">🔍 Filter Students</h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; align-items: end;">
+        <div class="form-group" style="margin-bottom: 0;">
+          <label for="filterName" style="font-size: 0.85rem;">Name</label>
+          <input type="text" id="filterName" class="form-control" placeholder="Search by name..." style="padding: 0.6rem 0.8rem; font-size: 0.9rem;">
+        </div>
+        <div class="form-group" style="margin-bottom: 0;">
+          <label for="filterClass" style="font-size: 0.85rem;">Class</label>
+          <select id="filterClass" class="form-control" style="padding: 0.6rem 0.8rem; font-size: 0.9rem;">
+            <option value="">All Classes</option>
+            <% classes.forEach(cls => { %>
+              <option value="<%= cls.name %>"><%= cls.name %> - <%= cls.section %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom: 0;">
+          <label for="filterStatus" style="font-size: 0.85rem;">Status</label>
+          <select id="filterStatus" class="form-control" style="padding: 0.6rem 0.8rem; font-size: 0.9rem;">
+            <option value="">All Status</option>
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom: 0;">
+          <label for="filterRoll" style="font-size: 0.85rem;">Roll Number</label>
+          <input type="text" id="filterRoll" class="form-control" placeholder="Search roll no..." style="padding: 0.6rem 0.8rem; font-size: 0.9rem;">
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <button onclick="clearFilters()" class="btn btn-secondary btn-sm" style="padding: 0.6rem 1rem; font-size: 0.85rem;">Clear</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Students Table -->
+    <div class="card">
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Student ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Class</th>
+              <th>Roll No</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (students.length > 0) { %>
+              <% students.forEach(student => { %>
+                <tr>
+                  <td><%= student.studentId %></td>
+                  <td><%= student.firstName %> <%= student.lastName %></td>
+                  <td><%= student.email || 'N/A' %></td>
+                  <td><%= student.class ? student.class.name + ' - ' + student.class.section : 'N/A' %></td>
+                  <td><%= student.rollNumber %></td>
+                  <td>
+                    <span class="badge <%= student.status === 'Active' ? 'badge-success' : 'badge-danger' %>">
+                      <%= student.status %>
+                    </span>
+                  </td>
+                  <td>
+                    <div class="flex gap-1">
+                      <a href="/students/<%= student._id %>" class="btn btn-primary btn-sm">View</a>
+                      <a href="/students/<%= student._id %>/edit" class="btn btn-secondary btn-sm">Edit</a>
+                    </div>
+                  </td>
+                </tr>
+              <% }); %>
+            <% } else { %>
+              <tr>
+                <td colspan="7" class="text-center">No students found</td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Filter functionality
+    const filterName = document.getElementById('filterName');
+    const filterClass = document.getElementById('filterClass');
+    const filterStatus = document.getElementById('filterStatus');
+    const filterRoll = document.getElementById('filterRoll');
+    const tableRows = document.querySelectorAll('tbody tr');
+
+    function applyFilters() {
+      const nameValue = filterName.value.toLowerCase();
+      const classValue = filterClass.value.toLowerCase();
+      const statusValue = filterStatus.value.toLowerCase();
+      const rollValue = filterRoll.value.toLowerCase();
+
+      tableRows.forEach(row => {
+        if (row.cells.length === 1) return; // Skip "no students found" row
+
+        const name = row.cells[1].textContent.toLowerCase();
+        const studentClass = row.cells[3].textContent.toLowerCase();
+        const status = row.cells[5].textContent.trim().toLowerCase();
+        const roll = row.cells[4].textContent.toLowerCase();
+
+        const nameMatch = name.includes(nameValue);
+        const classMatch = !classValue || studentClass.includes(classValue);
+        const statusMatch = !statusValue || status.includes(statusValue);
+        const rollMatch = roll.includes(rollValue);
+
+        if (nameMatch && classMatch && statusMatch && rollMatch) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+
+      updateResultCount();
+    }
+
+    function updateResultCount() {
+      const visibleRows = Array.from(tableRows).filter(row => row.style.display !== 'none' && row.cells.length > 1);
+      const total = tableRows.length - (tableRows[tableRows.length - 1].cells.length === 1 ? 1 : 0);
+      
+      // Show count if filters are active
+      if (filterName.value || filterClass.value || filterStatus.value || filterRoll.value) {
+        console.log(`Showing ${visibleRows.length} of ${total} students`);
+      }
+    }
+
+    function clearFilters() {
+      filterName.value = '';
+      filterClass.value = '';
+      filterStatus.value = '';
+      filterRoll.value = '';
+      applyFilters();
+    }
+
+    // Add event listeners
+    filterName.addEventListener('input', applyFilters);
+    filterClass.addEventListener('change', applyFilters);
+    filterStatus.addEventListener('change', applyFilters);
+    filterRoll.addEventListener('input', applyFilters);
+  </script>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

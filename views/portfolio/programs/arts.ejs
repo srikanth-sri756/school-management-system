@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../../partials/public-head', { title: 'Arts & Culture', description: 'Arts & Culture at Akansha Grammar High School - Nurturing creativity through music, dance, drama, and visual arts' }) %>
+</head>
+<body class="site program-page">
+    <%- include('../../partials/public-navbar') %>
+
+    <main id="main">
+    <%- include('../../partials/page-hero', {
+      heroPhoto: 'program-arts',
+      heroCrumbs: [{ href: '/', label: 'Home' }, { href: '/portfolio/academics', label: 'Academics' }, { label: 'Arts & Culture' }],
+      heroTitle: 'Arts &amp;<br>Culture',
+      heroText: 'Nurturing creativity through music, dance, drama, and visual arts'
+    }) %>
+
+    <div class="program-content program-body">
+        <section>
+            <h2>Overview</h2>
+            <p>Our Arts & Culture program celebrates creativity and cultural diversity, providing students with opportunities to explore and develop their artistic talents. From traditional Indian arts to contemporary expressions, we foster an environment where imagination flourishes and students discover their unique creative voices.</p>
+        </section>
+
+        <div class="stats-container">
+            <div class="stat-box">
+                <div class="stat-number">8</div>
+                <div class="stat-label">Art Disciplines</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">15+</div>
+                <div class="stat-label">Professional Artists/Instructors</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">30+</div>
+                <div class="stat-label">Annual Performances</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">100+</div>
+                <div class="stat-label">Awards Won</div>
+            </div>
+        </div>
+
+        <section>
+            <h2>Programs Offered</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><%- icon('music') %></div>
+                    <h3>Music Program</h3>
+                    <p><strong>Vocal Music:</strong> Indian classical (Hindustani & Carnatic), Western classical, contemporary, devotional</p>
+                    <p><strong>Instrumental:</strong> Piano, guitar, violin, tabla, flute, drums, keyboards, harmonium</p>
+                    <p>Individual lessons, group sessions, choir, orchestra, and band opportunities</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><%- icon('sparkles') %></div>
+                    <h3>Dance Academy</h3>
+                    <p><strong>Classical Dance:</strong> Bharatanatyam, Kathak, Odissi, Kuchipudi</p>
+                    <p><strong>Contemporary:</strong> Western dance, hip-hop, jazz, ballet</p>
+                    <p><strong>Folk Dance:</strong> Various Indian regional folk dances</p>
+                    <p>Regular performances and inter-school competitions</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><%- icon('drama') %></div>
+                    <h3>Drama & Theatre</h3>
+                    <p>Acting workshops, script writing, stage direction, set design, lighting, and sound production</p>
+                    <p>Annual school plays, street plays, mono-acting, mime, and improvisation</p>
+                    <p>Participation in inter-school theatre festivals</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><%- icon('palette') %></div>
+                    <h3>Visual Arts</h3>
+                    <p><strong>Drawing & Painting:</strong> Sketching, oil painting, watercolor, acrylics, charcoal</p>
+                    <p><strong>Crafts:</strong> Clay modeling, pottery, origami, paper craft, rangoli</p>
+                    <p><strong>Digital Arts:</strong> Graphic design, digital painting, animation</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><%- icon('camera') %></div>
+                    <h3>Photography & Film</h3>
+                    <p>Photography basics, composition, lighting, and editing</p>
+                    <p>Filmmaking, videography, documentary production</p>
+                    <p>School magazine, yearbook, and video production club</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><%- icon('pen-line') %></div>
+                    <h3>Creative Writing</h3>
+                    <p>Poetry, short stories, essays, creative non-fiction</p>
+                    <p>Literary magazine, writing competitions, poetry slams</p>
+                    <p>Workshops with published authors and poets</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><%- icon('mic') %></div>
+                    <h3>Public Speaking & Debate</h3>
+                    <p>Debate club, MUN (Model United Nations), elocution</p>
+                    <p>Public speaking workshops, storytelling sessions</p>
+                    <p>Regular inter-school competitions</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><%- icon('globe') %></div>
+                    <h3>Cultural Studies</h3>
+                    <p>Indian culture and heritage, world cultures</p>
+                    <p>Cultural exchange programs, heritage walks</p>
+                    <p>Celebration of festivals from various cultures</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel">
+            <h2>Age-wise Programs</h2>
+            <div class="feature-grid">
+                <div class="level-item">
+                    <h4>Primary Level (Nursery-5)</h4>
+                    <ul>
+                        <li>Introduction to all art forms</li>
+                        <li>Basic drawing and coloring</li>
+                        <li>Simple craft projects</li>
+                        <li>Nursery rhymes and action songs</li>
+                        <li>Movement and creative expression</li>
+                        <li>Storytelling and puppet shows</li>
+                        <li>Annual day performances</li>
+                    </ul>
+                </div>
+                <div class="level-item">
+                    <h4>Middle Level (6-8)</h4>
+                    <ul>
+                        <li>Specialized training in chosen art forms</li>
+                        <li>Music theory and instrumental training</li>
+                        <li>Classical and contemporary dance</li>
+                        <li>Drama and role-playing</li>
+                        <li>Advanced art techniques</li>
+                        <li>Inter-house cultural competitions</li>
+                        <li>School choir and orchestra</li>
+                    </ul>
+                </div>
+                <div class="level-item">
+                    <h4>High School (9-10)</h4>
+                    <ul>
+                        <li>Advanced training and mastery</li>
+                        <li>Portfolio development</li>
+                        <li>Professional performances</li>
+                        <li>Leadership in cultural clubs</li>
+                        <li>Organizing cultural events</li>
+                        <li>Mentoring junior students</li>
+                        <li>Participation in state/national competitions</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>World-Class Facilities</h2>
+            <ul class="check-list check-list--cols">
+                <li>500-seat auditorium with professional sound and lighting</li>
+                <li>Music rooms with acoustic treatment</li>
+                <li>Individual practice rooms</li>
+                <li>Dance studios with mirrors and barres</li>
+                <li>Drama rehearsal spaces</li>
+                <li>Art studios with natural lighting</li>
+                <li>Pottery and ceramics lab</li>
+                <li>Digital art lab with graphic tablets</li>
+                <li>Photography darkroom and digital studio</li>
+                <li>Video production studio</li>
+                <li>Costume and prop rooms</li>
+                <li>Musical instruments library</li>
+                <li>Art supplies and materials store</li>
+                <li>Exhibition and gallery space</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Expert Faculty</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>Professional Musicians</h4>
+                    <p>Trained in classical and contemporary music from prestigious institutions. Many are performing artists and award winners.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Certified Dance Instructors</h4>
+                    <p>Expert dancers with degrees in Bharatanatyam, Kathak, and contemporary dance. Former stage performers and choreographers.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Professional Artists</h4>
+                    <p>Graduate artists from prestigious art schools. Practicing painters, sculptors, and digital artists with exhibitions and awards.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Theatre Professionals</h4>
+                    <p>Experienced theatre directors and actors from national theatre groups. Expertise in stagecraft and production.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel">
+            <h2>Events & Performances</h2>
+            <div class="info-grid">
+                <div>
+                    <h4>Annual Events</h4>
+                    <ul>
+                        <li>Annual Day Celebration</li>
+                        <li>Cultural Fest (Virasat)</li>
+                        <li>Art Exhibition Week</li>
+                        <li>Music Concert Series</li>
+                        <li>Dance Festivals</li>
+                        <li>Theatre Productions</li>
+                        <li>Literary Week</li>
+                        <li>Film Festival</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Competitions</h4>
+                    <ul>
+                        <li>Inter-house cultural competitions</li>
+                        <li>Inter-school arts festivals</li>
+                        <li>State-level music competitions</li>
+                        <li>National dance championships</li>
+                        <li>Art competitions and exhibitions</li>
+                        <li>Drama festivals</li>
+                        <li>Photography contests</li>
+                        <li>Creative writing competitions</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Special Programs</h4>
+                    <ul>
+                        <li>Master classes by renowned artists</li>
+                        <li>Guest performances</li>
+                        <li>Field trips to museums and galleries</li>
+                        <li>Theatre visits</li>
+                        <li>Cultural exchange programs</li>
+                        <li>Summer arts camps</li>
+                        <li>Community performances</li>
+                        <li>Charity shows</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Achievements & Recognition</h2>
+            <ul class="check-list check-list--cols">
+                <li>Best Cultural School Award (District Level - 2023)</li>
+                <li>15+ first prizes in inter-school competitions</li>
+                <li>Students selected for state music and dance teams</li>
+                <li>Art students won national level competitions</li>
+                <li>School band performed at state events</li>
+                <li>Theatre productions toured to other schools</li>
+                <li>Students' artworks exhibited in galleries</li>
+                <li>Published authors and poets among students</li>
+                <li>Music students cleared grade exams with distinction</li>
+                <li>Dance troupe won state championships</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Cultural Clubs & Societies</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>Music Club</h4>
+                    <p>Weekly jam sessions, choir practice, instrumental ensembles, and performance opportunities</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Dance Society</h4>
+                    <p>Regular practice sessions, choreography workshops, and participation in competitions</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Drama Club</h4>
+                    <p>Weekly rehearsals, script readings, improvisation games, and theatre productions</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Art Society</h4>
+                    <p>Art projects, workshops, exhibitions, and collaborative installations</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Literary Club</h4>
+                    <p>Creative writing, poetry slams, book discussions, and publishing school magazine</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Photography Club</h4>
+                    <p>Photo walks, editing workshops, exhibitions, and school yearbook production</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Benefits of Arts Education</h2>
+            <p>Research shows that arts education enhances:</p>
+            <ul class="check-list check-list--cols">
+                <li>Creative thinking and problem-solving skills</li>
+                <li>Self-expression and confidence</li>
+                <li>Cultural awareness and appreciation</li>
+                <li>Emotional intelligence and empathy</li>
+                <li>Discipline and dedication</li>
+                <li>Teamwork and collaboration</li>
+                <li>Academic performance in other subjects</li>
+                <li>Communication skills</li>
+                <li>Stress reduction and mental well-being</li>
+                <li>Career opportunities in creative fields</li>
+            </ul>
+        </section>
+
+        <section class="program-cta">
+            <h2>Discover Your Creative Potential</h2>
+            <p>Join our vibrant arts community and express yourself through creativity!</p>
+            <div class="hero-actions">
+                <a href="/portfolio/contact" class="pill pill--light">Contact Us <%- icon('arrow-right') %></a>
+                <a href="/portfolio/admissions" class="pill pill--dark">Admissions</a>
+            </div>
+        </section>
+    </div>
+    </main>
+
+
+    <%- include('../../partials/footer') %>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<%#
+  Full-bleed page hero. Pass:
+    heroTitle (required), heroText, heroPhoto (config/images.js key, omit for a plain black hero),
+    heroCrumbs: [{ href, label }] ending with the current page label.
+%>
+<section class="page-hero<%= typeof heroPhoto === 'undefined' || !heroPhoto ? ' page-hero--plain' : '' %>">
+  <% if (typeof heroPhoto !== 'undefined' && heroPhoto) { %>
+    <div class="photo photo--even"><%- photo(heroPhoto, { eager: true, decorative: true }) %></div>
+  <% } %>
+  <div class="on-photo container">
+    <% if (typeof heroCrumbs !== 'undefined' && heroCrumbs.length) { %>
+      <ol class="crumbs label label--light" aria-label="Breadcrumb">
+        <% heroCrumbs.forEach((crumb, i) => { %>
+          <li><% if (crumb.href) { %><a href="<%= crumb.href %>"><%= crumb.label %></a><% } else { %><span aria-current="page"><%= crumb.label %></span><% } %></li>
+        <% }) %>
+      </ol>
+    <% } %>
+    <h1 class="display display-xl"><%- heroTitle %></h1>
+    <% if (typeof heroText !== 'undefined' && heroText) { %><p class="lede"><%= heroText %></p><% } %>
+  </div>
+</section>

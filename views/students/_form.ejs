@@ -1,0 +1,125 @@
+<%# Student form fields shared by students/add and students/edit.
+    Pass { s: the student (edit), the submitted values (add, after a validation error) or null }. %>
+<% const v = s || {}; const isEdit = !!(s && s._id); const canEditPhoto = typeof user !== 'undefined' && user && user.role === 'admin'; %>
+<% if (canEditPhoto) { %>
+<div class="form-section">
+  <h3 class="form-section-title"><%- icon('camera') %>Photo</h3>
+  <div class="photo-field">
+    <span class="photo-preview" data-photo-preview>
+      <% if (isEdit) { %><%- avatar('student', v, 'avatar--xl') %><% } else { %><span class="avatar avatar--xl"><%- icon('camera') %></span><% } %>
+    </span>
+    <div class="photo-field-body">
+      <label for="photo" class="field-label"><%= isEdit && v.photo && v.photo.filename ? 'Replace photo' : 'Upload a photo' %></label>
+      <input type="file" id="photo" name="photo" class="form-control" accept="image/jpeg,image/png,image/webp" data-photo-input>
+      <span class="form-hint">JPG, PNG or WebP, up to 5 MB. Only administrators can add or change photos.</span>
+      <% if (isEdit && v.photo && v.photo.filename) { %>
+        <label class="check mt-2"><input type="checkbox" name="removePhoto" value="yes"> Remove the current photo</label>
+      <% } %>
+    </div>
+  </div>
+</div>
+<% } %>
+<div class="form-section">
+  <h3 class="form-section-title"><%- icon('user-round') %>Personal information</h3>
+  <div class="form-row">
+    <div class="form-group">
+      <label for="firstName">First name <span class="req">*</span></label>
+      <input type="text" id="firstName" name="firstName" class="form-control" value="<%= v.firstName || '' %>" required>
+    </div>
+    <div class="form-group">
+      <label for="lastName">Last name <span class="req">*</span></label>
+      <input type="text" id="lastName" name="lastName" class="form-control" value="<%= v.lastName || '' %>" required>
+    </div>
+  </div>
+  <div class="form-row form-row--3">
+    <div class="form-group">
+      <label for="dateOfBirth">Date of birth <span class="req">*</span></label>
+      <input type="date" id="dateOfBirth" name="dateOfBirth" class="form-control" value="<%= v.dateOfBirth || '' %>" required>
+    </div>
+    <div class="form-group">
+      <label for="gender">Gender <span class="req">*</span></label>
+      <select id="gender" name="gender" class="form-control" required>
+        <option value="">Select gender</option>
+        <% ['Male', 'Female', 'Other'].forEach(g => { %>
+          <option value="<%= g %>" <%= v.gender === g ? 'selected' : '' %>><%= g %></option>
+        <% }) %>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" class="form-control" value="<%= v.email || '' %>" placeholder="Optional">
+    </div>
+  </div>
+</div>
+
+<div class="form-section">
+  <h3 class="form-section-title"><%- icon('graduation-cap') %>Academic information</h3>
+  <%# The section comes from the class record, which is the one attendance and marks use %>
+  <%- include('../partials/class-section-fields', {
+        grade: v.class ? v.class.name : '',
+        section: v.class ? v.class.section : '',
+        required: true
+      }) %>
+  <div class="form-row<%= isEdit ? ' form-row--3' : '' %>">
+    <div class="form-group">
+      <label for="rollNumber">Roll number <span class="req">*</span></label>
+      <input type="text" id="rollNumber" name="rollNumber" class="form-control" value="<%= v.rollNumber || '' %>" required>
+    </div>
+    <div class="form-group">
+      <label for="admissionDate">Admission date <span class="req">*</span></label>
+      <input type="date" id="admissionDate" name="admissionDate" class="form-control" value="<%= v.admissionDate || '' %>" required>
+    </div>
+    <% if (isEdit) { %>
+      <div class="form-group">
+        <label for="status">Status <span class="req">*</span></label>
+        <select id="status" name="status" class="form-control" required>
+          <option value="Active" <%= v.status === 'Active' ? 'selected' : '' %>>Active</option>
+          <option value="Inactive" <%= v.status === 'Inactive' ? 'selected' : '' %>>Inactive</option>
+        </select>
+      </div>
+    <% } %>
+  </div>
+  <span class="field-label">Admission type</span>
+  <div class="choice-list choice-list--2">
+    <label class="choice">
+      <input type="radio" name="isTransfer" value="no" <%= v.isTransfer ? '' : 'checked' %> data-transfer-toggle>
+      <div><strong>New admission</strong><span>Starting school with us.</span></div>
+    </label>
+    <label class="choice">
+      <input type="radio" name="isTransfer" value="yes" <%= v.isTransfer ? 'checked' : '' %> data-transfer-toggle>
+      <div><strong>Transfer</strong><span>Joining from another school — a transfer certificate is required.</span></div>
+    </label>
+  </div>
+  <div class="form-group" data-transfer-only<%= v.isTransfer ? '' : ' hidden' %>>
+    <label for="previousSchool">Previous school <span class="req">*</span></label>
+    <input type="text" id="previousSchool" name="previousSchool" class="form-control" value="<%= v.previousSchool || '' %>" maxlength="150" placeholder="School name and town" <%= v.isTransfer ? 'required' : '' %> data-transfer-required>
+  </div>
+</div>
+<% if (canEditPhoto) { %>
+<div class="form-section" id="documents">
+  <h3 class="form-section-title"><%- icon('file-check') %>Admission documents</h3>
+  <%- include('../partials/document-fields', { kind: 'student', person: v, isEdit }) %>
+</div>
+<% } %>
+
+<div class="form-section">
+  <h3 class="form-section-title"><%- icon('users') %>Parent / guardian</h3>
+  <div class="form-row form-row--3">
+    <div class="form-group">
+      <label for="parentName">Name <span class="req">*</span></label>
+      <input type="text" id="parentName" name="parentName" class="form-control" value="<%= v.parentName || '' %>" required>
+    </div>
+    <div class="form-group">
+      <label for="parentPhone">Phone <span class="req">*</span></label>
+      <input type="tel" id="parentPhone" name="parentPhone" class="form-control" value="<%= v.parentPhone || '' %>" required>
+    </div>
+    <div class="form-group">
+      <label for="parentEmail">Email</label>
+      <input type="email" id="parentEmail" name="parentEmail" class="form-control" value="<%= v.parentEmail || '' %>" placeholder="Optional">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="address">Address</label>
+    <textarea id="address" name="address" class="form-control" rows="3"><%= v.address || '' %></textarea>
+  </div>
+</div>

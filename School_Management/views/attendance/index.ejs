@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attendance - School Management System</title>
+  <link rel="stylesheet" href="/css/modern.css">
+</head>
+<body>
+  <%- include('../partials/navbar') %>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="page-header">
+      <h2>Attendance Management</h2>
+      <div class="flex gap-2">
+        <a href="/attendance/mark" class="btn btn-primary">Mark Attendance</a>
+        <a href="/attendance/report" class="btn btn-secondary">View Report</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="mb-3">Today's Attendance Summary</h3>
+      <p>Date: <%= selectedDate %></p>
+      <p>Total Records: <%= todayAttendance.length %></p>
+      <% if (todayAttendance.length > 0) { %>
+        <p>Present: <%= todayAttendance.filter(a => a.status === 'Present').length %></p>
+        <p>Absent: <%= todayAttendance.filter(a => a.status === 'Absent').length %></p>
+        <p>Late: <%= todayAttendance.filter(a => a.status === 'Late').length %></p>
+      <% } else { %>
+        <p class="mt-2">No attendance marked for today yet.</p>
+      <% } %>
+    </div>
+
+    <% if (todayAttendance.length > 0) { %>
+    <div class="card mt-3">
+      <h3 class="mb-3">Today's Attendance Records</h3>
+      <div class="table-container">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Student</th>
+              <th>Class</th>
+              <th>Roll Number</th>
+              <th>Status</th>
+              <th>Time</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% todayAttendance.forEach(record => { %>
+              <tr>
+                <td><%= record.student ? record.student.firstName + ' ' + record.student.lastName : 'N/A' %></td>
+                <td><%= record.student && record.student.class ? record.student.class.name : 'N/A' %></td>
+                <td><%= record.student ? record.student.rollNumber : 'N/A' %></td>
+                <td>
+                  <span style="padding: 4px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; 
+                    background-color: <%= record.status === 'Present' ? '#d1fae5' : (record.status === 'Late' ? '#fef3c7' : '#fee2e2') %>; 
+                    color: <%= record.status === 'Present' ? '#10b981' : (record.status === 'Late' ? '#f59e0b' : '#dc2626') %>;">
+                    <%= record.status %>
+                  </span>
+                </td>
+                <td><%= new Date(record.date).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) %></td>
+                <td>
+                  <a href="/attendance/edit/<%= record._id %>" class="btn btn-sm btn-secondary">Edit</a>
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <% } %>
+  </div>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

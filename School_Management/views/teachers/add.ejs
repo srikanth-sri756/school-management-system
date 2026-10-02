@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Teacher - School Management System</title>
+  <link rel="stylesheet" href="/css/modern.css">
+</head>
+<body>
+  <%- include('../partials/navbar') %>
+
+<div class="container">
+  <div class="page-header"><h2>Add Teacher</h2></div>
+  <div class="card">
+  <form method="POST" action="/teachers/add">
+    <h3 class="mb-3">Personal Information</h3>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Name: *</label>
+        <input type="text" name="name" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label>Email: *</label>
+        <input type="email" name="email" class="form-control" required>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Phone:</label>
+        <input type="text" name="phone" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>Salary:</label>
+        <input type="number" name="salary" class="form-control">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Address:</label>
+      <textarea name="address" class="form-control" rows="2"></textarea>
+    </div>
+
+    <h3 class="mb-3 mt-3">Academic Assignment</h3>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Subject:</label>
+        <select name="subject" class="form-control">
+          <option value="">Select Subject</option>
+          <% subjects.forEach(sub => { %>
+            <option value="<%= sub._id %>"><%= sub.name %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Is Class Teacher?</label>
+        <select name="isClassTeacher" id="isClassTeacher" class="form-control" onchange="toggleClassSection()">
+          <option value="no">No</option>
+          <option value="yes">Yes</option>
+        </select>
+      </div>
+    </div>
+    
+    <div id="classSection" style="display: none;">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Assigned Class: *</label>
+          <select name="class" id="classSelect" class="form-control">
+            <option value="">Select Class</option>
+            <% classes.forEach(cls => { %>
+              <option value="<%= cls._id %>"><%= cls.name %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Assigned Section: *</label>
+          <select name="section" id="sectionSelect" class="form-control">
+            <option value="">Select Section</option>
+            <option value="A">Section A</option>
+            <option value="B">Section B</option>
+            <option value="C">Section C</option>
+            <option value="D">Section D</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="mb-3 mt-3">Login Credentials</h3>
+    <div class="form-group">
+      <label>Create Login Access?</label>
+      <select name="createLogin" id="createLogin" class="form-control" onchange="toggleLoginFields()">
+        <option value="no">No</option>
+        <option value="yes">Yes</option>
+      </select>
+    </div>
+    
+    <div id="loginFields" style="display: none;">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Username: *</label>
+          <input type="text" name="username" id="username" class="form-control" placeholder="Enter username for login">
+        </div>
+        <div class="form-group">
+          <label>Password: *</label>
+          <input type="password" name="password" id="password" class="form-control" placeholder="Enter password (min 6 chars)">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Confirm Password: *</label>
+        <input type="password" name="confirmPassword" id="confirmPassword" class="form-control" placeholder="Re-enter password">
+      </div>
+    </div>
+    
+    <div class="flex gap-2 mt-3">
+      <button type="submit" class="btn btn-primary">Add Teacher</button>
+      <a href="/teachers" class="btn btn-secondary">Cancel</a>
+    </div>
+  </form>
+  </div>
+</div>
+
+<script>
+  function toggleClassSection() {
+    const isClassTeacher = document.getElementById('isClassTeacher').value;
+    const classSection = document.getElementById('classSection');
+    const classSelect = document.getElementById('classSelect');
+    const sectionSelect = document.getElementById('sectionSelect');
+    
+    if (isClassTeacher === 'yes') {
+      classSection.style.display = 'block';
+      classSelect.required = true;
+      sectionSelect.required = true;
+    } else {
+      classSection.style.display = 'none';
+      classSelect.required = false;
+      sectionSelect.required = false;
+      classSelect.value = '';
+      sectionSelect.value = '';
+    }
+  }
+
+  function toggleLoginFields() {
+    const createLogin = document.getElementById('createLogin').value;
+    const loginFields = document.getElementById('loginFields');
+    const username = document.getElementById('username');
+    const password = document.getElementById('password');
+    const confirmPassword = document.getElementById('confirmPassword');
+    
+    if (createLogin === 'yes') {
+      loginFields.style.display = 'block';
+      username.required = true;
+      password.required = true;
+      confirmPassword.required = true;
+    } else {
+      loginFields.style.display = 'none';
+      username.required = false;
+      password.required = false;
+      confirmPassword.required = false;
+    }
+  }
+  
+  // Validate password match on form submit
+  document.querySelector('form').addEventListener('submit', function(e) {
+    const createLogin = document.getElementById('createLogin').value;
+    if (createLogin === 'yes') {
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      
+      if (password !== confirmPassword) {
+        e.preventDefault();
+        alert('Passwords do not match!');
+        return false;
+      }
+      
+      if (password.length < 6) {
+        e.preventDefault();
+        alert('Password must be at least 6 characters long!');
+        return false;
+      }
+    }
+  });
+</script>
+
+</body>
+</html>

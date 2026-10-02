@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>View Student - School Management System</title>
+  <link rel="stylesheet" href="/css/modern.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <h1>🎓 School Management System</h1>
+      <div class="user-info">
+        <span>Welcome, <%= user.name %></span>
+        <a href="/logout" class="btn-logout">Logout</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="nav-content">
+      <a href="/">Dashboard</a>
+      <a href="/students" class="active">Students</a>
+      <a href="/attendance">Attendance</a>
+      <a href="/marks">Marks</a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="page-header">
+      <h2>Student Details</h2>
+      <div class="flex gap-2">
+        <a href="/students/<%= student.id %>/edit" class="btn btn-primary">Edit</a>
+        <a href="/students" class="btn btn-secondary">← Back</a>
+      </div>
+    </div>
+
+    <!-- Student Information Card -->
+    <div class="card">
+      <h3 class="mb-3">Personal Information</h3>
+      <div class="form-row">
+        <div>
+          <strong>Student ID:</strong>
+          <p><%= student.studentId %></p>
+        </div>
+        <div>
+          <strong>Full Name:</strong>
+          <p><%= student.firstName %> <%= student.lastName %></p>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div>
+          <strong>Email:</strong>
+          <p><%= student.email %></p>
+        </div>
+        <div>
+          <strong>Date of Birth:</strong>
+          <p><%= student.dateOfBirth %></p>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div>
+          <strong>Gender:</strong>
+          <p><%= student.gender %></p>
+        </div>
+        <div>
+          <strong>Status:</strong>
+          <p>
+            <span class="badge <%= student.status === 'Active' ? 'badge-success' : 'badge-danger' %>">
+              <%= student.status %>
+            </span>
+          </p>
+        </div>
+      </div>
+
+      <h3 class="mb-3 mt-3">Academic Information</h3>
+      <div class="form-row">
+        <div>
+          <strong>Class:</strong>
+          <p>Class <%= student.classId %> - <%= student.section %></p>
+        </div>
+        <div>
+          <strong>Roll Number:</strong>
+          <p><%= student.rollNumber %></p>
+        </div>
+      </div>
+
+      <div>
+        <strong>Admission Date:</strong>
+        <p><%= student.admissionDate %></p>
+      </div>
+
+      <h3 class="mb-3 mt-3">Parent/Guardian Information</h3>
+      <div class="form-row">
+        <div>
+          <strong>Parent Name:</strong>
+          <p><%= student.parentName %></p>
+        </div>
+        <div>
+          <strong>Parent Phone:</strong>
+          <p><%= student.parentPhone %></p>
+        </div>
+      </div>
+
+      <div>
+        <strong>Parent Email:</strong>
+        <p><%= student.parentEmail %></p>
+      </div>
+
+      <div>
+        <strong>Address:</strong>
+        <p><%= student.address %></p>
+      </div>
+    </div>
+
+    <!-- Attendance Summary -->
+    <div class="card">
+      <h3 class="mb-3">Attendance Summary</h3>
+      <% if (attendance.length > 0) { %>
+        <p>Total Records: <%= attendance.length %></p>
+        <p>Present: <%= attendance.filter(a => a.status === 'Present').length %></p>
+        <p>Absent: <%= attendance.filter(a => a.status === 'Absent').length %></p>
+      <% } else { %>
+        <p>No attendance records found.</p>
+      <% } %>
+    </div>
+
+    <!-- Marks Summary -->
+    <div class="card">
+      <h3 class="mb-3">Recent Marks</h3>
+      <% if (marks.length > 0) { %>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Subject</th>
+                <th>Exam Type</th>
+                <th>Obtained Marks</th>
+                <th>Max Marks</th>
+                <th>Percentage</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% marks.forEach(mark => { %>
+                <% const subject = subjects.find(s => s.id === mark.subjectId); %>
+                <tr>
+                  <td><%= subject ? subject.name : 'N/A' %></td>
+                  <td><%= mark.examType %></td>
+                  <td><%= mark.obtainedMarks %></td>
+                  <td><%= mark.maxMarks %></td>
+                  <td><%= mark.percentage %>%</td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      <% } else { %>
+        <p>No marks records found.</p>
+      <% } %>
+    </div>
+  </div>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

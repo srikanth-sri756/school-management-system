@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/admin-head', { title: 'Add Student' }) %>
+</head>
+<body class="app">
+  <%- include('../partials/navbar', { page: 'students' }) %>
+
+  <main class="container container--narrow" id="main">
+    <div class="page-header">
+      <div>
+        <a href="/students" class="back-link"><%- icon('arrow-left') %>Students</a>
+        <h2>Add Student</h2>
+        <p>Fields marked <span class="req">*</span> are required.</p>
+      </div>
+    </div>
+
+    <% if (locals.formErrors && formErrors.length) { %>
+      <div class="alert alert-error" role="alert">
+        <%- icon('circle-alert') %>
+        <div>
+          <strong>The admission was not saved.</strong>
+          <ul class="alert-list"><% formErrors.forEach(message => { %><li><%= message %></li><% }) %></ul>
+          <p>Your details are kept below, but files have to be chosen again.</p>
+        </div>
+      </div>
+    <% } %>
+
+    <form action="/students/add" method="POST" class="card" enctype="multipart/form-data">
+      <%- include('_form', { s: locals.values || null }) %>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary"><%- icon('check') %>Add Student</button>
+        <a href="/students" class="btn">Cancel</a>
+      </div>
+    </form>
+  </main>
+</body>
+</html>

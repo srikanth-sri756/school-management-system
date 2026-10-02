@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Primary School Program at Akansha Grammar High School - Building strong foundations for young learners from Kindergarten to Grade 5">
+    <title>Primary School | Akansha Grammar High School</title>
+    <link rel="stylesheet" href="/css/modern.css">
+    <link rel="stylesheet" href="/css/portfolio.css">
+    <style>
+        .program-hero {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            padding: 4rem 0;
+            margin-bottom: 3rem;
+        }
+        .program-hero h1 {
+            color: white;
+            margin-bottom: 1rem;
+        }
+        .program-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 16px rgba(37, 99, 235, 0.2);
+        }
+        .feature-card h3 {
+            color: #2563eb;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .curriculum-section {
+            background: #f0f9ff;
+            padding: 3rem;
+            border-radius: 12px;
+            margin: 3rem 0;
+        }
+        .grade-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        .grade-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #2563eb;
+        }
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+            text-align: center;
+        }
+        .stat-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #2563eb;
+            margin-bottom: 0.5rem;
+        }
+        .stat-label {
+            color: #64748b;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <%- include('../../partials/public-navbar') %>
+
+    <div class="program-hero">
+        <div class="program-content">
+            <h1>🌱 Primary School Program</h1>
+            <p style="font-size: 1.25rem; max-width: 800px;">Building strong foundations for young learners from Kindergarten to Grade 5</p>
+        </div>
+    </div>
+
+    <div class="program-content">
+        <section>
+            <h2>Overview</h2>
+            <p>Our Primary School program focuses on nurturing young minds through a holistic approach to education. We provide a safe, supportive, and stimulating environment where children develop essential academic, social, and emotional skills that form the foundation for lifelong learning.</p>
+        </section>
+
+        <div class="stats-container">
+            <div class="stat-box">
+                <div class="stat-number">6</div>
+                <div class="stat-label">Grade Levels (K-5)</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">20:1</div>
+                <div class="stat-label">Student-Teacher Ratio</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">15+</div>
+                <div class="stat-label">Specialist Teachers</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Success Rate</div>
+            </div>
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📚</div>
+                <h3>Academic Excellence</h3>
+                <p>Comprehensive curriculum covering English, Mathematics, Science, Social Studies, and Hindi. Focus on building strong literacy and numeracy skills through engaging, hands-on learning experiences.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎨</div>
+                <h3>Creative Development</h3>
+                <p>Regular art, music, and drama classes to nurture creativity and self-expression. Students explore various mediums and develop their artistic talents from an early age.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚽</div>
+                <h3>Physical Education</h3>
+                <p>Daily physical activities, sports, and games to promote healthy development, coordination, and teamwork. Modern playground and indoor sports facilities.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💡</div>
+                <h3>Smart Classrooms</h3>
+                <p>Technology-integrated learning with interactive whiteboards, educational apps, and digital resources to enhance engagement and understanding.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🌍</div>
+                <h3>Value Education</h3>
+                <p>Character development program focusing on values like honesty, respect, empathy, and responsibility. Cultural awareness and social skills development.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">👥</div>
+                <h3>Individual Attention</h3>
+                <p>Small class sizes ensuring personalized attention to each child. Regular parent-teacher conferences and progress updates to track development.</p>
+            </div>
+        </div>
+
+        <div class="curriculum-section">
+            <h2>Curriculum Structure</h2>
+            <div class="grade-list">
+                <div class="grade-item">
+                    <h4>🌟 Kindergarten</h4>
+                    <p><strong>Age:</strong> 4-5 years</p>
+                    <ul>
+                        <li>Pre-literacy and pre-numeracy skills</li>
+                        <li>Play-based learning</li>
+                        <li>Social interaction and basic manners</li>
+                        <li>Motor skills development</li>
+                    </ul>
+                </div>
+                <div class="grade-item">
+                    <h4>📖 Grade 1</h4>
+                    <p><strong>Age:</strong> 5-6 years</p>
+                    <ul>
+                        <li>Introduction to reading and writing</li>
+                        <li>Basic arithmetic operations</li>
+                        <li>Environmental awareness</li>
+                        <li>Art and craft activities</li>
+                    </ul>
+                </div>
+                <div class="grade-item">
+                    <h4>📝 Grade 2</h4>
+                    <p><strong>Age:</strong> 6-7 years</p>
+                    <ul>
+                        <li>Enhanced reading comprehension</li>
+                        <li>Introduction to multiplication</li>
+                        <li>Basic science concepts</li>
+                        <li>Computer fundamentals</li>
+                    </ul>
+                </div>
+                <div class="grade-item">
+                    <h4>🔢 Grade 3</h4>
+                    <p><strong>Age:</strong> 7-8 years</p>
+                    <ul>
+                        <li>Advanced literacy skills</li>
+                        <li>Problem-solving in math</li>
+                        <li>Introduction to social studies</li>
+                        <li>Scientific inquiry methods</li>
+                    </ul>
+                </div>
+                <div class="grade-item">
+                    <h4>🌐 Grade 4</h4>
+                    <p><strong>Age:</strong> 8-9 years</p>
+                    <ul>
+                        <li>Critical thinking and analysis</li>
+                        <li>Fractions and decimals</li>
+                        <li>India's history and geography</li>
+                        <li>Science experiments and projects</li>
+                    </ul>
+                </div>
+                <div class="grade-item">
+                    <h4>🎓 Grade 5</h4>
+                    <p><strong>Age:</strong> 9-10 years</p>
+                    <ul>
+                        <li>Preparation for middle school</li>
+                        <li>Advanced mathematical concepts</li>
+                        <li>Research skills development</li>
+                        <li>Leadership opportunities</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <section>
+            <h2>Facilities & Resources</h2>
+            <ul style="columns: 2; column-gap: 2rem; margin: 1.5rem 0;">
+                <li>✅ Air-conditioned classrooms with modern furniture</li>
+                <li>✅ Well-stocked library with age-appropriate books</li>
+                <li>✅ Science laboratory with safety equipment</li>
+                <li>✅ Computer lab with latest software</li>
+                <li>✅ Art and craft studio</li>
+                <li>✅ Music and dance rooms</li>
+                <li>✅ Indoor games area</li>
+                <li>✅ Outdoor playground with safety equipment</li>
+                <li>✅ Medical room with trained staff</li>
+                <li>✅ School bus service with GPS tracking</li>
+                <li>✅ Cafeteria with nutritious meals</li>
+                <li>✅ After-school care programs</li>
+            </ul>
+        </section>
+
+        <section style="margin-top: 3rem; background: #f0f9ff; padding: 2rem; border-radius: 12px;">
+            <h2>Admission Process</h2>
+            <p>We welcome students throughout the year based on seat availability. For admissions, please:</p>
+            <ol style="margin: 1.5rem 0 1.5rem 2rem; line-height: 1.8;">
+                <li>Visit our <a href="/portfolio/admissions" style="color: #2563eb; font-weight: 600;">Admissions page</a> to download the application form</li>
+                <li>Submit completed form with required documents</li>
+                <li>Schedule an interaction meeting with the child and parents</li>
+                <li>Receive admission decision within 3-5 working days</li>
+            </ol>
+            <p><strong>Required Documents:</strong> Birth certificate, previous school records (if applicable), medical certificate, passport-size photographs, address proof</p>
+        </section>
+
+        <section style="margin: 3rem 0; text-align: center;">
+            <h2>Ready to Join Our Primary School?</h2>
+            <p style="margin: 1rem 0 2rem;">Contact us today to schedule a campus tour and meet our dedicated faculty!</p>
+            <a href="/portfolio/contact" class="btn btn-primary" style="display: inline-block; padding: 1rem 2rem; background: #2563eb; color: white; text-decoration: none; border-radius: 8px; font-weight: 600;">Contact Us</a>
+        </section>
+    </div>
+
+    <%- include('../../partials/footer') %>
+</body>
+</html>

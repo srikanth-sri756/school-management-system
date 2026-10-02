@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/admin-head', { title: 'Dashboard' }) %>
+</head>
+<body class="app">
+  <%- include('partials/navbar', { page: 'dashboard' }) %>
+
+  <main class="container" id="main">
+    <%
+      const hour = new Date().getHours();
+      const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+      const isAdmin = user.role === 'admin';
+    %>
+    <section class="welcome">
+      <div class="photo"><%- photo('home-hero', { eager: true, decorative: true, sizes: '(max-width: 1024px) 100vw, 1240px' }) %></div>
+      <div>
+        <div class="eyebrow">Admin Portal · Akansha Grammar High School</div>
+        <h2><%= greeting %>,<br><%= (user.name || 'there').split(' ')[0] %></h2>
+        <p>Here’s an overview of the school today.</p>
+      </div>
+    </section>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-icon"><%- icon('users') %></span>
+        <div class="stat-body">
+          <p class="stat-label">Students</p>
+          <div class="stat-value"><%= stats.totalStudents %></div>
+          <p class="stat-sub"><%= stats.activeStudents %> active</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon stat-icon--gold"><%- icon('presentation') %></span>
+        <div class="stat-body">
+          <p class="stat-label">Teachers</p>
+          <div class="stat-value"><%= stats.totalTeachers %></div>
+          <p class="stat-sub">On the staff roll</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon stat-icon--green"><%- icon('calendar-check') %></span>
+        <div class="stat-body">
+          <p class="stat-label">Present Today</p>
+          <div class="stat-value"><%= stats.todayPresent %> <small>/ <%= stats.todayAttendance %> marked</small></div>
+          <p class="stat-sub"><%= stats.todayAttendance ? 'Student attendance' : 'Attendance not marked yet' %></p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon <%= stats.pendingFees ? 'stat-icon--red' : 'stat-icon--green' %>"><%- icon('wallet') %></span>
+        <div class="stat-body">
+          <p class="stat-label">Fees Outstanding</p>
+          <div class="stat-value"><%= stats.pendingFees %></div>
+          <p class="stat-sub">Unpaid or part-paid records</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-main">
+      <section class="card card--flush">
+        <div class="card-header">
+          <div>
+            <h3><%- icon('users') %>Recently Added Students</h3>
+          </div>
+          <a href="/students" class="btn btn-sm">View all <%- icon('arrow-right') %></a>
+        </div>
+        <% if (students.length) { %>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr><th>Student</th><th>Class</th><th>Roll No.</th><th>Status</th><th></th></tr>
+              </thead>
+              <tbody>
+                <% students.forEach(student => { %>
+                  <tr>
+                    <td>
+                      <div class="cell-person">
+                        <%- avatar('student', student) %>
+                        <div>
+                          <span class="cell-strong"><%= student.firstName %> <%= student.lastName %></span>
+                          <span class="cell-sub"><%= student.studentId || '—' %></span>
+                        </div>
+                      </div>
+                    </td>
+                    <td><%= student.class ? student.class.name + ' – ' + student.class.section : '—' %></td>
+                    <td><%= student.rollNumber || '—' %></td>
+                    <td><%- statusBadge(student.status) %></td>
+                    <td class="num"><a href="/students/<%= student._id %>" class="btn btn-sm btn-ghost">View</a></td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        <% } else { %>
+          <div class="empty-state">
+            <span class="stat-icon"><%- icon('user-plus') %></span>
+            <strong>No students yet</strong>
+            <p>Add your first student or import a spreadsheet to get started.</p>
+            <a href="/students/add" class="btn btn-primary"><%- icon('plus') %>Add Student</a>
+          </div>
+        <% } %>
+      </section>
+
+      <div>
+        <section class="card card--flush">
+          <div class="card-header">
+            <h3><%- icon('megaphone') %>Important Dates</h3>
+            <% if (isAdmin) { %><a href="/announcements" class="btn btn-sm"><%- icon(importantDates.length ? 'pencil' : 'plus') %><%= importantDates.length ? 'Manage' : 'Add' %></a><% } %>
+          </div>
+          <%- include('partials/important-dates', {
+                dates: importantDates,
+                emptyText: isAdmin ? 'Announce exams, meetings and events; they appear on the website and in the portals.' : ''
+              }) %>
+        </section>
+
+        <section class="card">
+          <div class="card-header"><h3><%- icon('list-checks') %>Quick Actions</h3></div>
+          <div class="quick-actions">
+            <a href="/students/add" class="quick-action"><span class="stat-icon"><%- icon('user-plus') %></span><span>Add Student</span></a>
+            <a href="/attendance/mark" class="quick-action"><span class="stat-icon stat-icon--green"><%- icon('calendar-check') %></span><span>Mark Attendance</span></a>
+            <a href="/marks/add" class="quick-action"><span class="stat-icon stat-icon--blue"><%- icon('notebook-pen') %></span><span>Enter Marks</span></a>
+            <% if (isAdmin) { %>
+              <a href="/fees/add" class="quick-action"><span class="stat-icon stat-icon--gold"><%- icon('receipt') %></span><span>Create Fee</span></a>
+              <a href="/teachers/add" class="quick-action"><span class="stat-icon stat-icon--violet"><%- icon('presentation') %></span><span>Add Teacher</span></a>
+              <a href="/admin/import" class="quick-action"><span class="stat-icon stat-icon--amber"><%- icon('upload') %></span><span>Import Data</span></a>
+            <% } %>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-header"><h3><%- icon('school') %>School Records</h3></div>
+          <ul class="summary-list">
+            <li><span class="text-muted">Classes</span><strong><%= stats.totalClasses %></strong></li>
+            <li><span class="text-muted">Subjects</span><strong><%= stats.totalSubjects %></strong></li>
+            <li><span class="text-muted">Attendance records</span><strong><%= stats.totalAttendance %></strong></li>
+            <li><span class="text-muted">Marks recorded</span><strong><%= stats.totalMarks %></strong></li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

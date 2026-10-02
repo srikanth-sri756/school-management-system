@@ -1,0 +1,27 @@
+<%# Important dates on the public website (announced from the admin portal).
+    Include with { dates, id?, emptyText? }. Without emptyText the section is left out
+    when nothing is announced. %>
+<% if (dates.length || locals.emptyText) { %>
+  <section class="section section--light site-dates"<%- locals.id ? ` id="${id}"` : '' %>>
+    <div class="container">
+      <div class="rows-head" data-reveal>
+        <h2 class="display display-m">Important dates</h2>
+        <span class="count"><%= String(dates.length).padStart(2, '0') %></span>
+      </div>
+      <% if (dates.length) { %>
+        <div class="cols cols-4" data-reveal>
+          <% dates.forEach(item => { const parts = dateParts(item); const when = whenLabel(item); %>
+            <article class="col">
+              <span class="num"><%= parts.year %><%= when ? ' · ' + when : '' %></span>
+              <span class="big"><%= parts.short %></span>
+              <h3><%= item.title %></h3>
+              <% if (item.details) { %><p class="col-details"><%= item.details %></p><% } %>
+            </article>
+          <% }) %>
+        </div>
+      <% } else { %>
+        <p class="site-dates-empty" data-reveal><%= emptyText %></p>
+      <% } %>
+    </div>
+  </section>
+<% } %>

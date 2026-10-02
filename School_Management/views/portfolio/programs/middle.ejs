@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Middle School Program at Akansha Grammar High School - Guiding students through the crucial transition years in Grades 6-8">
+    <title>Middle School | Akansha Grammar High School</title>
+    <link rel="stylesheet" href="/css/modern.css">
+    <link rel="stylesheet" href="/css/portfolio.css">
+    <style>
+        .program-hero {
+            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+            color: white;
+            padding: 4rem 0;
+            margin-bottom: 3rem;
+        }
+        .program-hero h1 {
+            color: white;
+            margin-bottom: 1rem;
+        }
+        .program-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 16px rgba(124, 58, 237, 0.2);
+        }
+        .feature-card h3 {
+            color: #7c3aed;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .curriculum-section {
+            background: #faf5ff;
+            padding: 3rem;
+            border-radius: 12px;
+            margin: 3rem 0;
+        }
+        .grade-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        .grade-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #7c3aed;
+        }
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+            text-align: center;
+        }
+        .stat-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #7c3aed;
+            margin-bottom: 0.5rem;
+        }
+        .stat-label {
+            color: #64748b;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <%- include('../../partials/public-navbar') %>
+
+    <div class="program-hero">
+        <div class="program-content">
+            <h1>🚀 Middle School Program</h1>
+            <p style="font-size: 1.25rem; max-width: 800px;">Guiding students through crucial transition years in Grades 6-8</p>
+        </div>
+    </div>
+
+    <div class="program-content">
+        <section>
+            <h2>Overview</h2>
+            <p>Our Middle School program is designed to meet the unique needs of early adolescents. We provide a supportive environment that challenges students academically while helping them develop the social and emotional skills needed to navigate this important transition period. Our curriculum prepares students for the rigors of high school and beyond.</p>
+        </section>
+
+        <div class="stats-container">
+            <div class="stat-box">
+                <div class="stat-number">3</div>
+                <div class="stat-label">Grade Levels (6-8)</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">25:1</div>
+                <div class="stat-label">Student-Teacher Ratio</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">20+</div>
+                <div class="stat-label">Elective Options</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">95%</div>
+                <div class="stat-label">High School Readiness</div>
+            </div>
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📘</div>
+                <h3>Rigorous Academics</h3>
+                <p>Advanced curriculum in English, Mathematics, Science (Physics, Chemistry, Biology), Social Science, and Languages. Preparation for board examinations and competitive assessments.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔬</div>
+                <h3>STEM Focus</h3>
+                <p>Hands-on science experiments, coding classes, robotics clubs, and math olympiad preparation. State-of-the-art laboratories and technology resources.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎭</div>
+                <h3>Arts & Humanities</h3>
+                <p>Visual arts, performing arts, music, and creative writing programs. Regular exhibitions, performances, and inter-school competitions.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🏆</div>
+                <h3>Sports & Fitness</h3>
+                <p>Comprehensive sports program including cricket, football, basketball, athletics, and yoga. Professional coaches and modern sports facilities.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💼</div>
+                <h3>Life Skills</h3>
+                <p>Leadership development, public speaking, time management, and digital literacy. Student council opportunities and peer mentoring programs.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🤝</div>
+                <h3>Counseling Support</h3>
+                <p>Professional counselors available for academic guidance, career exploration, and personal development. Regular parent-teacher-student conferences.</p>
+            </div>
+        </div>
+
+        <div class="curriculum-section">
+            <h2>Curriculum Structure</h2>
+            <div class="grade-list">
+                <div class="grade-item">
+                    <h4>📚 Grade 6</h4>
+                    <p><strong>Age:</strong> 10-11 years</p>
+                    <ul>
+                        <li><strong>Core Subjects:</strong> English, Hindi, Mathematics, Science, Social Science</li>
+                        <li><strong>Additional:</strong> Computer Science, Physical Education, Art</li>
+                        <li><strong>Focus:</strong> Building strong foundation in all subjects</li>
+                        <li><strong>Activities:</strong> Science fair, literary competitions, sports day</li>
+                    </ul>
+                </div>
+                <div class="grade-item">
+                    <h4>📖 Grade 7</h4>
+                    <p><strong>Age:</strong> 11-12 years</p>
+                    <ul>
+                        <li><strong>Core Subjects:</strong> English, Hindi, Mathematics, Science, Social Science</li>
+                        <li><strong>Additional:</strong> Sanskrit/Third Language, ICT, Music/Dance</li>
+                        <li><strong>Focus:</strong> Analytical thinking and problem-solving</li>
+                        <li><strong>Activities:</strong> Debates, quiz competitions, cultural programs</li>
+                    </ul>
+                </div>
+                <div class="grade-item">
+                    <h4>🎓 Grade 8</h4>
+                    <p><strong>Age:</strong> 12-13 years</p>
+                    <ul>
+                        <li><strong>Core Subjects:</strong> English, Hindi, Mathematics, Science, Social Science</li>
+                        <li><strong>Additional:</strong> Career Guidance, Advanced ICT, Electives</li>
+                        <li><strong>Focus:</strong> High school preparation and career awareness</li>
+                        <li><strong>Activities:</strong> Research projects, leadership camps, internships</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <section>
+            <h2>Special Programs</h2>
+            <div class="feature-grid">
+                <div class="feature-card" style="border-top: 4px solid #7c3aed;">
+                    <h4>🌟 Honors Program</h4>
+                    <p>Advanced coursework for high-achieving students with enhanced curriculum and independent study opportunities.</p>
+                </div>
+                <div class="feature-card" style="border-top: 4px solid #7c3aed;">
+                    <h4>📚 Learning Support</h4>
+                    <p>Individualized assistance for students who need additional help, including remedial classes and peer tutoring.</p>
+                </div>
+                <div class="feature-card" style="border-top: 4px solid #7c3aed;">
+                    <h4>🌍 Language Programs</h4>
+                    <p>English, Hindi, Sanskrit, and optional third languages like French or German with native speaker instruction.</p>
+                </div>
+                <div class="feature-card" style="border-top: 4px solid #7c3aed;">
+                    <h4>🎯 Olympiad Training</h4>
+                    <p>Preparation for national and international olympiads in Mathematics, Science, English, and Computer Science.</p>
+                </div>
+                <div class="feature-card" style="border-top: 4px solid #7c3aed;">
+                    <h4>🎨 Creative Arts</h4>
+                    <p>Theater, visual arts, music, and dance with opportunities to showcase talents in school and inter-school events.</p>
+                </div>
+                <div class="feature-card" style="border-top: 4px solid #7c3aed;">
+                    <h4>🏅 Community Service</h4>
+                    <p>Service learning projects that develop empathy, social responsibility, and leadership skills.</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Facilities & Resources</h2>
+            <ul style="columns: 2; column-gap: 2rem; margin: 1.5rem 0;">
+                <li>✅ Smart classrooms with digital boards</li>
+                <li>✅ Advanced science laboratories (Physics, Chemistry, Biology)</li>
+                <li>✅ Computer labs with high-speed internet</li>
+                <li>✅ Well-equipped library with 10,000+ books</li>
+                <li>✅ Dedicated STEM innovation lab</li>
+                <li>✅ Art and craft studios</li>
+                <li>✅ Music and dance rooms</li>
+                <li>✅ Indoor sports complex</li>
+                <li>✅ Outdoor sports fields and courts</li>
+                <li>✅ Counseling center</li>
+                <li>✅ Cafeteria with healthy meal options</li>
+                <li>✅ Secure campus with CCTV surveillance</li>
+            </ul>
+        </section>
+
+        <section style="margin-top: 3rem; background: #faf5ff; padding: 2rem; border-radius: 12px;">
+            <h2>Assessment & Reporting</h2>
+            <p>We use a comprehensive assessment system that includes:</p>
+            <ul style="margin: 1rem 0; line-height: 1.8;">
+                <li><strong>Continuous Assessment:</strong> Regular quizzes, assignments, and projects</li>
+                <li><strong>Periodic Tests:</strong> Term-end examinations as per CBSE/State Board guidelines</li>
+                <li><strong>Practical Evaluations:</strong> Lab work, presentations, and performance tasks</li>
+                <li><strong>Progress Reports:</strong> Detailed report cards three times a year</li>
+                <li><strong>Parent Conferences:</strong> Regular meetings to discuss student progress</li>
+            </ul>
+        </section>
+
+        <section style="margin: 3rem 0; text-align: center;">
+            <h2>Join Our Middle School Community</h2>
+            <p style="margin: 1rem 0 2rem;">Experience an education that prepares students for success in high school and life!</p>
+            <a href="/portfolio/contact" class="btn btn-primary" style="display: inline-block; padding: 1rem 2rem; background: #7c3aed; color: white; text-decoration: none; border-radius: 8px; font-weight: 600;">Contact Us</a>
+        </section>
+    </div>
+
+    <%- include('../../partials/footer') %>
+</body>
+</html>

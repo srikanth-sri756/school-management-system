@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Fee - School Management System</title>
+  <link rel="stylesheet" href="/css/modern.css">
+</head>
+<body>
+  <%- include('../partials/navbar') %>
+
+<div class="container">
+  <div class="page-header"><h2>Edit Fee</h2></div>
+  <form method="POST" action="/fees/<%= fee._id %>/edit">
+    <label>Student:</label>
+    <select name="student" required>
+      <% students.forEach(s => { %>
+        <option value="<%= s._id %>" <%= fee.student && fee.student._id.toString() === s._id.toString() ? 'selected' : '' %>><%= s.firstName %> <%= s.lastName %></option>
+      <% }) %>
+    </select><br>
+    <label>Term:</label>
+    <input type="text" name="term" value="<%= fee.term %>" required><br>
+    <label>Amount:</label>
+    <input type="number" name="amount" value="<%= fee.amount %>" required><br>
+    <label>Paid:</label>
+    <input type="number" name="paid" value="<%= fee.paid %>"><br>
+    <label>Status:</label>
+    <select name="status">
+      <option value="Paid" <%= fee.status === 'Paid' ? 'selected' : '' %>>Paid</option>
+      <option value="Unpaid" <%= fee.status === 'Unpaid' ? 'selected' : '' %>>Unpaid</option>
+      <option value="Partial" <%= fee.status === 'Partial' ? 'selected' : '' %>>Partial</option>
+    </select><br>
+    <label>Due Date:</label>
+    <input type="date" name="dueDate" value="<%= fee.dueDate %>"><br>
+    <label>Notes:</label>
+    <input type="text" name="notes" value="<%= fee.notes %>"><br>
+    <button type="submit" class="btn btn-primary">Update Fee</button>
+  </form>
+</div>
+
+</body>
+</html>

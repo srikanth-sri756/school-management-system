@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/admin-head', { title: 'Import Data' }) %>
+</head>
+<body class="app">
+  <%- include('../partials/navbar', { page: 'import' }) %>
+
+  <main class="container" id="main">
+    <div class="page-header">
+      <div>
+        <h2>Import Data</h2>
+        <p>Bulk-add students, teachers, classes or subjects from a CSV or Excel file.</p>
+      </div>
+    </div>
+
+    <% if (typeof error !== 'undefined' && error && !Array.isArray(error)) { %>
+      <div class="alert alert-error" role="alert"><%- icon('circle-alert') %><div><strong>Import failed.</strong> <%= error %></div></div>
+    <% } %>
+    <% if (typeof message !== 'undefined' && message) { %>
+      <div class="alert alert-success" role="status"><%- icon('circle-check') %><div><strong>Import complete.</strong> <%= message %></div></div>
+    <% } %>
+
+    <div class="grid grid-2">
+      <form method="POST" action="/admin/import" enctype="multipart/form-data" class="card">
+        <div class="card-header"><h3><%- icon('upload') %>Upload a file</h3></div>
+        <div class="form-group">
+          <label for="importType">What are you importing? <span class="req">*</span></label>
+          <select name="importType" id="importType" class="form-control" required>
+            <option value="">Choose a data type</option>
+            <option value="students">Students</option>
+            <option value="teachers">Teachers</option>
+            <option value="classes">Classes</option>
+            <option value="subjects">Subjects</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="importFile">File <span class="req">*</span></label>
+          <input type="file" name="importFile" id="importFile" class="form-control" accept=".csv,.xlsx,.xls" required>
+          <span class="form-hint">CSV or Excel (.xlsx, .xls). The first row must contain the column names.</span>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary"><%- icon('upload') %>Import Data</button>
+        </div>
+      </form>
+
+      <section class="card">
+        <div class="card-header"><h3><%- icon('file-spreadsheet') %>File format</h3></div>
+        <div id="formatDetails">
+          <p class="text-muted">Choose a data type to see the columns it needs, with an example.</p>
+          <div class="template-links">
+            <% ['students', 'teachers', 'classes', 'subjects'].forEach(type => { %>
+              <a href="/admin/sample-template/<%= type %>" class="btn btn-sm"><%- icon('download') %><%= type.charAt(0).toUpperCase() + type.slice(1) %> template</a>
+            <% }) %>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <%# Format guides, copied into #formatDetails when a type is chosen %>
+    <template data-type="students">
+      <div class="format-info">
+        <p><span class="req">Required:</span> firstName</p>
+        <p class="mb-0"><strong>Optional:</strong> studentId, lastName, email, dateOfBirth, gender, class, section, rollNumber, parentName, parentPhone, parentEmail, address, admissionDate, status</p>
+      </div>
+      <div class="table-container sample-table">
+        <table>
+          <thead><tr><th>studentId</th><th>firstName <span class="req">*</span></th><th>lastName</th><th>dateOfBirth</th><th>gender</th><th>class</th><th>section</th><th>rollNumber</th><th>status</th></tr></thead>
+          <tbody>
+            <tr><td>ST001</td><td>John</td><td>Doe</td><td>2010-05-15</td><td>Male</td><td>Class 10</td><td>A</td><td>1</td><td>Active</td></tr>
+            <tr><td>ST002</td><td>Jane</td><td>Smith</td><td>2010-08-20</td><td>Female</td><td>Class 10</td><td>A</td><td>2</td><td>Active</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul class="note-list mb-3">
+        <li>Class is Nursery, LKG, UKG or Class 1 – Class 10 (“5” also works); section is A–D and defaults to A.</li>
+        <li>Status is “Active” or “Inactive” (defaults to Active).</li>
+        <li>Gender is “Male”, “Female” or “Other”. Dates use YYYY-MM-DD.</li>
+      </ul>
+      <a href="/admin/sample-template/students" class="btn btn-sm"><%- icon('download') %>Download students template</a>
+    </template>
+
+    <template data-type="teachers">
+      <div class="format-info">
+        <p><span class="req">Required:</span> name, email</p>
+        <p class="mb-0"><strong>Optional:</strong> phone, subject, class, section, isClassTeacher, salary, address</p>
+      </div>
+      <div class="table-container sample-table">
+        <table>
+          <thead><tr><th>name <span class="req">*</span></th><th>email <span class="req">*</span></th><th>phone</th><th>subject</th><th>class</th><th>section</th><th>isClassTeacher</th><th>salary</th></tr></thead>
+          <tbody>
+            <tr><td>Mr. Sharma</td><td>sharma@school.com</td><td>9876543210</td><td>Mathematics</td><td>Class 10</td><td>A</td><td>Yes</td><td>50000</td></tr>
+            <tr><td>Mrs. Patel</td><td>patel@school.com</td><td>9876543211</td><td>English</td><td>Class 9</td><td>B</td><td>No</td><td>45000</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul class="note-list mb-3">
+        <li>Subject must match an existing subject. Class is Nursery, LKG, UKG or Class 1 – Class 10, with section A–D.</li>
+        <li>isClassTeacher is “Yes” or “No”. Each email must be unique.</li>
+        <li>Imported teachers sign in with the default password <code>teacher123</code>; ask them to change it.</li>
+      </ul>
+      <a href="/admin/sample-template/teachers" class="btn btn-sm"><%- icon('download') %>Download teachers template</a>
+    </template>
+
+    <template data-type="classes">
+      <div class="format-info">
+        <p><span class="req">Required:</span> name</p>
+        <p class="mb-0"><strong>Optional:</strong> section, capacity</p>
+      </div>
+      <div class="table-container sample-table">
+        <table>
+          <thead><tr><th>name <span class="req">*</span></th><th>section</th><th>capacity</th></tr></thead>
+          <tbody>
+            <tr><td>Class 10</td><td>A</td><td>40</td></tr>
+            <tr><td>Class 10</td><td>B</td><td>35</td></tr>
+            <tr><td>Nursery</td><td>A</td><td>25</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul class="note-list mb-3">
+        <li>Classes are also created automatically when you add a student to a new class and section, so this import is only needed to set capacities.</li>
+      </ul>
+      <a href="/admin/sample-template/classes" class="btn btn-sm"><%- icon('download') %>Download classes template</a>
+    </template>
+
+    <template data-type="subjects">
+      <div class="format-info">
+        <p><span class="req">Required:</span> name</p>
+        <p class="mb-0"><strong>Optional:</strong> code</p>
+      </div>
+      <div class="table-container sample-table">
+        <table>
+          <thead><tr><th>name <span class="req">*</span></th><th>code</th></tr></thead>
+          <tbody>
+            <tr><td>Mathematics</td><td>MATH</td></tr>
+            <tr><td>English</td><td>ENG</td></tr>
+            <tr><td>Science</td><td>SCI</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <a href="/admin/sample-template/subjects" class="btn btn-sm"><%- icon('download') %>Download subjects template</a>
+    </template>
+  </main>
+
+  <script>
+    (function () {
+      const details = document.getElementById('formatDetails');
+      const placeholder = details.innerHTML;
+      document.getElementById('importType').addEventListener('change', function () {
+        const template = document.querySelector(`template[data-type="${this.value}"]`);
+        details.innerHTML = '';
+        if (template) details.appendChild(template.content.cloneNode(true));
+        else details.innerHTML = placeholder;
+      });
+    })();
+  </script>
+</body>
+</html>

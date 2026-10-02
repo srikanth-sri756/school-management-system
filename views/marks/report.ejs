@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/admin-head', { title: 'Marks Report' }) %>
+</head>
+<body class="app">
+  <%- include('../partials/navbar', { page: 'marks' }) %>
+
+  <main class="container" id="main">
+    <div class="page-header">
+      <div>
+        <a href="/marks" class="back-link"><%- icon('arrow-left') %>Marks</a>
+        <h2>Marks Report</h2>
+        <p>All recorded marks across classes and subjects.</p>
+      </div>
+      <div class="page-actions">
+        <a href="/marks/export" class="btn"><%- icon('download') %>Export to Excel</a>
+      </div>
+    </div>
+
+    <section class="card">
+      <div class="filter-bar" data-filter-for="marksTable">
+        <div class="form-group">
+          <label for="filterStudent">Student</label>
+          <div class="search-input">
+            <%- icon('search') %>
+            <input type="text" id="filterStudent" class="form-control" placeholder="Search name" data-col="0">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="filterSubject">Subject</label>
+          <input type="text" id="filterSubject" class="form-control" placeholder="e.g. Maths" data-col="2">
+        </div>
+        <div class="form-group">
+          <label for="filterExamType">Exam type</label>
+          <select id="filterExamType" class="form-control" data-col="3" data-match="equals">
+            <option value="">All</option>
+            <% ['Quiz', 'Unit Test', 'Mid-term', 'Final', 'Assignment'].forEach(t => { %>
+              <option value="<%= t %>"><%= t %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="filterMinPercentage">Minimum %</label>
+          <input type="number" id="filterMinPercentage" class="form-control" placeholder="0–100" min="0" max="100" data-col="5" data-match="min">
+        </div>
+        <div class="form-group">
+          <label for="filterGrade">Grade</label>
+          <select id="filterGrade" class="form-control" data-col="6" data-match="equals">
+            <option value="">All</option>
+            <% ['A+', 'A', 'B+', 'B', 'C', 'D', 'F'].forEach(g => { %>
+              <option value="<%= g %>"><%= g %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="form-group">
+          <button type="button" class="btn btn-block" data-filter-reset><%- icon('x') %>Clear filters</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card card--flush">
+      <div class="card-header">
+        <h3><%- icon('notebook-pen') %>Results</h3>
+        <span class="result-count" data-filter-count="marksTable"></span>
+      </div>
+      <% if (marks.length) { %>
+        <div class="table-container">
+          <table id="marksTable">
+            <thead>
+              <tr><th>Student</th><th>Roll No.</th><th>Subject</th><th>Exam</th><th class="num">Marks</th><th class="num">%</th><th>Grade</th><th>Date</th></tr>
+            </thead>
+            <tbody>
+              <% marks.forEach(mark => { const s = mark.student; %>
+                <tr>
+                  <td class="cell-strong"><%= s ? s.firstName + ' ' + s.lastName : 'Unknown' %></td>
+                  <td><%= s ? s.rollNumber : '—' %></td>
+                  <td><%= mark.subject ? mark.subject.name : '—' %></td>
+                  <td><%= mark.examType %></td>
+                  <td class="num"><%= mark.obtainedMarks %> / <%= mark.maxMarks %></td>
+                  <td class="num" data-value="<%= mark.percentage %>">
+                    <span class="<%= mark.percentage >= 60 ? 'text-success' : mark.percentage >= 40 ? 'text-warning' : 'text-danger' %>"><strong><%= mark.percentage %>%</strong></span>
+                  </td>
+                  <td data-value="<%= mark.grade || '' %>"><%- gradeBadge(mark.grade) %></td>
+                  <td><%= mark.date ? new Date(mark.date).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : (mark.examDate || '—') %></td>
+                </tr>
+              <% }) %>
+              <tr data-filter-empty hidden><td colspan="8" class="text-center text-muted">No results match these filters.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      <% } else { %>
+        <div class="empty-state">
+          <span class="stat-icon"><%- icon('notebook-pen') %></span>
+          <strong>No marks recorded yet</strong>
+          <p>Results appear here once marks have been entered.</p>
+        </div>
+      <% } %>
+    </section>
+  </main>
+</body>
+</html>

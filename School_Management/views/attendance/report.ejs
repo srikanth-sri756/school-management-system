@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attendance Report - School Management System</title>
+  <link rel="stylesheet" href="/css/modern.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <h1>🎓 School Management System</h1>
+      <div class="user-info">
+        <span>Welcome, <%= user.name %></span>
+        <a href="/logout" class="btn-logout">Logout</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="nav-content">
+      <a href="/">Dashboard</a>
+      <a href="/students">Students</a>
+      <a href="/attendance" class="active">Attendance</a>
+      <a href="/marks">Marks</a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <h2>Attendance Report</h2>
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <a href="/attendance/export" class="btn btn-primary" style="background: linear-gradient(135deg, #10b981, #059669);">
+          📥 Export to Excel
+        </a>
+        <a href="/attendance" class="btn btn-secondary">← Back</a>
+      </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="card" style="margin-bottom: 1.5rem;">
+      <h3 style="margin-bottom: 1rem;">Filter Records</h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+        <div>
+          <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem;">Date From:</label>
+          <input type="date" id="filterDateFrom" style="width: 100%; padding: 0.6rem; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem;">
+        </div>
+        <div>
+          <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem;">Date To:</label>
+          <input type="date" id="filterDateTo" style="width: 100%; padding: 0.6rem; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem;">
+        </div>
+        <div>
+          <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem;">Student Name:</label>
+          <input type="text" id="filterStudent" placeholder="Search student..." style="width: 100%; padding: 0.6rem; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem;">
+        </div>
+        <div>
+          <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem;">Class:</label>
+          <input type="text" id="filterClass" placeholder="Search class..." style="width: 100%; padding: 0.6rem; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem;">
+        </div>
+        <div>
+          <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem;">Status:</label>
+          <select id="filterStatus" style="width: 100%; padding: 0.6rem; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem;">
+            <option value="">All</option>
+            <option value="Present">Present</option>
+            <option value="Absent">Absent</option>
+            <option value="Late">Late</option>
+          </select>
+        </div>
+        <div style="display: flex; align-items: flex-end;">
+          <button onclick="clearFilters()" class="btn btn-secondary" style="width: 100%; padding: 0.6rem;">
+            Clear Filters
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="mb-3">All Attendance Records</h3>
+      <% if (attendance.length > 0) { %>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Student Name</th>
+                <th>Roll Number</th>
+                <th>Class</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% attendance.forEach(record => { %>
+                <tr>
+                  <td><%= new Date(record.date).toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' }) %></td>
+                  <td><%= record.student ? (record.student.firstName + ' ' + record.student.lastName) : 'Unknown' %></td>
+                  <td><%= record.student ? record.student.rollNumber : '-' %></td>
+                  <td><%= record.class ? record.class.name : '-' %></td>
+                  <td>
+                    <span class="badge <%= record.status === 'Present' ? 'badge-success' : (record.status === 'Absent' ? 'badge-danger' : 'badge-warning') %>">
+                      <%= record.status %>
+                    </span>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      <% } else { %>
+        <p>No attendance records found.</p>
+      <% } %>
+    </div>
+  </div>
+
+  <script>
+    // Filter functionality
+    const filterDateFrom = document.getElementById('filterDateFrom');
+    const filterDateTo = document.getElementById('filterDateTo');
+    const filterStudent = document.getElementById('filterStudent');
+    const filterClass = document.getElementById('filterClass');
+    const filterStatus = document.getElementById('filterStatus');
+    const tableRows = document.querySelectorAll('tbody tr');
+
+    function parseDate(dateString) {
+      // Parse DD/MM/YYYY format
+      const parts = dateString.split('/');
+      if (parts.length === 3) {
+        return new Date(parts[2], parts[1] - 1, parts[0]);
+      }
+      return null;
+    }
+
+    function applyFilters() {
+      const dateFromValue = filterDateFrom.value ? new Date(filterDateFrom.value) : null;
+      const dateToValue = filterDateTo.value ? new Date(filterDateTo.value) : null;
+      const studentValue = filterStudent.value.toLowerCase();
+      const classValue = filterClass.value.toLowerCase();
+      const statusValue = filterStatus.value.toLowerCase();
+
+      tableRows.forEach(row => {
+        if (row.cells.length === 1) return; // Skip "no records found" row
+
+        const dateText = row.cells[0].textContent;
+        const recordDate = parseDate(dateText);
+        const student = row.cells[1].textContent.toLowerCase();
+        const studentClass = row.cells[3].textContent.toLowerCase();
+        const status = row.cells[4].textContent.trim().toLowerCase();
+
+        let dateMatch = true;
+        if (dateFromValue && recordDate) {
+          dateMatch = dateMatch && recordDate >= dateFromValue;
+        }
+        if (dateToValue && recordDate) {
+          dateMatch = dateMatch && recordDate <= dateToValue;
+        }
+
+        const studentMatch = student.includes(studentValue);
+        const classMatch = studentClass.includes(classValue);
+        const statusMatch = !statusValue || status.includes(statusValue);
+
+        if (dateMatch && studentMatch && classMatch && statusMatch) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    }
+
+    function clearFilters() {
+      filterDateFrom.value = '';
+      filterDateTo.value = '';
+      filterStudent.value = '';
+      filterClass.value = '';
+      filterStatus.value = '';
+      applyFilters();
+    }
+
+    // Add event listeners
+    filterDateFrom.addEventListener('change', applyFilters);
+    filterDateTo.addEventListener('change', applyFilters);
+    filterStudent.addEventListener('input', applyFilters);
+    filterClass.addEventListener('input', applyFilters);
+    filterStatus.addEventListener('change', applyFilters);
+  </script>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

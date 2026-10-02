@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Attendance - School Management System</title>
+  <link rel="stylesheet" href="/css/modern.css">
+</head>
+<body>
+  <%- include('../partials/navbar') %>
+
+  <div class="container">
+    <div class="page-header">
+      <h2>Edit Attendance</h2>
+      <a href="/attendance" class="btn btn-secondary">← Back to Attendance</a>
+    </div>
+
+    <div class="card">
+      <form method="POST" action="/attendance/edit/<%= attendance._id %>">
+        <div class="form-group">
+          <label>Student:</label>
+          <input type="text" class="form-control" value="<%= attendance.student.firstName %> <%= attendance.student.lastName %>" readonly style="background: #f3f4f6;">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Class:</label>
+            <input type="text" class="form-control" value="<%= attendance.student.class ? attendance.student.class.name : 'N/A' %>" readonly style="background: #f3f4f6;">
+          </div>
+          <div class="form-group">
+            <label>Roll Number:</label>
+            <input type="text" class="form-control" value="<%= attendance.student.rollNumber %>" readonly style="background: #f3f4f6;">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Date: *</label>
+            <input type="date" name="date" class="form-control" value="<%= new Date(attendance.date).toISOString().split('T')[0] %>" required>
+          </div>
+          <div class="form-group">
+            <label>Status: *</label>
+            <select name="status" class="form-control" required>
+              <option value="Present" <%= attendance.status === 'Present' ? 'selected' : '' %>>Present</option>
+              <option value="Absent" <%= attendance.status === 'Absent' ? 'selected' : '' %>>Absent</option>
+              <option value="Late" <%= attendance.status === 'Late' ? 'selected' : '' %>>Late</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Notes:</label>
+          <textarea name="notes" class="form-control" rows="3"><%= attendance.notes || '' %></textarea>
+        </div>
+
+        <div class="flex gap-2 mt-3">
+          <button type="submit" class="btn btn-primary">Update Attendance</button>
+          <a href="/attendance" class="btn btn-secondary">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

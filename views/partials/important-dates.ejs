@@ -1,0 +1,46 @@
+<%# Important dates list for the admin portal, admin dashboard and student portal.
+    Include with { dates, manage?: true (edit/delete buttons and where it's shown),
+                   ended?: true for items whose day has passed, emptyTitle?, emptyText? }. %>
+<% const manage = !!locals.manage; const isPast = locals.ended === true; %>
+<% if (!dates.length) { %>
+  <div class="empty-state empty-state--compact">
+    <span class="stat-icon"><%- icon('calendar-days') %></span>
+    <strong><%= locals.emptyTitle || 'No upcoming dates' %></strong>
+    <% if (locals.emptyText) { %><p><%= emptyText %></p><% } %>
+  </div>
+<% } else { %>
+  <ul class="date-list<%= isPast ? ' date-list--past' : '' %>">
+    <% dates.forEach(item => {
+         const parts = dateParts(item);
+         const when = isPast ? '' : whenLabel(item);
+         const now = when === 'Today' || when === 'Happening now';
+    %>
+      <li class="date-item">
+        <span class="date-badge" aria-hidden="true"><strong><%= parts.day %></strong><span><%= parts.month %></span></span>
+        <div class="date-info">
+          <div class="date-title">
+            <strong><%= item.title %></strong>
+            <% if (when) { %><span class="badge <%= now ? 'badge-success' : 'badge-info' %>"><%= when %></span><% } %>
+          </div>
+          <span class="date-when"><%= dateRange(item) %></span>
+          <% if (item.details) { %><p class="date-details"><%= item.details %></p><% } %>
+          <% if (manage) { %>
+            <div class="date-audience" aria-label="Shown on">
+              <% Object.entries(audiences).forEach(([key, label]) => { if (item.audience && item.audience[key]) { %>
+                <span class="badge badge--plain"><%= label %></span>
+              <% } }) %>
+            </div>
+          <% } %>
+        </div>
+        <% if (manage) { %>
+          <div class="actions actions--end">
+            <a href="/announcements/<%= item._id %>/edit" class="btn btn-sm btn-ghost" title="Edit" aria-label="Edit <%= item.title %>"><%- icon('pencil') %></a>
+            <form method="POST" action="/announcements/<%= item._id %>/delete" data-confirm="Remove “<%= item.title %>”? It will disappear from the website and the portals.">
+              <button type="submit" class="btn btn-sm btn-danger" title="Remove" aria-label="Remove <%= item.title %>"><%- icon('trash-2') %></button>
+            </form>
+          </div>
+        <% } %>
+      </li>
+    <% }) %>
+  </ul>
+<% } %>

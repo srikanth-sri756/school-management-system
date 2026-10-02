@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/admin-head', { title: 'Edit Teacher Attendance' }) %>
+</head>
+<body class="app">
+  <%- include('../partials/navbar', { page: 'teacher-attendance' }) %>
+
+  <% const t = attendance.teacher || { name: 'Deleted teacher' }; %>
+  <main class="container container--narrow" id="main">
+    <div class="page-header">
+      <div>
+        <a href="/teacher-attendance" class="back-link"><%- icon('arrow-left') %>Teacher Attendance</a>
+        <h2>Edit Attendance</h2>
+      </div>
+    </div>
+
+    <form method="POST" action="/teacher-attendance/edit/<%= attendance._id %>" class="card">
+      <div class="profile-head">
+        <%- avatar('teacher', t) %>
+        <div>
+          <h3><%= t.name %></h3>
+          <div class="meta">
+            <span><%= t.subject ? t.subject.name : 'No subject' %></span><span>·</span>
+            <span><%= t.class ? t.class.name : 'No class' %><%= t.section ? ' – ' + t.section : '' %></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="date">Date <span class="req">*</span></label>
+          <input type="date" id="date" name="date" class="form-control" value="<%= new Date(attendance.date).toISOString().split('T')[0] %>" required>
+        </div>
+        <div class="form-group">
+          <label for="status">Status <span class="req">*</span></label>
+          <select id="status" name="status" class="form-control" required>
+            <% ['Present', 'Absent', 'Late', 'Half-Day', 'Leave'].forEach(st => { %>
+              <option value="<%= st %>" <%= attendance.status === st ? 'selected' : '' %>><%= st %></option>
+            <% }) %>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="checkIn">Check-in time</label>
+          <input type="time" id="checkIn" name="checkIn" class="form-control" value="<%= attendance.checkIn || '' %>">
+        </div>
+        <div class="form-group">
+          <label for="checkOut">Check-out time</label>
+          <input type="time" id="checkOut" name="checkOut" class="form-control" value="<%= attendance.checkOut || '' %>">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="notes">Notes</label>
+        <textarea id="notes" name="notes" class="form-control" rows="3" placeholder="Optional"><%= attendance.notes || '' %></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary"><%- icon('check') %>Save Changes</button>
+        <a href="/teacher-attendance" class="btn">Cancel</a>
+      </div>
+    </form>
+  </main>
+</body>
+</html>

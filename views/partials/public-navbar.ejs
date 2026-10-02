@@ -1,0 +1,45 @@
+<%
+  const page = typeof currentPage !== 'undefined' ? currentPage : '';
+  const navItems = [
+    { href: '/portfolio/about', key: 'about', label: 'About' },
+    { href: '/portfolio/academics', key: 'academics', label: 'Academics' },
+    { href: '/portfolio/admissions', key: 'admissions', label: 'Admissions' },
+    { href: '/portfolio/contact', key: 'contact', label: 'Contact' }
+  ];
+  const isCurrent = (key) => page === key || (key === 'academics' && page === 'programs');
+%>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header<%= typeof solidHeader !== 'undefined' && solidHeader ? ' is-solid' : '' %>">
+  <div class="header-inner">
+    <a href="/" class="brand" aria-label="Akansha Grammar High School home">
+      <img src="/images/crest-mono.svg" alt="" width="30" height="30">
+      <span>Akansha Grammar<small>High School · Est. 1995</small></span>
+    </a>
+
+    <nav class="primary-nav" aria-label="Main">
+      <% navItems.forEach(item => { %>
+        <a href="<%= item.href %>"<%- isCurrent(item.key) ? ' aria-current="page"' : '' %>><%= item.label %></a>
+      <% }) %>
+    </nav>
+
+    <div class="header-actions">
+      <a href="/student/login" class="portal-link">Student Portal</a>
+      <a href="/portfolio/admissions" class="pill pill--dark">Apply Now</a>
+      <button type="button" class="menu-toggle" aria-controls="mobileMenu" aria-expanded="false" aria-label="Open menu"><span></span></button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <nav aria-label="Mobile">
+    <a href="/"<%- page === 'home' ? ' aria-current="page"' : '' %>>Home</a>
+    <% navItems.forEach(item => { %>
+      <a href="<%= item.href %>"<%- isCurrent(item.key) ? ' aria-current="page"' : '' %>><%= item.label %></a>
+    <% }) %>
+  </nav>
+  <div class="mobile-menu-foot">
+    <div class="portal-links"><a href="/student/login">Student Portal</a><a href="/login">Staff Login</a></div>
+    <a href="/portfolio/admissions" class="pill pill--light pill--block">Apply for Admission</a>
+  </div>
+</div>

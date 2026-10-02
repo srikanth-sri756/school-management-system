@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Import Data - School Management System</title>
+  <link rel="stylesheet" href="/css/modern.css">
+  <style>
+    .import-section {
+      margin-bottom: 2rem;
+    }
+    .sample-table {
+      overflow-x: auto;
+      margin: 1rem 0;
+    }
+    .sample-table table {
+      font-size: 0.85rem;
+    }
+    .format-info {
+      background: var(--bg-secondary);
+      padding: 1rem;
+      border-radius: var(--radius-md);
+      margin: 1rem 0;
+      border-left: 4px solid var(--primary-color);
+    }
+    .required-field {
+      color: var(--danger-color);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <%- include('../partials/navbar') %>
+
+  <div class="container">
+    <div class="page-header">
+      <h2>📥 Import Data</h2>
+      <a href="/dashboard" class="btn btn-secondary">← Back to Dashboard</a>
+    </div>
+
+    <% if (typeof error !== 'undefined' && error) { %>
+      <div class="alert alert-error">
+        <strong>Error:</strong> <%= error %>
+      </div>
+    <% } %>
+
+    <% if (typeof message !== 'undefined' && message) { %>
+      <div class="alert alert-success">
+        <strong>Success:</strong> <%= message %>
+      </div>
+    <% } %>
+
+    <!-- Import Form -->
+    <div class="card">
+      <h3>Upload CSV or Excel File</h3>
+      <form method="POST" action="/admin/import" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="importType">Select Data Type to Import <span class="required-field">*</span></label>
+          <select name="importType" id="importType" class="form-control" required>
+            <option value="">-- Choose Type --</option>
+            <option value="students">Students</option>
+            <option value="teachers">Teachers</option>
+            <option value="classes">Classes</option>
+            <option value="subjects">Subjects</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="importFile">Upload File (.csv or .xlsx) <span class="required-field">*</span></label>
+          <input type="file" name="importFile" id="importFile" class="form-control" accept=".csv,.xlsx,.xls" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+          <span>📤</span> Import Data
+        </button>
+      </form>
+    </div>
+
+    <!-- Format Information -->
+    <div class="card" id="formatInfo" style="display: none;">
+      <h3>Required Format for <span id="selectedType"></span></h3>
+      <div id="formatDetails"></div>
+    </div>
+
+    <!-- Students Format -->
+    <div class="format-template" data-type="students" style="display: none;">
+      <div class="format-info">
+        <h4>Students CSV/Excel Format</h4>
+        <p><span class="required-field">Required fields:</span> firstName</p>
+        <p><strong>Optional fields:</strong> studentId, lastName, email, dateOfBirth, gender, class, section, rollNumber, parentName, parentPhone, parentEmail, address, admissionDate, status</p>
+      </div>
+      
+      <h4>Sample Format:</h4>
+      <div class="sample-table">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>studentId</th>
+              <th>firstName <span class="required-field">*</span></th>
+              <th>lastName</th>
+              <th>email</th>
+              <th>dateOfBirth</th>
+              <th>gender</th>
+              <th>class</th>
+              <th>section</th>
+              <th>rollNumber</th>
+              <th>parentName</th>
+              <th>parentPhone</th>
+              <th>status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>ST001</td>
+              <td>John</td>
+              <td>Doe</td>
+              <td>john@example.com</td>
+              <td>2010-05-15</td>
+              <td>Male</td>
+              <td>Class 10</td>
+              <td>A</td>
+              <td>1</td>
+              <td>Mr. Doe</td>
+              <td>9876543210</td>
+              <td>Active</td>
+            </tr>
+            <tr>
+              <td>ST002</td>
+              <td>Jane</td>
+              <td>Smith</td>
+              <td>jane@example.com</td>
+              <td>2010-08-20</td>
+              <td>Female</td>
+              <td>Class 10</td>
+              <td>A</td>
+              <td>2</td>
+              <td>Mrs. Smith</td>
+              <td>9876543211</td>
+              <td>Active</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="format-info">
+        <strong>📝 Notes:</strong>
+        <ul>
+          <li>Class name must match existing classes in the system (e.g., "Class 10", "Class 9")</li>
+          <li>Status can be "Active" or "Inactive" (defaults to "Active")</li>
+          <li>Gender can be "Male", "Female", or "Other"</li>
+          <li>Date format: YYYY-MM-DD</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Teachers Format -->
+    <div class="format-template" data-type="teachers" style="display: none;">
+      <div class="format-info">
+        <h4>Teachers CSV/Excel Format</h4>
+        <p><span class="required-field">Required fields:</span> name, email</p>
+        <p><strong>Optional fields:</strong> phone, subject, class, section, isClassTeacher, salary, address</p>
+      </div>
+      
+      <h4>Sample Format:</h4>
+      <div class="sample-table">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>name <span class="required-field">*</span></th>
+              <th>email <span class="required-field">*</span></th>
+              <th>phone</th>
+              <th>subject</th>
+              <th>class</th>
+              <th>section</th>
+              <th>isClassTeacher</th>
+              <th>salary</th>
+              <th>address</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Mr. Sharma</td>
+              <td>sharma@school.com</td>
+              <td>9876543210</td>
+              <td>Mathematics</td>
+              <td>Class 10</td>
+              <td>A</td>
+              <td>Yes</td>
+              <td>50000</td>
+              <td>123 Main St</td>
+            </tr>
+            <tr>
+              <td>Mrs. Patel</td>
+              <td>patel@school.com</td>
+              <td>9876543211</td>
+              <td>English</td>
+              <td>Class 9</td>
+              <td>B</td>
+              <td>No</td>
+              <td>45000</td>
+              <td>456 Oak Ave</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="format-info">
+        <strong>📝 Notes:</strong>
+        <ul>
+          <li>Subject and Class must match existing entries in the system</li>
+          <li>Default password for all imported teachers: <code>teacher123</code></li>
+          <li>isClassTeacher should be "Yes" or "No"</li>
+          <li>Email must be unique</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Classes Format -->
+    <div class="format-template" data-type="classes" style="display: none;">
+      <div class="format-info">
+        <h4>Classes CSV/Excel Format</h4>
+        <p><span class="required-field">Required fields:</span> name</p>
+        <p><strong>Optional fields:</strong> section, capacity</p>
+      </div>
+      
+      <h4>Sample Format:</h4>
+      <div class="sample-table">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>name <span class="required-field">*</span></th>
+              <th>section</th>
+              <th>capacity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Class 10</td>
+              <td>A</td>
+              <td>40</td>
+            </tr>
+            <tr>
+              <td>Class 10</td>
+              <td>B</td>
+              <td>35</td>
+            </tr>
+            <tr>
+              <td>Class 9</td>
+              <td>A</td>
+              <td>40</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Subjects Format -->
+    <div class="format-template" data-type="subjects" style="display: none;">
+      <div class="format-info">
+        <h4>Subjects CSV/Excel Format</h4>
+        <p><span class="required-field">Required fields:</span> name</p>
+        <p><strong>Optional fields:</strong> code</p>
+      </div>
+      
+      <h4>Sample Format:</h4>
+      <div class="sample-table">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>name <span class="required-field">*</span></th>
+              <th>code</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Mathematics</td>
+              <td>MATH</td>
+            </tr>
+            <tr>
+              <td>English</td>
+              <td>ENG</td>
+            </tr>
+            <tr>
+              <td>Science</td>
+              <td>SCI</td>
+            </tr>
+            <tr>
+              <td>Social Studies</td>
+              <td>SS</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    document.getElementById('importType').addEventListener('change', function() {
+      const type = this.value;
+      const formatInfo = document.getElementById('formatInfo');
+      const selectedType = document.getElementById('selectedType');
+      const formatDetails = document.getElementById('formatDetails');
+      
+      // Hide all format templates
+      document.querySelectorAll('.format-template').forEach(el => el.style.display = 'none');
+      
+      if (type) {
+        // Show format info card
+        formatInfo.style.display = 'block';
+        selectedType.textContent = type.charAt(0).toUpperCase() + type.slice(1);
+        
+        // Get the template and clone it
+        const template = document.querySelector(`.format-template[data-type="${type}"]`);
+        if (template) {
+          formatDetails.innerHTML = template.innerHTML;
+        }
+      } else {
+        formatInfo.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>

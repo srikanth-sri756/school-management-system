@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marks - School Management System</title>
+  <link rel="stylesheet" href="/css/modern.css">
+</head>
+<body>
+  <%- include('../partials/navbar') %>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="page-header">
+      <h2>Marks Management</h2>
+      <div class="flex gap-2">
+        <a href="/marks/add" class="btn btn-primary">+ Add Marks</a>
+        <a href="/marks/report" class="btn btn-secondary">View Report</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="mb-3">Recent Marks</h3>
+      <% if (marks.length > 0) { %>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Student Name</th>
+                <th>Roll Number</th>
+                <th>Subject</th>
+                <th>Exam Type</th>
+                <th>Marks</th>
+                <th>Percentage</th>
+                <th>Grade</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% marks.forEach(mark => { %>
+                <tr>
+                  <td><%= mark.student ? (mark.student.firstName + ' ' + mark.student.lastName) : 'Unknown' %></td>
+                  <td><%= mark.student ? mark.student.rollNumber : '-' %></td>
+                  <td><%= mark.subject ? mark.subject.name : 'N/A' %></td>
+                  <td><%= mark.examType %></td>
+                  <td><%= mark.obtainedMarks %>/<%= mark.maxMarks %></td>
+                  <td><%= mark.percentage %>%</td>
+                  <td>
+                    <% if (mark.grade) { %>
+                      <span style="padding: 4px 8px; border-radius: 4px; font-weight: 600; background: <%= mark.grade.startsWith('A') ? '#10b981' : (mark.grade === 'B' || mark.grade === 'B+' ? '#3b82f6' : (mark.grade === 'C' ? '#fbbf24' : '#ef4444')) %>; color: white;">
+                        <%= mark.grade %>
+                      </span>
+                    <% } else { %>
+                      <span style="color: #9ca3af;">N/A</span>
+                    <% } %>
+                  </td>
+                  <td><%= mark.date ? new Date(mark.date).toLocaleDateString('en-IN') : (mark.examDate || 'N/A') %></td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      <% } else { %>
+        <p>No marks records found.</p>
+      <% } %>
+    </div>
+  </div>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

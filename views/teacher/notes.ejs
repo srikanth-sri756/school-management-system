@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/admin-head', { title: 'Notes' }) %>
+</head>
+<body class="app">
+  <%- include('../partials/navbar', { page }) %>
+
+  <% const classText = teacher.class ? classLabel(teacher.class) : null; %>
+  <main class="container" id="main">
+    <div class="page-header">
+      <div>
+        <h2>Notes</h2>
+        <p>Share study notes and files with <%= classText || 'your class' %>. Shared notes appear in the Student Portal.</p>
+      </div>
+    </div>
+
+    <% if (!classText) { %>
+      <div class="alert alert-info"><%- icon('info') %><div>You need an assigned class before you can share notes. Please ask the school office.</div></div>
+    <% } else { %>
+      <form method="POST" action="/teacher/notes/add" enctype="multipart/form-data" class="card">
+        <div class="card-header"><h3><%- icon('plus') %>New note</h3></div>
+        <div class="form-group">
+          <label for="title">Title <span class="req">*</span></label>
+          <input type="text" id="title" name="title" class="form-control" maxlength="150" required placeholder="e.g. Chapter 4 – Fractions summary">
+        </div>
+        <div class="form-group">
+          <label for="content">Note <span class="req">*</span></label>
+          <textarea id="content" name="content" class="form-control" rows="6" required placeholder="Key points, homework, reading…"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="attachment">Attach a file</label>
+            <input type="file" id="attachment" name="attachment" class="form-control" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.jpg,.jpeg,.png">
+            <span class="form-hint">Optional. PDF, Office, text or image files, up to 10 MB.</span>
+          </div>
+          <div class="form-group">
+            <span class="field-label">Who can see it</span>
+            <label class="check"><input type="checkbox" name="isPublic" value="true" checked> Share with students of <%= classText %></label>
+            <span class="form-hint">Untick to keep it as a private draft.</span>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary"><%- icon('check') %>Save note</button>
+        </div>
+      </form>
+    <% } %>
+
+    <h3 class="form-section-title section-heading"><%- icon('sticky-note') %>My notes · <%= notes.length %></h3>
+    <% if (notes.length) { %>
+      <div class="card-grid">
+        <% notes.forEach(note => { const content = note.content || ''; %>
+          <article class="item-card">
+            <div class="tags">
+              <span class="badge <%= note.isPublic ? 'badge-success' : 'badge--plain' %>"><%= note.isPublic ? 'Shared' : 'Private' %></span>
+              <% if (note.subject) { %><span class="badge badge-navy badge--plain"><%= note.subject.name %></span><% } %>
+              <% if (note.class) { %><span class="badge badge--plain"><%= classLabel(note.class) %></span><% } %>
+            </div>
+            <h3><%= note.title %></h3>
+            <p><%= content.length > 220 ? content.slice(0, 220) + '…' : content %></p>
+            <% if (note.attachment && note.attachment.filename) { %>
+              <div class="item-foot">
+                <span class="attachment"><%- icon('file-text') %><span><%= note.attachment.originalName %></span></span>
+                <a href="/teacher/notes/<%= note._id %>/download" class="btn btn-sm"><%- icon('download') %>Download</a>
+              </div>
+            <% } %>
+            <div class="item-meta">
+              <span><%- icon('calendar') %><%= new Date(note.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %></span>
+              <% if (note.attachment && note.attachment.size) { %><span><%- icon('file-text') %><%= fileSize(note.attachment.size) %></span><% } %>
+              <form method="POST" action="/teacher/notes/<%= note._id %>/delete" class="item-delete" data-confirm="Delete “<%= note.title %>”? Students will no longer see it.">
+                <button type="submit" class="btn btn-sm btn-ghost" title="Delete" aria-label="Delete note"><%- icon('trash-2') %></button>
+              </form>
+            </div>
+          </article>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <section class="card">
+        <div class="empty-state">
+          <span class="stat-icon"><%- icon('sticky-note') %></span>
+          <strong>No notes yet</strong>
+          <p>Notes you save will appear here, and shared ones in your students’ portal.</p>
+        </div>
+      </section>
+    <% } %>
+  </main>
+</body>
+</html>

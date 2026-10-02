@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/admin-head', { title: 'Teachers' }) %>
+</head>
+<body class="app">
+  <%- include('../partials/navbar', { page: 'teachers' }) %>
+
+  <main class="container" id="main">
+    <div class="page-header">
+      <div>
+        <h2>Teachers</h2>
+        <p>Teaching staff, class assignments and portal access.</p>
+      </div>
+      <div class="page-actions">
+        <a href="/teachers/add" class="btn btn-primary"><%- icon('plus') %>Add Teacher</a>
+      </div>
+    </div>
+
+    <section class="card">
+      <div class="filter-bar" data-filter-for="teachersTable">
+        <div class="form-group">
+          <label for="filterName">Search</label>
+          <div class="search-input">
+            <%- icon('search') %>
+            <input type="text" id="filterName" class="form-control" placeholder="Name or email" data-col="0">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="filterSubject">Subject</label>
+          <input type="text" id="filterSubject" class="form-control" placeholder="e.g. English" data-col="2">
+        </div>
+        <div class="form-group">
+          <label for="filterClassTeacher">Class teacher</label>
+          <select id="filterClassTeacher" class="form-control" data-col="3" data-match="equals">
+            <option value="">All</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="filterLoginAccess">Portal access</label>
+          <select id="filterLoginAccess" class="form-control" data-col="4" data-match="equals">
+            <option value="">All</option>
+            <option value="Active">Active</option>
+            <option value="None">No access</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="filterDocs">Documents</label>
+          <select id="filterDocs" class="form-control" data-col="5" data-match="equals">
+            <option value="">All</option>
+            <option value="Complete">Complete</option>
+            <option value="Missing">Missing</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <button type="button" class="btn btn-block" data-filter-reset><%- icon('x') %>Clear filters</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card card--flush">
+      <div class="card-header">
+        <h3><%- icon('presentation') %>Teaching Staff</h3>
+        <span class="result-count" data-filter-count="teachersTable"></span>
+      </div>
+      <% if (teachers.length) { %>
+        <div class="table-container">
+          <table id="teachersTable">
+            <thead>
+              <tr><th>Teacher</th><th>Phone</th><th>Subject</th><th>Class</th><th>Portal Access</th><th>Documents</th><th class="num">Salary</th><th class="num">Actions</th></tr>
+            </thead>
+            <tbody>
+              <% teachers.forEach(t => { %>
+                <tr>
+                  <td data-value="<%= t.name %> <%= t.email %>">
+                    <div class="cell-person">
+                      <%- avatar('teacher', t) %>
+                      <div>
+                        <span class="cell-strong"><%= t.name %></span>
+                        <span class="cell-sub"><%= t.email %></span>
+                      </div>
+                    </div>
+                  </td>
+                  <td><%= t.phone || '—' %></td>
+                  <td><%= t.subject ? t.subject.name : '—' %></td>
+                  <td data-value="<%= t.isClassTeacher ? 'Yes' : 'No' %>">
+                    <% if (t.isClassTeacher) { %>
+                      <span class="badge badge-navy badge--plain">Class teacher</span>
+                      <span class="cell-sub"><%= t.class ? t.class.name : '' %><%= t.section ? ' – ' + t.section : '' %></span>
+                    <% } else { %>
+                      <span class="text-muted"><%= t.class ? t.class.name : '—' %></span>
+                    <% } %>
+                  </td>
+                  <td data-value="<%= t.user ? 'Active' : 'None' %>">
+                    <% if (t.user) { %>
+                      <span class="badge badge-success">Active</span>
+                      <span class="cell-sub"><%= t.user.email %></span>
+                    <% } else { %>
+                      <span class="badge">No access</span>
+                    <% } %>
+                  </td>
+                  <td data-value="<%= missingDocuments('teacher', t).length ? 'Missing' : 'Complete' %>">
+                    <%- documentsStatus('teacher', t) %>
+                    <% if (t.bankDetails && t.bankDetails.accountNumber) { %><span class="cell-sub">A/c <%= maskAccount(t.bankDetails.accountNumber) %></span><% } %>
+                  </td>
+                  <td class="num"><%= t.salary ? '₹' + Number(t.salary).toLocaleString('en-IN') : '—' %></td>
+                  <td class="num">
+                    <div class="actions actions--end">
+                      <a href="/teachers/<%= t._id %>/edit" class="btn btn-sm"><%- icon('pencil') %>Edit</a>
+                      <form method="POST" action="/teachers/<%= t._id %>/delete" data-confirm="Delete <%= t.name %>? Their portal login will also stop working.">
+                        <button type="submit" class="btn btn-sm btn-danger" title="Delete" aria-label="Delete <%= t.name %>"><%- icon('trash-2') %></button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              <% }) %>
+              <tr data-filter-empty hidden><td colspan="8" class="text-center text-muted">No teachers match these filters.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      <% } else { %>
+        <div class="empty-state">
+          <span class="stat-icon"><%- icon('presentation') %></span>
+          <strong>No teachers yet</strong>
+          <p>Add teaching staff and, optionally, give them access to the teacher portal.</p>
+          <a href="/teachers/add" class="btn btn-primary"><%- icon('plus') %>Add Teacher</a>
+        </div>
+      <% } %>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Arts & Culture at Akansha Grammar High School - Nurturing creativity through music, dance, drama, and visual arts">
+    <title>Arts & Culture | Akansha Grammar High School</title>
+    <link rel="stylesheet" href="/css/modern.css">
+    <link rel="stylesheet" href="/css/portfolio.css">
+    <style>
+        .program-hero {
+            background: linear-gradient(135deg, #c026d3 0%, #a21caf 100%);
+            color: white;
+            padding: 4rem 0;
+            margin-bottom: 3rem;
+        }
+        .program-hero h1 {
+            color: white;
+            margin-bottom: 1rem;
+        }
+        .program-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 16px rgba(192, 38, 211, 0.2);
+        }
+        .feature-card h3 {
+            color: #c026d3;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+            text-align: center;
+        }
+        .stat-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #c026d3;
+            margin-bottom: 0.5rem;
+        }
+        .stat-label {
+            color: #64748b;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <%- include('../../partials/public-navbar') %>
+
+    <div class="program-hero">
+        <div class="program-content">
+            <h1>🎨 Arts & Culture Program</h1>
+            <p style="font-size: 1.25rem; max-width: 800px;">Nurturing creativity through music, dance, drama, and visual arts</p>
+        </div>
+    </div>
+
+    <div class="program-content">
+        <section>
+            <h2>Overview</h2>
+            <p>Our Arts & Culture program celebrates creativity and cultural diversity, providing students with opportunities to explore and develop their artistic talents. From traditional Indian arts to contemporary expressions, we foster an environment where imagination flourishes and students discover their unique creative voices.</p>
+        </section>
+
+        <div class="stats-container">
+            <div class="stat-box">
+                <div class="stat-number">8</div>
+                <div class="stat-label">Art Disciplines</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">15+</div>
+                <div class="stat-label">Professional Artists/Instructors</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">30+</div>
+                <div class="stat-label">Annual Performances</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">100+</div>
+                <div class="stat-label">Awards Won</div>
+            </div>
+        </div>
+
+        <section>
+            <h2>Programs Offered</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎵</div>
+                    <h3>Music Program</h3>
+                    <p><strong>Vocal Music:</strong> Indian classical (Hindustani & Carnatic), Western classical, contemporary, devotional</p>
+                    <p><strong>Instrumental:</strong> Piano, guitar, violin, tabla, flute, drums, keyboards, harmonium</p>
+                    <p>Individual lessons, group sessions, choir, orchestra, and band opportunities</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💃</div>
+                    <h3>Dance Academy</h3>
+                    <p><strong>Classical Dance:</strong> Bharatanatyam, Kathak, Odissi, Kuchipudi</p>
+                    <p><strong>Contemporary:</strong> Western dance, hip-hop, jazz, ballet</p>
+                    <p><strong>Folk Dance:</strong> Various Indian regional folk dances</p>
+                    <p>Regular performances and inter-school competitions</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎭</div>
+                    <h3>Drama & Theatre</h3>
+                    <p>Acting workshops, script writing, stage direction, set design, lighting, and sound production</p>
+                    <p>Annual school plays, street plays, mono-acting, mime, and improvisation</p>
+                    <p>Participation in inter-school theatre festivals</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3>Visual Arts</h3>
+                    <p><strong>Drawing & Painting:</strong> Sketching, oil painting, watercolor, acrylics, charcoal</p>
+                    <p><strong>Crafts:</strong> Clay modeling, pottery, origami, paper craft, rangoli</p>
+                    <p><strong>Digital Arts:</strong> Graphic design, digital painting, animation</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📸</div>
+                    <h3>Photography & Film</h3>
+                    <p>Photography basics, composition, lighting, and editing</p>
+                    <p>Filmmaking, videography, documentary production</p>
+                    <p>School magazine, yearbook, and video production club</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">✍️</div>
+                    <h3>Creative Writing</h3>
+                    <p>Poetry, short stories, essays, creative non-fiction</p>
+                    <p>Literary magazine, writing competitions, poetry slams</p>
+                    <p>Workshops with published authors and poets</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🗣️</div>
+                    <h3>Public Speaking & Debate</h3>
+                    <p>Debate club, MUN (Model United Nations), elocution</p>
+                    <p>Public speaking workshops, storytelling sessions</p>
+                    <p>Regular inter-school competitions</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌍</div>
+                    <h3>Cultural Studies</h3>
+                    <p>Indian culture and heritage, world cultures</p>
+                    <p>Cultural exchange programs, heritage walks</p>
+                    <p>Celebration of festivals from various cultures</p>
+                </div>
+            </div>
+        </section>
+
+        <section style="background: #fdf4ff; padding: 3rem; border-radius: 12px; margin: 3rem 0;">
+            <h2>Age-wise Programs</h2>
+            <div class="feature-grid">
+                <div style="background: white; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #c026d3;">
+                    <h4>🎨 Primary Level (K-5)</h4>
+                    <ul>
+                        <li>Introduction to all art forms</li>
+                        <li>Basic drawing and coloring</li>
+                        <li>Simple craft projects</li>
+                        <li>Nursery rhymes and action songs</li>
+                        <li>Movement and creative expression</li>
+                        <li>Storytelling and puppet shows</li>
+                        <li>Annual day performances</li>
+                    </ul>
+                </div>
+                <div style="background: white; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #c026d3;">
+                    <h4>🎭 Middle Level (6-8)</h4>
+                    <ul>
+                        <li>Specialized training in chosen art forms</li>
+                        <li>Music theory and instrumental training</li>
+                        <li>Classical and contemporary dance</li>
+                        <li>Drama and role-playing</li>
+                        <li>Advanced art techniques</li>
+                        <li>Inter-house cultural competitions</li>
+                        <li>School choir and orchestra</li>
+                    </ul>
+                </div>
+                <div style="background: white; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #c026d3;">
+                    <h4>🎪 High School (9-12)</h4>
+                    <ul>
+                        <li>Advanced training and mastery</li>
+                        <li>Portfolio development for college</li>
+                        <li>Professional performances</li>
+                        <li>Leadership in cultural clubs</li>
+                        <li>Organizing cultural events</li>
+                        <li>Mentoring junior students</li>
+                        <li>Participation in state/national competitions</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>World-Class Facilities</h2>
+            <ul style="columns: 2; column-gap: 2rem; margin: 1.5rem 0;">
+                <li>✅ 500-seat auditorium with professional sound and lighting</li>
+                <li>✅ Music rooms with acoustic treatment</li>
+                <li>✅ Individual practice rooms</li>
+                <li>✅ Dance studios with mirrors and barres</li>
+                <li>✅ Drama rehearsal spaces</li>
+                <li>✅ Art studios with natural lighting</li>
+                <li>✅ Pottery and ceramics lab</li>
+                <li>✅ Digital art lab with graphic tablets</li>
+                <li>✅ Photography darkroom and digital studio</li>
+                <li>✅ Video production studio</li>
+                <li>✅ Costume and prop rooms</li>
+                <li>✅ Musical instruments library</li>
+                <li>✅ Art supplies and materials store</li>
+                <li>✅ Exhibition and gallery space</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Expert Faculty</h2>
+            <div class="feature-grid">
+                <div class="feature-card" style="border-top: 4px solid #c026d3;">
+                    <h4>🎼 Professional Musicians</h4>
+                    <p>Trained in classical and contemporary music from prestigious institutions. Many are performing artists and award winners.</p>
+                </div>
+                <div class="feature-card" style="border-top: 4px solid #c026d3;">
+                    <h4>💃 Certified Dance Instructors</h4>
+                    <p>Expert dancers with degrees in Bharatanatyam, Kathak, and contemporary dance. Former stage performers and choreographers.</p>
+                </div>
+                <div class="feature-card" style="border-top: 4px solid #c026d3;">
+                    <h4>🎨 Professional Artists</h4>
+                    <p>Graduate artists from prestigious art schools. Practicing painters, sculptors, and digital artists with exhibitions and awards.</p>
+                </div>
+                <div class="feature-card" style="border-top: 4px solid #c026d3;">
+                    <h4>🎭 Theatre Professionals</h4>
+                    <p>Experienced theatre directors and actors from national theatre groups. Expertise in stagecraft and production.</p>
+                </div>
+            </div>
+        </section>
+
+        <section style="background: #fdf4ff; padding: 2rem; border-radius: 12px; margin: 3rem 0;">
+            <h2>Events & Performances</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin-top: 2rem;">
+                <div>
+                    <h4 style="color: #c026d3;">🎪 Annual Events</h4>
+                    <ul>
+                        <li>Annual Day Celebration</li>
+                        <li>Cultural Fest (Virasat)</li>
+                        <li>Art Exhibition Week</li>
+                        <li>Music Concert Series</li>
+                        <li>Dance Festivals</li>
+                        <li>Theatre Productions</li>
+                        <li>Literary Week</li>
+                        <li>Film Festival</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color: #c026d3;">🏆 Competitions</h4>
+                    <ul>
+                        <li>Inter-house cultural competitions</li>
+                        <li>Inter-school arts festivals</li>
+                        <li>State-level music competitions</li>
+                        <li>National dance championships</li>
+                        <li>Art competitions and exhibitions</li>
+                        <li>Drama festivals</li>
+                        <li>Photography contests</li>
+                        <li>Creative writing competitions</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color: #c026d3;">🌟 Special Programs</h4>
+                    <ul>
+                        <li>Master classes by renowned artists</li>
+                        <li>Guest performances</li>
+                        <li>Field trips to museums and galleries</li>
+                        <li>Theatre visits</li>
+                        <li>Cultural exchange programs</li>
+                        <li>Summer arts camps</li>
+                        <li>Community performances</li>
+                        <li>Charity shows</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Achievements & Recognition</h2>
+            <ul style="columns: 2; column-gap: 2rem; margin: 1.5rem 0;">
+                <li>✅ Best Cultural School Award (District Level - 2023)</li>
+                <li>✅ 15+ first prizes in inter-school competitions</li>
+                <li>✅ Students selected for state music and dance teams</li>
+                <li>✅ Art students won national level competitions</li>
+                <li>✅ School band performed at state events</li>
+                <li>✅ Theatre productions toured to other schools</li>
+                <li>✅ Students' artworks exhibited in galleries</li>
+                <li>✅ Published authors and poets among students</li>
+                <li>✅ Music students cleared grade exams with distinction</li>
+                <li>✅ Dance troupe won state championships</li>
+            </ul>
+        </section>
+
+        <section style="margin-top: 3rem;">
+            <h2>Cultural Clubs & Societies</h2>
+            <div class="feature-grid">
+                <div class="feature-card" style="background: #fdf4ff;">
+                    <h4 style="color: #c026d3;">🎵 Music Club</h4>
+                    <p>Weekly jam sessions, choir practice, instrumental ensembles, and performance opportunities</p>
+                </div>
+                <div class="feature-card" style="background: #fdf4ff;">
+                    <h4 style="color: #c026d3;">💃 Dance Society</h4>
+                    <p>Regular practice sessions, choreography workshops, and participation in competitions</p>
+                </div>
+                <div class="feature-card" style="background: #fdf4ff;">
+                    <h4 style="color: #c026d3;">🎭 Drama Club</h4>
+                    <p>Weekly rehearsals, script readings, improvisation games, and theatre productions</p>
+                </div>
+                <div class="feature-card" style="background: #fdf4ff;">
+                    <h4 style="color: #c026d3;">🎨 Art Society</h4>
+                    <p>Art projects, workshops, exhibitions, and collaborative installations</p>
+                </div>
+                <div class="feature-card" style="background: #fdf4ff;">
+                    <h4 style="color: #c026d3;">📚 Literary Club</h4>
+                    <p>Creative writing, poetry slams, book discussions, and publishing school magazine</p>
+                </div>
+                <div class="feature-card" style="background: #fdf4ff;">
+                    <h4 style="color: #c026d3;">📸 Photography Club</h4>
+                    <p>Photo walks, editing workshops, exhibitions, and school yearbook production</p>
+                </div>
+            </div>
+        </section>
+
+        <section style="margin-top: 3rem;">
+            <h2>Benefits of Arts Education</h2>
+            <p>Research shows that arts education enhances:</p>
+            <ul style="columns: 2; column-gap: 2rem; margin: 1.5rem 0; line-height: 1.8;">
+                <li>Creative thinking and problem-solving skills</li>
+                <li>Self-expression and confidence</li>
+                <li>Cultural awareness and appreciation</li>
+                <li>Emotional intelligence and empathy</li>
+                <li>Discipline and dedication</li>
+                <li>Teamwork and collaboration</li>
+                <li>Academic performance in other subjects</li>
+                <li>Communication skills</li>
+                <li>Stress reduction and mental well-being</li>
+                <li>Career opportunities in creative fields</li>
+            </ul>
+        </section>
+
+        <section style="margin: 3rem 0; text-align: center;">
+            <h2>Discover Your Creative Potential</h2>
+            <p style="margin: 1rem 0 2rem;">Join our vibrant arts community and express yourself through creativity!</p>
+            <a href="/portfolio/contact" class="btn btn-primary" style="display: inline-block; padding: 1rem 2rem; background: #c026d3; color: white; text-decoration: none; border-radius: 8px; font-weight: 600;">Contact Us</a>
+        </section>
+    </div>
+
+    <%- include('../../partials/footer') %>
+</body>
+</html>

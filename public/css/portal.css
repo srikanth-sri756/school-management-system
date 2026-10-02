@@ -1,0 +1,150 @@
+/* ==========================================================================
+   Akansha Grammar High School - Student Portal
+   The bright version of the site's monochrome system: it loads after
+   admin.css, re-points the colour tokens to white panels and near-black ink
+   (like the light sections of the public website) and swaps the admin sidebar
+   for a top navigation bar.
+   ========================================================================== */
+
+.theme-light {
+  color-scheme: light;
+
+  --fg: #080808;
+  --fg-strong: #000000;
+  --fg-inverse: #ffffff;
+  --canvas: #f4f5f5;
+  --panel: #ffffff;
+  --panel-2: #f7f8f8;
+  --pill: #eceeef;
+  --pill-hover: #e1e4e5;
+  --field: #ffffff;
+
+  --text-2: #3a4044;
+  --text-3: #5d656b;
+  --label: #7a838a;
+  --line: rgba(8, 8, 8, 0.08);
+  --line-strong: rgba(8, 8, 8, 0.14);
+  --line-hover: rgba(8, 8, 8, 0.28);
+  --ring: rgba(8, 8, 8, 0.07);
+  --row-hover: rgba(8, 8, 8, 0.02);
+  --topbar-bg: rgba(255, 255, 255, 0.86);
+  --primary-hover: #262d33;
+
+  --green: #1f7a4d;  --green-bg: rgba(31, 122, 77, 0.08);  --green-line: rgba(31, 122, 77, 0.22);
+  --amber: #946200;  --amber-bg: rgba(148, 98, 0, 0.08);   --amber-line: rgba(148, 98, 0, 0.22);
+  --red: #b42318;    --red-bg: rgba(180, 35, 24, 0.07);    --red-line: rgba(180, 35, 24, 0.2);
+  --blue: #1d5fbf;   --blue-bg: rgba(29, 95, 191, 0.07);   --blue-line: rgba(29, 95, 191, 0.2);
+  --violet: #6941c6; --violet-bg: rgba(105, 65, 198, 0.07); --violet-line: rgba(105, 65, 198, 0.2);
+
+  --shadow-lg: 0 24px 48px -16px rgba(8, 8, 8, 0.18);
+}
+html:has(body.theme-light) { color-scheme: light; --scrollbar: #c6cbce; background: #f4f5f5; }
+
+/* Dark photo banners keep light type in the bright theme */
+.theme-light .welcome { --fg: #e1e5e5; --fg-strong: #ffffff; --text-2: #c0c4c6; --text-3: #8a9399; }
+
+body.portal { padding-left: 0; }
+.portal .container { max-width: 1240px; }
+
+/* ---------- Top navigation ---------- */
+.portal-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--topbar-bg);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border-bottom: 1px solid var(--line);
+}
+.portal-header-inner {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  max-width: 1240px;
+  height: 72px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+.portal-brand { display: inline-flex; align-items: center; gap: 12px; flex: none; }
+.portal-brand img { width: 30px; height: 30px; filter: invert(1); }
+.portal-brand strong { display: block; font-size: 13px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.15; }
+.portal-brand span { display: block; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--label); }
+
+.portal-nav { display: flex; align-items: center; gap: 4px; margin: 0 auto; }
+.portal-nav a {
+  padding: 9px 14px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-3);
+  transition: background-color 0.2s, color 0.2s;
+}
+.portal-nav a:hover { color: var(--fg); background: var(--pill); }
+.portal-nav a[aria-current="page"] { color: var(--fg-inverse); background: var(--fg); }
+
+.portal-user { display: flex; align-items: center; gap: 10px; flex: none; }
+.portal-user .user-chip-text strong { font-size: 14px; }
+.portal-menu-btn { display: none; }
+
+.portal-mobile-menu {
+  position: fixed;
+  inset: 72px 0 0 0;
+  z-index: 45;
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 24px 20px 32px;
+  background: var(--panel);
+}
+.menu-open .portal-mobile-menu { display: flex; }
+.portal-mobile-menu nav a {
+  display: block;
+  padding: 10px 0;
+  font-size: clamp(1.8rem, 8vw, 2.6rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.012em;
+  text-transform: uppercase;
+  color: var(--label);
+}
+.portal-mobile-menu nav a[aria-current="page"] { color: var(--fg); }
+
+/* ---------- Portal content blocks ---------- */
+.portal .welcome { min-height: 300px; }
+
+
+.reminder {
+  display: grid;
+  gap: 10px;
+  padding: 16px 0;
+  border-top: 1px solid var(--line);
+}
+.reminder:first-child { border-top: 0; padding-top: 0; }
+.reminder strong { font-size: 15px; font-weight: 500; }
+.reminder .reminder-meta { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--text-3); }
+
+.mini-bar { height: 4px; margin-top: 6px; border-radius: 999px; background: var(--pill); overflow: hidden; }
+.stat-body .mini-bar { margin-top: 14px; }
+td .mini-bar { max-width: 140px; }
+
+.quick-actions--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.portal .filter-bar .result-count { display: block; padding-bottom: 12px; }
+.mini-bar > span { display: block; height: 100%; border-radius: inherit; background: var(--fg); }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1180px) {
+  .portal-nav { display: none; }
+  .portal-menu-btn { display: inline-flex; }
+  .portal-user { margin-left: auto; }
+}
+
+@media (max-width: 900px) {
+  .quick-actions--3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 720px) {
+  .quick-actions--3 { grid-template-columns: 1fr; }
+  .portal-header-inner { padding: 0 16px; gap: 12px; }
+  .portal-brand span { display: none; }
+  .portal .welcome { min-height: 240px; }
+}

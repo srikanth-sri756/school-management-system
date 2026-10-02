@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/admin-head', { title: 'Add Holiday' }) %>
+</head>
+<body class="app">
+  <%- include('../partials/navbar', { page: 'holidays' }) %>
+
+  <main class="container container--narrow" id="main">
+    <div class="page-header">
+      <div>
+        <a href="/holidays" class="back-link"><%- icon('arrow-left') %>Holidays</a>
+        <h2>Add Holiday</h2>
+        <p>Attendance can’t be marked on a declared holiday.</p>
+      </div>
+    </div>
+
+    <form method="POST" action="/holidays/add" id="holidayForm" class="card">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="title">Holiday name <span class="req">*</span></label>
+          <input type="text" id="title" name="title" class="form-control" required placeholder="e.g. Independence Day">
+        </div>
+        <div class="form-group">
+          <label for="holidayDate">Date <span class="req">*</span></label>
+          <input type="date" id="holidayDate" name="date" class="form-control" required>
+        </div>
+      </div>
+      <div class="alert alert-warning" id="dateWarning" hidden><%- icon('triangle-alert') %><span>This date is a Sunday, which is already a weekly off. Please choose another date.</span></div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="type">Holiday type</label>
+          <select id="type" name="type" class="form-control" required>
+            <option value="National">National holiday</option>
+            <option value="Religious">Religious holiday</option>
+            <option value="Festival">Festival</option>
+            <option value="School Event">School event</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <span class="field-label">Repeats</span>
+          <label class="check"><input type="checkbox" name="isRecurring" value="true"> Every year on this date</label>
+          <span class="form-hint">For annual holidays such as Independence Day or Republic Day.</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" name="description" class="form-control" rows="3" placeholder="Optional details for staff"></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" id="submitBtn"><%- icon('check') %>Add Holiday</button>
+        <a href="/holidays" class="btn">Cancel</a>
+      </div>
+    </form>
+
+    <section class="card">
+      <div class="card-header"><h3><%- icon('info') %>Good to know</h3></div>
+      <ul class="note-list">
+        <li>Sundays are automatically weekly offs, so they can’t be added as holidays.</li>
+        <li>Only one holiday can be declared per day.</li>
+        <li>Attendance can’t be marked on a holiday.</li>
+      </ul>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const input = document.getElementById('holidayDate');
+      const warning = document.getElementById('dateWarning');
+      const submit = document.getElementById('submitBtn');
+      const isSunday = () => input.value && new Date(input.value + 'T00:00:00').getDay() === 0;
+      input.addEventListener('change', () => {
+        warning.hidden = !isSunday();
+        submit.disabled = isSunday();
+      });
+      document.getElementById('holidayForm').addEventListener('submit', (e) => {
+        if (isSunday()) e.preventDefault();
+      });
+    })();
+  </script>
+</body>
+</html>

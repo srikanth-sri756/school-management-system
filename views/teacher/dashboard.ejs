@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/admin-head', { title: 'Teacher Dashboard' }) %>
+</head>
+<body class="app">
+  <%- include('../partials/navbar', { page }) %>
+
+  <%
+    const hour = new Date().getHours();
+    const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+    const firstName = (teacher.name || 'there').split(' ')[0];
+    const classText = teacher.class ? classLabel(teacher.class) : null;
+    const done = today.total > 0 && today.marked >= today.total;
+    const typeTone = { Positive: 'success', Negative: 'danger', Neutral: 'navy' };
+  %>
+  <main class="container" id="main">
+    <section class="welcome">
+      <div class="photo"><%- photo('blackboard', { eager: true, decorative: true, sizes: '(max-width: 1024px) 100vw, 1240px' }) %></div>
+      <div>
+        <div class="eyebrow">Teacher Portal · Akansha Grammar High School</div>
+        <h2><%= greeting %>,<br><%= firstName %></h2>
+        <p>Here’s your class at a glance.</p>
+        <div class="meta-row">
+          <span><%= classText || 'No class assigned' %></span>
+          <span><%= teacher.subject ? teacher.subject.name : 'No subject assigned' %></span>
+          <span><%= teacher.isClassTeacher ? 'Class teacher' : 'Subject teacher' %></span>
+        </div>
+      </div>
+    </section>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-icon"><%- icon('users') %></span>
+        <div class="stat-body">
+          <p class="stat-label">My Students</p>
+          <div class="stat-value"><%= stats.students %></div>
+          <p class="stat-sub"><%= classText || 'Ask the office to assign a class' %></p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon <%= done ? 'stat-icon--green' : 'stat-icon--amber' %>"><%- icon('calendar-check') %></span>
+        <div class="stat-body">
+          <p class="stat-label">Attendance Today</p>
+          <div class="stat-value"><%= today.marked %> <small>/ <%= today.total %></small></div>
+          <p class="stat-sub"><%= today.closed ? 'No school today' : done ? today.present + ' present' : 'Not finished yet' %></p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon stat-icon--blue"><%- icon('sticky-note') %></span>
+        <div class="stat-body">
+          <p class="stat-label">Notes Shared</p>
+          <div class="stat-value"><%= stats.notes %></div>
+          <p class="stat-sub">Study notes for your class</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon stat-icon--violet"><%- icon('file-text') %></span>
+        <div class="stat-body">
+          <p class="stat-label">Question Papers</p>
+          <div class="stat-value"><%= stats.papers %></div>
+          <p class="stat-sub"><%= stats.remarks %> remarks written</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-main">
+      <div>
+        <section class="card">
+          <div class="card-header">
+            <div>
+              <h3><%- icon('calendar-check') %>Today’s Attendance</h3>
+              <p><%= today.label %></p>
+            </div>
+          </div>
+          <% if (!teacher.class) { %>
+            <p class="text-muted">You don’t have a class assigned yet, so there’s no attendance to take. Please ask the school office.</p>
+          <% } else if (today.closed) { %>
+            <div class="alert alert-info"><%- icon('info') %><div><%= today.closed %> No attendance today.</div></div>
+          <% } else { %>
+            <div class="stat-value"><%= today.total ? Math.round((today.marked / today.total) * 100) : 0 %>% <small>marked</small></div>
+            <div class="progress mt-2"><span style="width: <%= today.total ? Math.round((today.marked / today.total) * 100) : 0 %>%"></span></div>
+            <div class="progress-meta"><span><%= today.marked %> of <%= today.total %> students</span><span><%= today.present %> present or late</span></div>
+            <div class="form-actions">
+              <a href="/teacher/attendance" class="btn btn-primary"><%- icon('calendar-check') %><%= today.marked ? 'Review attendance' : 'Take attendance' %></a>
+            </div>
+          <% } %>
+        </section>
+
+        <section class="card card--flush">
+          <div class="card-header">
+            <h3><%- icon('message-square-text') %>Recent Remarks</h3>
+            <a href="/teacher/remarks" class="btn btn-sm"><%- icon('plus') %>Add remark</a>
+          </div>
+          <% if (recentRemarks.length) { %>
+            <div class="table-container">
+              <table>
+                <thead><tr><th>Student</th><th>Type</th><th>Remark</th><th>Date</th></tr></thead>
+                <tbody>
+                  <% recentRemarks.forEach(r => { %>
+                    <tr>
+                      <td class="cell-strong"><%= r.student ? r.student.firstName + ' ' + (r.student.lastName || '') : 'Former student' %></td>
+                      <td><span class="badge badge-<%= typeTone[r.type] || 'navy' %>"><%= r.type %></span></td>
+                      <td><span class="remark-text"><%= r.remark.length > 90 ? r.remark.slice(0, 90) + '…' : r.remark %></span></td>
+                      <td><%= new Date(r.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) %></td>
+                    </tr>
+                  <% }) %>
+                </tbody>
+              </table>
+            </div>
+          <% } else { %>
+            <div class="empty-state empty-state--compact">
+              <span class="stat-icon"><%- icon('message-square-text') %></span>
+              <strong>No remarks yet</strong>
+              <p>Record praise, concerns or observations about your students.</p>
+            </div>
+          <% } %>
+        </section>
+      </div>
+
+      <div>
+        <section class="card card--flush">
+          <div class="card-header">
+            <h3><%- icon('megaphone') %>Important Dates</h3>
+            <a href="/teacher/dates" class="btn btn-sm">See all</a>
+          </div>
+          <%- include('../partials/important-dates', { dates: importantDates, emptyText: 'Exams, meetings and events announced by the office will appear here.' }) %>
+        </section>
+
+        <section class="card">
+          <div class="card-header"><h3><%- icon('list-checks') %>Quick Actions</h3></div>
+          <div class="quick-actions">
+            <a href="/teacher/attendance" class="quick-action"><span class="stat-icon stat-icon--green"><%- icon('calendar-check') %></span><span>Attendance</span></a>
+            <a href="/teacher/marks" class="quick-action"><span class="stat-icon stat-icon--blue"><%- icon('notebook-pen') %></span><span><%= teacher.isClassTeacher ? 'Enter Marks' : 'View Marks' %></span></a>
+            <a href="/teacher/remarks" class="quick-action"><span class="stat-icon stat-icon--amber"><%- icon('message-square-text') %></span><span>Add Remark</span></a>
+            <a href="/teacher/notes" class="quick-action"><span class="stat-icon stat-icon--violet"><%- icon('sticky-note') %></span><span>Share Notes</span></a>
+            <a href="/teacher/test-papers" class="quick-action"><span class="stat-icon"><%- icon('file-text') %></span><span>Question Papers</span></a>
+            <a href="/holidays" class="quick-action"><span class="stat-icon stat-icon--red"><%- icon('calendar-days') %></span><span>Holidays</span></a>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

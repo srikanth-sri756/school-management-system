@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/admin-head', { title: 'Important Dates' }) %>
+</head>
+<body class="app">
+  <%- include('../partials/navbar', { page }) %>
+
+  <main class="container container--narrow" id="main">
+    <div class="page-header">
+      <div>
+        <h2>Important Dates</h2>
+        <p>Exams, meetings, holidays and events announced by the school office.</p>
+      </div>
+    </div>
+
+    <section class="card card--flush">
+      <div class="card-header">
+        <h3><%- icon('megaphone') %>Coming up</h3>
+        <span class="result-count"><%= importantDates.length %> <%= importantDates.length === 1 ? 'date' : 'dates' %></span>
+      </div>
+      <%- include('../partials/important-dates', { dates: importantDates, emptyText: 'Nothing has been announced right now.' }) %>
+    </section>
+  </main>
+</body>
+</html>

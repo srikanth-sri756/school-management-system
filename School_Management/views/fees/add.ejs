@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Fee - School Management System</title>
+  <link rel="stylesheet" href="/css/modern.css">
+</head>
+<body>
+  <%- include('../partials/navbar') %>
+
+<div class="container">
+  <div class="page-header"><h2>Add Fee</h2></div>
+  
+  <div class="card">
+    <form method="POST" action="/fees/add" id="feeForm">
+      <!-- Student Selection with Filters -->
+      <div style="background: linear-gradient(135deg, rgba(79, 70, 229, 0.05), rgba(124, 58, 237, 0.05)); padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 4px solid #4f46e5;">
+        <h3 style="margin-bottom: 1rem; color: #4f46e5;">Student Selection</h3>
+        
+        <!-- Filters -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label>Filter by Class:</label>
+            <select id="classFilter" class="form-control" onchange="filterStudents()">
+              <option value="">All Classes</option>
+              <% classes.forEach(c => { %>
+                <option value="<%= c._id %>"><%= c.name %></option>
+              <% }) %>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0;">
+            <label>Filter by Section:</label>
+            <select id="sectionFilter" class="form-control" onchange="filterStudents()">
+              <option value="">All Sections</option>
+              <option value="A">Section A</option>
+              <option value="B">Section B</option>
+              <option value="C">Section C</option>
+              <option value="D">Section D</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0;">
+          <label>Select Student: *</label>
+          <select name="student" id="studentSelect" required class="form-control">
+            <option value="">Select Student</option>
+            <% students.forEach(s => { %>
+              <option value="<%= s._id %>" 
+                      data-class="<%= s.class ? s.class._id : '' %>" 
+                      data-section="<%= s.section || '' %>">
+                <%= s.firstName %> <%= s.lastName %> - <%= s.class ? s.class.name : 'No Class' %><%= s.section ? ' (' + s.section + ')' : '' %>
+              </option>
+            <% }) %>
+          </select>
+          <small style="color: #6b7280; margin-top: 0.5rem; display: block;">
+            <span id="studentCount"><%= students.length %></span> students available
+          </small>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Term: *</label>
+        <select name="term" required class="form-control">
+          <option value="">Select Term</option>
+          <option value="Term 1">Term 1</option>
+          <option value="Term 2">Term 2</option>
+          <option value="Term 3">Term 3</option>
+          <option value="Annual">Annual</option>
+          <option value="Admission">Admission Fee</option>
+          <option value="Development">Development Fee</option>
+          <option value="Transport">Transport Fee</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Total Amount: *</label>
+        <input type="number" name="amount" id="totalAmount" required class="form-control" min="0" step="0.01">
+      </div>
+
+      <div class="form-group">
+        <label>Notes:</label>
+        <textarea name="notes" class="form-control" rows="2" placeholder="Additional notes or description"></textarea>
+      </div>
+
+      <div class="form-group" style="border: 2px solid #e5e7eb; padding: 1.5rem; border-radius: 8px; background: #f9fafb;">
+        <h3 style="margin-bottom: 1rem; color: #4f46e5;">Payment Options</h3>
+        
+        <div style="margin-bottom: 1.5rem;">
+          <label style="display: flex; align-items: center; cursor: pointer;">
+            <input type="radio" name="paymentType" value="full" checked onchange="toggleInstallmentOptions()">
+            <span style="margin-left: 0.5rem; font-weight: 600;">Full Payment</span>
+          </label>
+          <p style="margin-left: 1.7rem; color: #6b7280; font-size: 0.9rem;">Pay the entire amount at once</p>
+        </div>
+
+        <div style="margin-bottom: 1rem;">
+          <label style="display: flex; align-items: center; cursor: pointer;">
+            <input type="radio" name="paymentType" value="installment" onchange="toggleInstallmentOptions()">
+            <span style="margin-left: 0.5rem; font-weight: 600;">Installment Plan</span>
+          </label>
+          <p style="margin-left: 1.7rem; color: #6b7280; font-size: 0.9rem;">Divide payment into multiple installments</p>
+        </div>
+
+        <div id="installmentOptions" style="display: none; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e5e7eb;">
+          <div class="form-group">
+            <label>Number of Installments: *</label>
+            <select name="numberOfInstallments" id="numberOfInstallments" class="form-control" onchange="generateInstallmentSchedule()">
+              <option value="">Select</option>
+              <option value="2">2 Installments</option>
+              <option value="3">3 Installments</option>
+              <option value="4">4 Installments</option>
+              <option value="6">6 Installments</option>
+              <option value="10">10 Installments</option>
+              <option value="12">12 Installments</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>First Installment Due Date: *</label>
+            <input type="date" name="firstInstallmentDate" id="firstInstallmentDate" class="form-control" onchange="generateInstallmentSchedule()">
+          </div>
+
+          <div class="form-group">
+            <label>Installment Frequency:</label>
+            <select name="installmentFrequency" id="installmentFrequency" class="form-control" onchange="generateInstallmentSchedule()">
+              <option value="monthly">Monthly</option>
+              <option value="bimonthly">Bi-Monthly (Every 2 months)</option>
+              <option value="quarterly">Quarterly (Every 3 months)</option>
+            </select>
+          </div>
+
+          <div id="installmentPreview" style="display: none; margin-top: 1.5rem; padding: 1.5rem; background: white; border-radius: 8px; border: 1px solid #e5e7eb;">
+            <h4 style="margin-bottom: 1rem; color: #1f2937;">Installment Schedule Preview</h4>
+            <div id="installmentSchedule"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group" id="singleDueDateGroup">
+        <label>Due Date: *</label>
+        <input type="date" name="dueDate" id="singleDueDate" class="form-control">
+      </div>
+
+      <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+        <button type="submit" class="btn btn-primary">Create Fee Record</button>
+        <a href="/fees" class="btn btn-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  function toggleInstallmentOptions() {
+    const paymentType = document.querySelector('input[name="paymentType"]:checked').value;
+    const installmentOptions = document.getElementById('installmentOptions');
+    const singleDueDateGroup = document.getElementById('singleDueDateGroup');
+    const singleDueDate = document.getElementById('singleDueDate');
+    
+    if (paymentType === 'installment') {
+      installmentOptions.style.display = 'block';
+      singleDueDateGroup.style.display = 'none';
+      singleDueDate.removeAttribute('required');
+      document.getElementById('numberOfInstallments').setAttribute('required', 'required');
+      document.getElementById('firstInstallmentDate').setAttribute('required', 'required');
+    } else {
+      installmentOptions.style.display = 'none';
+      singleDueDateGroup.style.display = 'block';
+      singleDueDate.setAttribute('required', 'required');
+      document.getElementById('numberOfInstallments').removeAttribute('required');
+      document.getElementById('firstInstallmentDate').removeAttribute('required');
+      document.getElementById('installmentPreview').style.display = 'none';
+    }
+  }
+
+  function generateInstallmentSchedule() {
+    const totalAmount = parseFloat(document.getElementById('totalAmount').value);
+    const numberOfInstallments = parseInt(document.getElementById('numberOfInstallments').value);
+    const firstDate = document.getElementById('firstInstallmentDate').value;
+    const frequency = document.getElementById('installmentFrequency').value;
+
+    if (!totalAmount || !numberOfInstallments || !firstDate) {
+      document.getElementById('installmentPreview').style.display = 'none';
+      return;
+    }
+
+    const installmentAmount = (totalAmount / numberOfInstallments).toFixed(2);
+    const lastInstallmentAmount = (totalAmount - (installmentAmount * (numberOfInstallments - 1))).toFixed(2);
+
+    let monthsGap = 1; // default monthly
+    if (frequency === 'bimonthly') monthsGap = 2;
+    if (frequency === 'quarterly') monthsGap = 3;
+
+    let html = '<table class="table" style="font-size: 0.9rem;"><thead><tr><th>Installment</th><th>Amount</th><th>Due Date</th></tr></thead><tbody>';
+    
+    let currentDate = new Date(firstDate);
+    
+    for (let i = 1; i <= numberOfInstallments; i++) {
+      const amount = i === numberOfInstallments ? lastInstallmentAmount : installmentAmount;
+      const dueDate = new Date(currentDate);
+      
+      html += `<tr>
+        <td><strong>Installment ${i}</strong></td>
+        <td>₹${parseFloat(amount).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+        <td>${dueDate.toLocaleDateString('en-IN', {day: '2-digit', month: 'short', year: 'numeric'})}</td>
+      </tr>`;
+      
+      currentDate.setMonth(currentDate.getMonth() + monthsGap);
+    }
+    
+    html += '</tbody></table>';
+    html += `<div style="margin-top: 1rem; padding: 1rem; background: #f0fdf4; border-left: 4px solid #10b981; border-radius: 4px;">
+      <strong>Total Amount: ₹${parseFloat(totalAmount).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong><br>
+      <span style="color: #6b7280;">Divided into ${numberOfInstallments} installments</span>
+    </div>`;
+    
+    document.getElementById('installmentSchedule').innerHTML = html;
+    document.getElementById('installmentPreview').style.display = 'block';
+  }
+
+  // Update preview when amount changes
+  document.getElementById('totalAmount').addEventListener('input', generateInstallmentSchedule);
+
+  // Filter students by class and section
+  function filterStudents() {
+    const classFilter = document.getElementById('classFilter').value;
+    const sectionFilter = document.getElementById('sectionFilter').value;
+    const studentSelect = document.getElementById('studentSelect');
+    const options = studentSelect.querySelectorAll('option');
+    
+    let visibleCount = 0;
+    
+    options.forEach((option, index) => {
+      if (index === 0) return; // Skip "Select Student" option
+      
+      const studentClass = option.getAttribute('data-class');
+      const studentSection = option.getAttribute('data-section');
+      
+      let showOption = true;
+      
+      // Filter by class
+      if (classFilter && studentClass !== classFilter) {
+        showOption = false;
+      }
+      
+      // Filter by section
+      if (sectionFilter && studentSection !== sectionFilter) {
+        showOption = false;
+      }
+      
+      if (showOption) {
+        option.style.display = '';
+        visibleCount++;
+      } else {
+        option.style.display = 'none';
+      }
+    });
+    
+    // Update student count
+    document.getElementById('studentCount').textContent = visibleCount;
+    
+    // Reset student selection if current selection is now hidden
+    const selectedOption = studentSelect.options[studentSelect.selectedIndex];
+    if (selectedOption && selectedOption.style.display === 'none') {
+      studentSelect.value = '';
+    }
+  }
+</script>
+
+</body>
+</html>

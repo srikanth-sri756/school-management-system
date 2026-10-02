@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/public-head', { title: 'About Us', description: 'The story, mission, values and leadership of Akansha Grammar High School, founded in 1995.' }) %>
+</head>
+<body class="site">
+  <%- include('../partials/public-navbar') %>
+
+  <main id="main">
+    <%- include('../partials/page-hero', {
+      heroPhoto: 'library-warm',
+      heroCrumbs: [{ href: '/', label: 'Home' }, { label: 'About' }],
+      heroTitle: 'A school with<br>a story',
+      heroText: 'Founded in 1995 with a vision to provide world-class education, accessible to all.'
+    }) %>
+
+    <!-- Story -->
+    <section class="section">
+      <div class="container">
+        <div class="intro-grid" data-reveal>
+          <h2 class="display display-m">From a small institution to a respected name in education.</h2>
+          <div class="body">
+            <p>Over the past 25 years, Akansha Grammar High School has grown into one of the most respected educational establishments in the region.</p>
+            <p>Our journey has been marked by continuous innovation, an unwavering commitment to excellence and a deep-rooted belief in the potential of every student.</p>
+            <p>We maintain high academic standards while fostering an environment that encourages creativity, critical thinking and character.</p>
+          </div>
+        </div>
+        <dl class="stats-row" data-reveal>
+          <div><dt>Founded</dt><dd>1995</dd></div>
+          <div><dt>Classes</dt><dd>Nursery–10</dd></div>
+          <div><dt>Stages</dt><dd>3</dd></div>
+          <div><dt>Expert teachers</dt><dd>50+</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- Purpose -->
+    <section class="section section--light">
+      <div class="container">
+        <div class="rows-head" data-reveal>
+          <h2 class="display display-m">Purpose</h2>
+        </div>
+        <div class="split" data-reveal>
+          <span class="label">Our mission</span>
+          <div class="body">
+            <p>To provide a nurturing and stimulating learning environment that empowers students to achieve their full potential academically, socially and emotionally.</p>
+            <p>We strive to develop responsible global citizens equipped with knowledge, skills and values.</p>
+          </div>
+        </div>
+        <div class="split" data-reveal>
+          <span class="label">Our vision</span>
+          <div class="body">
+            <p>To be a leading educational institution recognised for excellence in teaching, innovative learning approaches and holistic student development.</p>
+            <p>We aspire to create future leaders who will contribute positively to society.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Values -->
+    <section class="section">
+      <div class="container">
+        <div class="rows-head" data-reveal>
+          <h2 class="display display-m">What we<br>stand for.</h2>
+          <span class="count muted">06</span>
+        </div>
+        <div class="rows rows--dark" data-reveal>
+          <div class="row row--plain"><h3>Excellence</h3><p>Striving for the highest standards in everything we do.</p></div>
+          <div class="row row--plain"><h3>Integrity</h3><p>Upholding honesty, transparency and ethical conduct.</p></div>
+          <div class="row row--plain"><h3>Growth</h3><p>Continuous learning and personal development.</p></div>
+          <div class="row row--plain"><h3>Compassion</h3><p>Caring for others and fostering kindness.</p></div>
+          <div class="row row--plain"><h3>Innovation</h3><p>Embracing creativity and new ideas.</p></div>
+          <div class="row row--plain"><h3>Diversity</h3><p>Celebrating differences and promoting inclusion.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Leadership -->
+    <section class="section section--light">
+      <div class="container">
+        <div class="rows-head" data-reveal>
+          <h2 class="display display-m">Leadership</h2>
+          <span class="count">03</span>
+        </div>
+        <div class="cols cols-3" data-reveal>
+          <article class="col person">
+            <span class="monogram">RK</span>
+            <h3>Dr. Rajesh Kumar</h3>
+            <span class="role">Principal</span>
+            <p>Ph.D. in Education, with more than 20 years of experience in educational leadership.</p>
+          </article>
+          <article class="col person">
+            <span class="monogram">PS</span>
+            <h3>Mrs. Priya Sharma</h3>
+            <span class="role">Vice Principal</span>
+            <p>M.Ed., specialist in curriculum development and student welfare.</p>
+          </article>
+          <article class="col person">
+            <span class="monogram">AP</span>
+            <h3>Mr. Amit Patel</h3>
+            <span class="role">Academic Coordinator</span>
+            <p>M.Sc., B.Ed., expert in academic planning and assessment.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <%- include('../partials/cta-photo', {
+      ctaPhoto: 'bookshelf-light',
+      ctaLabels: ['Visit us', 'Meet our teachers', 'See the campus'],
+      ctaTitle: 'See our school<br>for yourself',
+      ctaText: 'Walk the campus, meet our teachers and discover what makes Akansha special.',
+      ctaHref: '/portfolio/contact',
+      ctaButton: 'Book a Campus Visit'
+    }) %>
+  </main>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>

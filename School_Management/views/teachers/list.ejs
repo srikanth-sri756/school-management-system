@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teachers - School Management System</title>
+  <link rel="stylesheet" href="/css/modern.css">
+</head>
+<body>
+  <%- include('../partials/navbar') %>
+
+<div class="container">
+  <div class="page-header"><h2>Teachers</h2><a href="/teachers/add" class="btn btn-primary">Add Teacher</a></div>
+  
+  <!-- Filter Section -->
+  <div class="card" style="margin-bottom: 1.5rem;">
+    <h3 style="margin-bottom: 1rem;">Filter Teachers</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+      <div>
+        <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem;">Name:</label>
+        <input type="text" id="filterName" placeholder="Search name..." style="width: 100%; padding: 0.6rem; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem;">
+      </div>
+      <div>
+        <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem;">Email:</label>
+        <input type="text" id="filterEmail" placeholder="Search email..." style="width: 100%; padding: 0.6rem; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem;">
+      </div>
+      <div>
+        <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem;">Subject:</label>
+        <input type="text" id="filterSubject" placeholder="Search subject..." style="width: 100%; padding: 0.6rem; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem;">
+      </div>
+      <div>
+        <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem;">Class Teacher:</label>
+        <select id="filterClassTeacher" style="width: 100%; padding: 0.6rem; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem;">
+          <option value="">All</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+      <div>
+        <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem;">Login Access:</label>
+        <select id="filterLoginAccess" style="width: 100%; padding: 0.6rem; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem;">
+          <option value="">All</option>
+          <option value="Active">Active</option>
+          <option value="No Access">No Access</option>
+        </select>
+      </div>
+      <div style="display: flex; align-items: flex-end;">
+        <button onclick="clearFilters()" class="btn btn-secondary" style="width: 100%; padding: 0.6rem;">
+          Clear Filters
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th><th>Email</th><th>Phone</th><th>Subject</th><th>Class</th><th>Class Teacher</th><th>Login Access</th><th>Username</th><th>Salary</th><th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% teachers.forEach(t => { %>
+        <tr>
+          <td><%= t.name %></td>
+          <td><%= t.email %></td>
+          <td><%= t.phone %></td>
+          <td><%= t.subject ? t.subject.name : '' %></td>
+          <td><%= t.class ? t.class.name : '' %></td>
+          <td><%= t.isClassTeacher ? 'Yes' : 'No' %></td>
+          <td>
+            <% if (t.user) { %>
+              <span style="color: #10b981; font-weight: 600;">✓ Active</span>
+            <% } else { %>
+              <span style="color: #6b7280;">✗ No Access</span>
+            <% } %>
+          </td>
+          <td><%= t.user ? t.user.email : '-' %></td>
+          <td><%= t.salary %></td>
+          <td>
+            <a href="/teachers/<%= t._id %>/edit" class="btn btn-sm">Edit</a>
+            <form method="POST" action="/teachers/<%= t._id %>/delete" style="display:inline"><button type="submit" class="btn btn-sm btn-danger">Delete</button></form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+<script>
+  // Filter functionality
+  const filterName = document.getElementById('filterName');
+  const filterEmail = document.getElementById('filterEmail');
+  const filterSubject = document.getElementById('filterSubject');
+  const filterClassTeacher = document.getElementById('filterClassTeacher');
+  const filterLoginAccess = document.getElementById('filterLoginAccess');
+  const tableRows = document.querySelectorAll('tbody tr');
+
+  function applyFilters() {
+    const nameValue = filterName.value.toLowerCase();
+    const emailValue = filterEmail.value.toLowerCase();
+    const subjectValue = filterSubject.value.toLowerCase();
+    const classTeacherValue = filterClassTeacher.value.toLowerCase();
+    const loginAccessValue = filterLoginAccess.value.toLowerCase();
+
+    tableRows.forEach(row => {
+      if (row.cells.length === 1) return; // Skip "no records found" row
+
+      const name = row.cells[0].textContent.toLowerCase();
+      const email = row.cells[1].textContent.toLowerCase();
+      const subject = row.cells[3].textContent.toLowerCase();
+      const classTeacher = row.cells[5].textContent.toLowerCase();
+      const loginAccess = row.cells[6].textContent.toLowerCase();
+
+      const nameMatch = name.includes(nameValue);
+      const emailMatch = email.includes(emailValue);
+      const subjectMatch = subject.includes(subjectValue);
+      const classTeacherMatch = !classTeacherValue || classTeacher.includes(classTeacherValue);
+      const loginAccessMatch = !loginAccessValue || loginAccess.includes(loginAccessValue);
+
+      if (nameMatch && emailMatch && subjectMatch && classTeacherMatch && loginAccessMatch) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    });
+  }
+
+  function clearFilters() {
+    filterName.value = '';
+    filterEmail.value = '';
+    filterSubject.value = '';
+    filterClassTeacher.value = '';
+    filterLoginAccess.value = '';
+    applyFilters();
+  }
+
+  // Add event listeners
+  filterName.addEventListener('input', applyFilters);
+  filterEmail.addEventListener('input', applyFilters);
+  filterSubject.addEventListener('input', applyFilters);
+  filterClassTeacher.addEventListener('change', applyFilters);
+  filterLoginAccess.addEventListener('change', applyFilters);
+</script>
+
+</body>
+</html>

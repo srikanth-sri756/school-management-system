@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Teacher - School Management System</title>
+  <link rel="stylesheet" href="/css/modern.css">
+</head>
+<body>
+  <%- include('../partials/navbar') %>
+
+<div class="container">
+  <div class="page-header"><h2>Edit Teacher</h2></div>
+  <form method="POST" action="/teachers/<%= teacher._id %>/edit">
+    <label>Name:</label>
+    <input type="text" name="name" value="<%= teacher.name %>" required><br>
+    <label>Email:</label>
+    <input type="email" name="email" value="<%= teacher.email %>" required><br>
+    <label>Phone:</label>
+    <input type="text" name="phone" value="<%= teacher.phone %>"><br>
+    <label>Subject:</label>
+    <select name="subject">
+      <option value="">--Select--</option>
+      <% subjects.forEach(sub => { %>
+        <option value="<%= sub._id %>" <%= teacher.subject && teacher.subject._id.toString() === sub._id.toString() ? 'selected' : '' %>><%= sub.name %></option>
+      <% }) %>
+    </select><br>
+    <label>Class:</label>
+    <select name="class">
+      <option value="">--Select--</option>
+      <% classes.forEach(cls => { %>
+        <option value="<%= cls._id %>" <%= teacher.class && teacher.class._id.toString() === cls._id.toString() ? 'selected' : '' %>><%= cls.name %></option>
+      <% }) %>
+    </select><br>
+    <label>Salary:</label>
+    <input type="number" name="salary" value="<%= teacher.salary %>"><br>
+    <label>Address:</label>
+    <input type="text" name="address" value="<%= teacher.address %>"><br>
+    <label>Is Class Teacher?</label>
+    <select name="isClassTeacher">
+      <option value="no" <%= !teacher.isClassTeacher ? 'selected' : '' %>>No</option>
+      <option value="yes" <%= teacher.isClassTeacher ? 'selected' : '' %>>Yes</option>
+    </select><br>
+    
+    <% if (teacher.user) { %>
+      <div style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 8px;">
+        <h3 style="margin-top: 0; color: white;">Login Credentials</h3>
+        <p style="color: rgba(255,255,255,0.8);">This teacher has login access. You can update their credentials below.</p>
+        
+        <label>Current Username:</label>
+        <input type="text" value="<%= teacher.user.email %>" readonly style="background: rgba(255,255,255,0.05);"><br>
+        
+        <label>
+          <input type="checkbox" id="changePassword" onchange="togglePasswordFields()">
+          Change Password
+        </label><br>
+        
+        <div id="passwordFields" style="display: none; margin-top: 10px;">
+          <label>New Username (optional):</label>
+          <input type="text" name="newUsername" id="newUsername" placeholder="Leave blank to keep current"><br>
+          
+          <label>New Password:</label>
+          <input type="password" name="newPassword" id="newPassword" placeholder="Enter new password"><br>
+          
+          <label>Confirm New Password:</label>
+          <input type="password" name="confirmNewPassword" id="confirmNewPassword" placeholder="Re-enter new password"><br>
+        </div>
+      </div>
+    <% } else { %>
+      <div style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 8px;">
+        <h3 style="margin-top: 0; color: white;">Create Login Access</h3>
+        <label>
+          <input type="checkbox" id="createLogin" name="createLogin" value="yes" onchange="toggleNewLoginFields()">
+          Create login access for this teacher
+        </label><br>
+        
+        <div id="newLoginFields" style="display: none; margin-top: 10px;">
+          <label>Username:</label>
+          <input type="text" name="username" id="username" placeholder="Enter username for login"><br>
+          
+          <label>Password:</label>
+          <input type="password" name="password" id="password" placeholder="Enter password"><br>
+          
+          <label>Confirm Password:</label>
+          <input type="password" name="confirmPassword" id="confirmPassword" placeholder="Re-enter password"><br>
+        </div>
+      </div>
+    <% } %>
+    
+    <button type="submit" class="btn btn-primary">Update Teacher</button>
+  </form>
+</div>
+
+<script>
+  function togglePasswordFields() {
+    const changePassword = document.getElementById('changePassword').checked;
+    const passwordFields = document.getElementById('passwordFields');
+    const newPassword = document.getElementById('newPassword');
+    const confirmNewPassword = document.getElementById('confirmNewPassword');
+    
+    if (changePassword) {
+      passwordFields.style.display = 'block';
+      newPassword.required = true;
+      confirmNewPassword.required = true;
+    } else {
+      passwordFields.style.display = 'none';
+      newPassword.required = false;
+      confirmNewPassword.required = false;
+    }
+  }
+  
+  function toggleNewLoginFields() {
+    const createLogin = document.getElementById('createLogin').checked;
+    const newLoginFields = document.getElementById('newLoginFields');
+    const username = document.getElementById('username');
+    const password = document.getElementById('password');
+    const confirmPassword = document.getElementById('confirmPassword');
+    
+    if (createLogin) {
+      newLoginFields.style.display = 'block';
+      username.required = true;
+      password.required = true;
+      confirmPassword.required = true;
+    } else {
+      newLoginFields.style.display = 'none';
+      username.required = false;
+      password.required = false;
+      confirmPassword.required = false;
+    }
+  }
+  
+  // Validate password match on form submit
+  document.querySelector('form').addEventListener('submit', function(e) {
+    <% if (teacher.user) { %>
+      const changePassword = document.getElementById('changePassword').checked;
+      if (changePassword) {
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+        
+        if (newPassword !== confirmNewPassword) {
+          e.preventDefault();
+          alert('Passwords do not match!');
+          return false;
+        }
+        
+        if (newPassword.length < 6) {
+          e.preventDefault();
+          alert('Password must be at least 6 characters long!');
+          return false;
+        }
+      }
+    <% } else { %>
+      const createLogin = document.getElementById('createLogin').checked;
+      if (createLogin) {
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        
+        if (password !== confirmPassword) {
+          e.preventDefault();
+          alert('Passwords do not match!');
+          return false;
+        }
+        
+        if (password.length < 6) {
+          e.preventDefault();
+          alert('Password must be at least 6 characters long!');
+          return false;
+        }
+      }
+    <% } %>
+  });
+</script>
+
+</body>
+</html>

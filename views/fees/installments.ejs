@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/admin-head', { title: 'Instalment Plan' }) %>
+</head>
+<body class="app">
+  <%- include('../partials/navbar', { page: 'fees' }) %>
+
+  <%
+    const inr = (n) => '₹' + Number(n || 0).toLocaleString('en-IN');
+    const fmt = (d) => d ? new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
+    const balance = fee.amount - fee.paid;
+    const pct = fee.amount ? Math.min(100, (fee.paid / fee.amount) * 100) : 0;
+    const s = fee.student;
+  %>
+  <main class="container" id="main">
+    <div class="page-header">
+      <div>
+        <a href="/fees" class="back-link"><%- icon('arrow-left') %>Fees</a>
+        <h2>Instalment Plan</h2>
+        <p><%= fee.term %> · <%= fee.numberOfInstallments %> instalments</p>
+      </div>
+    </div>
+
+    <section class="card">
+      <div class="profile-head">
+        <%- avatar('student', s) %>
+        <div>
+          <h3><%= s ? s.firstName + ' ' + s.lastName : 'Unknown student' %></h3>
+          <div class="meta"><span><%= s && s.class ? s.class.name : 'No class' %></span><%- statusBadge(fee.status) %></div>
+        </div>
+      </div>
+      <dl class="kv">
+        <div><dt>Total amount</dt><dd><%= inr(fee.amount) %></dd></div>
+        <div><dt>Paid so far</dt><dd class="text-success"><%= inr(fee.paid) %></dd></div>
+        <div><dt>Balance</dt><dd class="<%= balance > 0 ? 'text-danger' : 'text-success' %>"><%= inr(balance) %></dd></div>
+      </dl>
+      <div class="mt-3">
+        <div class="progress"><span style="width: <%= pct.toFixed(1) %>%"></span></div>
+        <div class="progress-meta"><span><%= pct.toFixed(1) %>% paid</span><span><%= inr(fee.amount) %></span></div>
+      </div>
+    </section>
+
+    <section class="card card--flush">
+      <div class="card-header"><h3><%- icon('calendar-days') %>Schedule</h3></div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr><th>#</th><th class="num">Amount</th><th class="num">Paid</th><th class="num">Balance</th><th>Due date</th><th>Status</th><th>Paid on</th><th class="num">Action</th></tr>
+          </thead>
+          <tbody>
+            <% fee.installments.forEach((inst, index) => {
+              const instBalance = inst.amount - inst.paidAmount;
+              const isOverdue = new Date(inst.dueDate) < new Date() && inst.status !== 'Paid';
+            %>
+              <tr>
+                <td class="cell-strong">Instalment <%= inst.installmentNumber %></td>
+                <td class="num"><strong><%= inr(inst.amount) %></strong></td>
+                <td class="num text-success"><%= inr(inst.paidAmount) %></td>
+                <td class="num"><strong class="<%= instBalance > 0 ? 'text-danger' : 'text-success' %>"><%= inr(instBalance) %></strong></td>
+                <td><%= fmt(inst.dueDate) %></td>
+                <td><%- statusBadge(isOverdue ? 'Overdue' : inst.status) %></td>
+                <td><%= fmt(inst.paidDate) %></td>
+                <td class="num">
+                  <% if (inst.status !== 'Paid') { %>
+                    <button type="button" class="btn btn-sm btn-success" onclick="openPaymentModal(<%= index %>, <%= inst.amount %>, <%= inst.paidAmount %>)"><%- icon('hand-coins') %>Record Payment</button>
+                  <% } else { %>
+                    <span class="text-success"><%- icon('circle-check') %> Paid</span>
+                  <% } %>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal" id="paymentModal" role="dialog" aria-modal="true" aria-labelledby="paymentTitle">
+    <div class="modal-dialog">
+      <h3 id="paymentTitle">Record Payment</h3>
+      <form id="paymentForm" method="POST" action="/fees/<%= fee._id %>/pay-installment">
+        <input type="hidden" name="installmentIndex" id="installmentIndex">
+        <div class="form-row form-row--3">
+          <div class="form-group">
+            <label for="installmentAmount">Instalment</label>
+            <input type="text" id="installmentAmount" class="form-control" readonly>
+          </div>
+          <div class="form-group">
+            <label for="alreadyPaid">Already paid</label>
+            <input type="text" id="alreadyPaid" class="form-control" readonly>
+          </div>
+          <div class="form-group">
+            <label for="balanceAmount">Balance</label>
+            <input type="text" id="balanceAmount" class="form-control" readonly>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="paymentAmount">Payment amount (₹) <span class="req">*</span></label>
+            <input type="number" name="paymentAmount" id="paymentAmount" class="form-control" min="1" step="0.01" required>
+            <span class="form-hint">Full or partial payment.</span>
+          </div>
+          <div class="form-group">
+            <label for="paymentDate">Payment date <span class="req">*</span></label>
+            <input type="date" name="paymentDate" id="paymentDate" class="form-control" value="<%= isoDate(new Date()) %>" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="paymentNotes">Notes</label>
+          <textarea name="paymentNotes" id="paymentNotes" class="form-control" rows="2" placeholder="Payment method, transaction ID, etc."></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary"><%- icon('check') %>Record Payment</button>
+          <button type="button" class="btn" onclick="closePaymentModal()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const modal = document.getElementById('paymentModal');
+    const amountInput = document.getElementById('paymentAmount');
+    const inr = (n) => '₹' + Number(n).toLocaleString('en-IN');
+
+    function openPaymentModal(index, amount, paidAmount) {
+      const balance = amount - paidAmount;
+      document.getElementById('installmentIndex').value = index;
+      document.getElementById('installmentAmount').value = inr(amount);
+      document.getElementById('alreadyPaid').value = inr(paidAmount);
+      document.getElementById('balanceAmount').value = inr(balance);
+      amountInput.value = balance;
+      amountInput.max = balance;
+      modal.classList.add('is-open');
+      amountInput.focus();
+    }
+
+    function closePaymentModal() {
+      modal.classList.remove('is-open');
+      document.getElementById('paymentForm').reset();
+    }
+
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePaymentModal(); });
+    modal.addEventListener('click', (e) => { if (e.target === modal) closePaymentModal(); });
+  </script>
+</body>
+</html>

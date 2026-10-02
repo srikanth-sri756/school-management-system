@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/public-head', { title: 'Academics', description: 'Curriculum, class levels, core subjects and special programs at Akansha Grammar High School.' }) %>
+</head>
+<body class="site">
+  <%- include('../partials/public-navbar') %>
+
+  <main id="main">
+    <%- include('../partials/page-hero', {
+      heroPhoto: 'blackboard',
+      heroCrumbs: [{ href: '/', label: 'Home' }, { label: 'Academics' }],
+      heroTitle: 'Academic<br>programs',
+      heroText: 'A comprehensive curriculum that pairs academic rigour with practical learning, building critical thinking, creativity and problem-solving.'
+    }) %>
+
+    <!-- Levels -->
+    <section class="section">
+      <div class="container">
+        <div class="rows-head" data-reveal>
+          <h2 class="display display-m">Three stages.<br>One journey.</h2>
+          <span class="count muted">03</span>
+        </div>
+        <div class="cols cols-3" data-reveal>
+          <article class="col">
+            <span class="num">01 · Nursery – Class 5</span>
+            <h3 class="big">Primary</h3>
+            <p>Play-based learning in Nursery, LKG and UKG, then foundations in literacy, numeracy and social skills through activity-based learning, arts and crafts, computers and physical education.</p>
+            <a href="/portfolio/programs/primary" class="pill pill--dark pill--sm">Primary School <%- icon('arrow-right') %></a>
+          </article>
+          <article class="col">
+            <span class="num">02 · Classes 6 – 8</span>
+            <h3 class="big">Middle</h3>
+            <p>Specialised subjects and skill-building, with science laboratories, language development, mathematics workshops and social studies projects.</p>
+            <a href="/portfolio/programs/middle" class="pill pill--dark pill--sm">Middle School <%- icon('arrow-right') %></a>
+          </article>
+          <article class="col">
+            <span class="num">03 · Classes 9 – 10</span>
+            <h3 class="big">High</h3>
+            <p>Board examination preparation, foundation courses for competitive exams, science projects and career counselling for the choices after Class 10.</p>
+            <a href="/portfolio/programs/high" class="pill pill--dark pill--sm">High School <%- icon('arrow-right') %></a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Subjects -->
+    <section class="section section--light">
+      <div class="container">
+        <div class="rows-head" data-reveal>
+          <h2 class="display display-m">Core subjects</h2>
+          <span class="count">06</span>
+        </div>
+        <div class="rows" data-reveal>
+          <div class="row row--plain"><h3>Science</h3><p>Physics, Chemistry and Biology, with practical laboratory work.</p></div>
+          <div class="row row--plain"><h3>Mathematics</h3><p>Pure and applied mathematics.</p></div>
+          <div class="row row--plain"><h3>Social Studies</h3><p>History, Geography and Civics.</p></div>
+          <div class="row row--plain"><h3>Languages</h3><p>English, Hindi and regional languages.</p></div>
+          <div class="row row--plain"><h3>Computer Science</h3><p>Programming, IT and digital literacy.</p></div>
+          <div class="row row--plain"><h3>Arts</h3><p>Music, dance, drama and fine arts.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Beyond the syllabus -->
+    <section class="section">
+      <div class="container">
+        <div class="rows-head" data-reveal>
+          <h2 class="display display-m">Beyond the<br>syllabus.</h2>
+          <span class="count muted">06</span>
+        </div>
+        <div class="rows rows--dark" data-reveal>
+          <div class="row"><h3>Olympiad Training</h3><p>Preparation for national and international Olympiads in Science, Maths and English.</p><span></span></div>
+          <div class="row"><h3>Debate &amp; Public Speaking</h3><p>Communication and presentation skills, sharpened through regular competitions.</p><span></span></div>
+          <a class="row" href="/portfolio/programs/stem"><h3>STEM Labs<small>STEM program</small></h3><p>Hands-on science, technology, engineering and mathematics.</p><%- icon('arrow-right', 'row-arrow') %></a>
+          <div class="row"><h3>Language Club</h3><p>Additional languages, including French and German.</p><span></span></div>
+          <a class="row" href="/portfolio/programs/arts"><h3>Creative Arts<small>Arts program</small></h3><p>Music, dance, painting and craft workshops for holistic development.</p><%- icon('arrow-right', 'row-arrow') %></a>
+          <a class="row" href="/portfolio/programs/sports"><h3>Sports Academy<small>Sports program</small></h3><p>Professional training in cricket, football, basketball and athletics.</p><%- icon('arrow-right', 'row-arrow') %></a>
+        </div>
+      </div>
+    </section>
+
+    <%- include('../partials/cta-photo', {
+      ctaPhoto: 'program-middle',
+      ctaLabels: ['Admissions', 'Guidance', 'Campus tours'],
+      ctaTitle: 'Find the right<br>path for your child',
+      ctaText: 'Our admissions team will help you choose the program that fits.',
+      ctaHref: '/portfolio/admissions',
+      ctaButton: 'Explore Admissions'
+    }) %>
+  </main>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>

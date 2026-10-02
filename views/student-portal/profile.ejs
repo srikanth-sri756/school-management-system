@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/portal-head', { title: 'My Profile' }) %>
+</head>
+<body class="app portal theme-light">
+  <%- include('../partials/student-shell', { page: 'profile' }) %>
+
+  <%
+    const s = studentDetails || student;
+    const fmt = (d) => d ? new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) : '—';
+  %>
+  <main class="container" id="main">
+    <div class="page-header">
+      <div>
+        <h2>My profile</h2>
+        <p>Your school record and contact details.</p>
+      </div>
+    </div>
+
+    <div class="grid grid-main">
+      <section class="card">
+        <div class="profile-head">
+          <%- avatar('student', s) %>
+          <div>
+            <h3><%= s.firstName %> <%= s.lastName %></h3>
+            <div class="meta"><span><%= s.studentId %></span><%- statusBadge(s.status) %></div>
+          </div>
+        </div>
+        <dl class="details">
+          <div><dt>Class</dt><dd><%= s.class ? s.class.name : '—' %><%= s.section ? ' – Section ' + s.section : '' %></dd></div>
+          <div><dt>Roll number</dt><dd><%= s.rollNumber || '—' %></dd></div>
+          <div><dt>Date of birth</dt><dd><%= fmt(s.dateOfBirth) %></dd></div>
+          <div><dt>Gender</dt><dd><%= s.gender || '—' %></dd></div>
+          <div><dt>Admission date</dt><dd><%= fmt(s.admissionDate) %></dd></div>
+          <div><dt>Parent / guardian</dt><dd><%= s.parentName || '—' %></dd></div>
+        </dl>
+        <p class="form-hint">Your photo and these details are managed by the school office. To correct anything, please contact them.</p>
+      </section>
+
+      <form action="/student/profile/update" method="POST" class="card">
+        <div class="card-header"><h3><%- icon('mail') %>Contact details</h3></div>
+        <div class="form-group">
+          <label for="email">Your email</label>
+          <input type="email" id="email" name="email" class="form-control" value="<%= s.email || '' %>" placeholder="you@example.com">
+        </div>
+        <div class="form-group">
+          <label for="parentPhone">Parent / guardian phone</label>
+          <input type="tel" id="parentPhone" name="parentPhone" class="form-control" value="<%= s.parentPhone || '' %>" placeholder="+91 98765 43210">
+        </div>
+        <div class="form-group">
+          <label for="parentEmail">Parent / guardian email</label>
+          <input type="email" id="parentEmail" name="parentEmail" class="form-control" value="<%= s.parentEmail || '' %>" placeholder="parent@example.com">
+        </div>
+        <div class="form-group">
+          <label for="address">Address</label>
+          <textarea id="address" name="address" class="form-control" rows="3" placeholder="House, street, city and PIN code"><%= s.address || '' %></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary"><%- icon('check') %>Save details</button>
+        </div>
+      </form>
+    </div>
+
+    <form action="/student/change-password" method="POST" class="card" id="passwordForm">
+      <div class="card-header"><h3><%- icon('lock') %>Change password</h3></div>
+      <div class="form-row form-row--3">
+        <div class="form-group">
+          <label for="currentPassword">Current password</label>
+          <input type="password" id="currentPassword" name="currentPassword" class="form-control" required autocomplete="current-password">
+        </div>
+        <div class="form-group">
+          <label for="newPassword">New password</label>
+          <input type="password" id="newPassword" name="newPassword" class="form-control" required minlength="6" autocomplete="new-password">
+          <span class="form-hint">At least 6 characters.</span>
+        </div>
+        <div class="form-group">
+          <label for="confirmPassword">Confirm new password</label>
+          <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" required minlength="6" autocomplete="new-password">
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary"><%- icon('lock') %>Update password</button>
+      </div>
+    </form>
+  </main>
+
+  <script>
+    document.getElementById('passwordForm').addEventListener('submit', function (e) {
+      const confirmation = document.getElementById('confirmPassword');
+      if (document.getElementById('newPassword').value !== confirmation.value) {
+        e.preventDefault();
+        confirmation.setCustomValidity('The new passwords do not match.');
+        confirmation.reportValidity();
+      }
+    });
+    document.getElementById('confirmPassword').addEventListener('input', function () { this.setCustomValidity(''); });
+  </script>
+</body>
+</html>

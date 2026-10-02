@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Student - School Management System</title>
+  <link rel="stylesheet" href="/css/modern.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <h1>🎓 School Management System</h1>
+      <div class="user-info">
+        <span>Welcome, <%= user.name %></span>
+        <a href="/logout" class="btn-logout">Logout</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="nav-content">
+      <a href="/">Dashboard</a>
+      <a href="/students" class="active">Students</a>
+      <a href="/attendance">Attendance</a>
+      <a href="/marks">Marks</a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="page-header">
+      <h2>Edit Student</h2>
+      <a href="/students/<%= student.id %>" class="btn btn-secondary">← Back</a>
+    </div>
+
+    <div class="card">
+      <form action="/students/<%= student.id %>/edit" method="POST">
+        <h3 class="mb-3">Personal Information</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" class="form-control" value="<%= student.email %>">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="dateOfBirth">Date of Birth *</label>
+            <input type="date" id="dateOfBirth" name="dateOfBirth" class="form-control" value="<%= student.dateOfBirth %>" required>
+          </div>
+          <div class="form-group">
+            <label for="gender">Gender *</label>
+            <select id="gender" name="gender" class="form-control" required>
+              <option value="Male" <%= student.gender === 'Male' ? 'selected' : '' %>>Male</option>
+              <option value="Female" <%= student.gender === 'Female' ? 'selected' : '' %>>Female</option>
+              <option value="Other" <%= student.gender === 'Other' ? 'selected' : '' %>>Other</option>
+            </select>
+          </div>
+        </div>
+
+        <h3 class="mb-3 mt-3">Academic Information</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="classId">Class *</label>
+            <select id="classId" name="classId" class="form-control" required>
+              <% classes.forEach(cls => { %>
+                <option value="<%= cls._id %>" <%= student.class && student.class._id.toString() === cls._id.toString() ? 'selected' : '' %>>
+                  <%= cls.name %>
+                </option>
+              <% }); %>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="section">Section *</label>
+            <select id="section" name="section" class="form-control" required>
+              <option value="">Select Section</option>
+              <option value="A" <%= student.section === 'A' ? 'selected' : '' %>>Section A</option>
+              <option value="B" <%= student.section === 'B' ? 'selected' : '' %>>Section B</option>
+              <option value="C" <%= student.section === 'C' ? 'selected' : '' %>>Section C</option>
+              <option value="D" <%= student.section === 'D' ? 'selected' : '' %>>Section D</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="rollNumber">Roll Number *</label>
+            <input type="text" id="rollNumber" name="rollNumber" class="form-control" value="<%= student.rollNumber %>" required>
+          </div>
+          <div class="form-group">
+            <label for="admissionDate">Admission Date *</label>
+            <input type="date" id="admissionDate" name="admissionDate" class="form-control" value="<%= student.admissionDate %>" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="status">Status *</label>
+            <select id="status" name="status" class="form-control" required>
+              <option value="Active" <%= student.status === 'Active' ? 'selected' : '' %>>Active</option>
+              <option value="Inactive" <%= student.status === 'Inactive' ? 'selected' : '' %>>Inactive</option>
+            </select>
+          </div>
+        </div>
+
+        <h3 class="mb-3 mt-3">Parent/Guardian Information</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="parentName">Parent/Guardian Name *</label>
+            <input type="text" id="parentName" name="parentName" class="form-control" value="<%= student.parentName %>" required>
+          </div>
+          <div class="form-group">
+            <label for="parentPhone">Parent Phone *</label>
+            <input type="tel" id="parentPhone" name="parentPhone" class="form-control" value="<%= student.parentPhone %>" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="parentEmail">Parent Email</label>
+          <input type="email" id="parentEmail" name="parentEmail" class="form-control" value="<%= student.parentEmail %>">
+        </div>
+
+        <div class="form-group">
+          <label for="address">Address</label>
+          <textarea id="address" name="address" class="form-control" rows="3"><%= student.address %></textarea>
+        </div>
+
+        <div class="flex gap-2 mt-3">
+          <button type="submit" class="btn btn-success">Update Student</button>
+          <a href="/students/<%= student._id %>" class="btn btn-secondary">Cancel</a>
+          <button type="button" class="btn btn-danger" onclick="confirmDelete('<%= student._id %>')">Delete Student</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function confirmDelete(id) {
+      if (confirm('Are you sure you want to delete this student? This action cannot be undone.')) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/students/' + id + '/delete';
+        document.body.appendChild(form);
+        form.submit();
+      }
+    }
+  </script>
+  <script src="/js/main.js"></script>
+</body>
+</html>

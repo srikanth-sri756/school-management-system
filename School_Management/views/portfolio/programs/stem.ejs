@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="STEM Education at Akansha Grammar High School - Inspiring innovation through Science, Technology, Engineering, and Mathematics">
+    <title>STEM Education | Akansha Grammar High School</title>
+    <link rel="stylesheet" href="/css/modern.css">
+    <link rel="stylesheet" href="/css/portfolio.css">
+    <style>
+        .program-hero {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            color: white;
+            padding: 4rem 0;
+            margin-bottom: 3rem;
+        }
+        .program-hero h1 {
+            color: white;
+            margin-bottom: 1rem;
+        }
+        .program-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 16px rgba(5, 150, 105, 0.2);
+        }
+        .feature-card h3 {
+            color: #059669;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+            text-align: center;
+        }
+        .stat-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #059669;
+            margin-bottom: 0.5rem;
+        }
+        .stat-label {
+            color: #64748b;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <%- include('../../partials/public-navbar') %>
+
+    <div class="program-hero">
+        <div class="program-content">
+            <h1>🔬 STEM Education Program</h1>
+            <p style="font-size: 1.25rem; max-width: 800px;">Inspiring innovation through Science, Technology, Engineering, and Mathematics</p>
+        </div>
+    </div>
+
+    <div class="program-content">
+        <section>
+            <h2>Overview</h2>
+            <p>Our comprehensive STEM Education program integrates Science, Technology, Engineering, and Mathematics to foster critical thinking, creativity, and innovation. Through hands-on projects, real-world applications, and cutting-edge technology, we prepare students for careers in the fastest-growing fields of the 21st century.</p>
+        </section>
+
+        <div class="stats-container">
+            <div class="stat-box">
+                <div class="stat-number">5</div>
+                <div class="stat-label">Specialized Labs</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">100+</div>
+                <div class="stat-label">STEM Projects Annually</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">25+</div>
+                <div class="stat-label">Industry Partnerships</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">90%</div>
+                <div class="stat-label">Competition Success Rate</div>
+            </div>
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🔬</div>
+                <h3>Advanced Science</h3>
+                <p>State-of-the-art laboratories for Physics, Chemistry, and Biology. Hands-on experiments, research projects, and participation in national science competitions and olympiads.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💻</div>
+                <h3>Computer Science & Coding</h3>
+                <p>Programming in Python, Java, C++, and web development. Coding competitions, hackathons, and software development projects. AI and machine learning introductions.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🤖</div>
+                <h3>Robotics & Automation</h3>
+                <p>Build and program robots using Arduino, Raspberry Pi, and LEGO Mindstorms. Participate in robotics competitions like FIRST Robotics and World Robot Olympiad.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚙️</div>
+                <h3>Engineering Design</h3>
+                <p>CAD/CAM software, 3D printing, and prototyping. Design thinking workshops and engineering challenges. Bridge building, structural design projects.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Data Science & Analytics</h3>
+                <p>Introduction to data analysis, statistics, and visualization. Working with real datasets and learning tools like Excel, Python pandas, and Tableau.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🌿</div>
+                <h3>Environmental Science</h3>
+                <p>Sustainability projects, renewable energy experiments, water quality testing, and environmental conservation initiatives. Green technology and eco-innovation.</p>
+            </div>
+        </div>
+
+        <section style="background: #f0fdf4; padding: 3rem; border-radius: 12px; margin: 3rem 0;">
+            <h2>STEM Curriculum Integration</h2>
+            <div class="feature-grid">
+                <div style="background: white; padding: 1.5rem; border-radius: 8px;">
+                    <h4 style="color: #059669;">🎯 Primary Level (K-5)</h4>
+                    <ul>
+                        <li>Introduction to scientific method</li>
+                        <li>Basic coding with Scratch</li>
+                        <li>Simple machines and engineering</li>
+                        <li>Math problem-solving games</li>
+                        <li>Nature walks and observations</li>
+                    </ul>
+                </div>
+                <div style="background: white; padding: 1.5rem; border-radius: 8px;">
+                    <h4 style="color: #059669;">🎯 Middle Level (6-8)</h4>
+                    <ul>
+                        <li>Advanced lab experiments</li>
+                        <li>Python and web programming</li>
+                        <li>Robotics competitions</li>
+                        <li>Algebra and geometry applications</li>
+                        <li>Science fair projects</li>
+                    </ul>
+                </div>
+                <div style="background: white; padding: 1.5rem; border-radius: 8px;">
+                    <h4 style="color: #059669;">🎯 High School (9-12)</h4>
+                    <ul>
+                        <li>Research-based learning</li>
+                        <li>Advanced programming & AI</li>
+                        <li>Engineering design projects</li>
+                        <li>Calculus and statistics</li>
+                        <li>Internships and mentorships</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Specialized Programs</h2>
+            <div class="feature-grid">
+                <div class="feature-card" style="border-top: 4px solid #059669;">
+                    <h4>🏆 STEM Olympiads</h4>
+                    <p>Preparation and participation in national and international olympiads including:</p>
+                    <ul style="margin-top: 1rem;">
+                        <li>Mathematics Olympiad (IMO)</li>
+                        <li>Physics Olympiad (IPhO)</li>
+                        <li>Chemistry Olympiad (IChO)</li>
+                        <li>Biology Olympiad (IBO)</li>
+                        <li>Informatics Olympiad (IOI)</li>
+                    </ul>
+                </div>
+                <div class="feature-card" style="border-top: 4px solid #059669;">
+                    <h4>💡 Innovation Lab</h4>
+                    <p>A dedicated maker space equipped with:</p>
+                    <ul style="margin-top: 1rem;">
+                        <li>3D printers and laser cutters</li>
+                        <li>Electronics workbenches</li>
+                        <li>Prototyping materials</li>
+                        <li>Design software</li>
+                        <li>Collaboration spaces</li>
+                    </ul>
+                </div>
+                <div class="feature-card" style="border-top: 4px solid #059669;">
+                    <h4>🎓 Research Mentorship</h4>
+                    <p>Students work with university professors and industry experts on:</p>
+                    <ul style="margin-top: 1rem;">
+                        <li>Independent research projects</li>
+                        <li>Paper writing and publication</li>
+                        <li>Conference presentations</li>
+                        <li>Patent applications</li>
+                        <li>Science exhibitions</li>
+                    </ul>
+                </div>
+                <div class="feature-card" style="border-top: 4px solid #059669;">
+                    <h4>🏅 Competitions & Events</h4>
+                    <p>Regular participation in:</p>
+                    <ul style="margin-top: 1rem;">
+                        <li>Google Science Fair</li>
+                        <li>IRIS National Fair</li>
+                        <li>Techfest IIT Bombay</li>
+                        <li>Coding competitions (CodeChef, HackerRank)</li>
+                        <li>Robotics championships</li>
+                    </ul>
+                </div>
+                <div class="feature-card" style="border-top: 4px solid #059669;">
+                    <h4>🌐 Industry Partnerships</h4>
+                    <p>Collaborations with leading companies for:</p>
+                    <ul style="margin-top: 1rem;">
+                        <li>Guest lectures and workshops</li>
+                        <li>Industry visits and tours</li>
+                        <li>Internship opportunities</li>
+                        <li>Real-world project challenges</li>
+                        <li>Career guidance sessions</li>
+                    </ul>
+                </div>
+                <div class="feature-card" style="border-top: 4px solid #059669;">
+                    <h4>🎪 STEM Clubs</h4>
+                    <p>After-school clubs including:</p>
+                    <ul style="margin-top: 1rem;">
+                        <li>Coding Club</li>
+                        <li>Robotics Club</li>
+                        <li>Astronomy Club</li>
+                        <li>Math Club</li>
+                        <li>Science Quiz Club</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Facilities & Equipment</h2>
+            <ul style="columns: 2; column-gap: 2rem; margin: 1.5rem 0;">
+                <li>✅ Physics Lab with advanced apparatus</li>
+                <li>✅ Chemistry Lab with safety equipment</li>
+                <li>✅ Biology Lab with microscopes and specimens</li>
+                <li>✅ Computer Lab with 50+ workstations</li>
+                <li>✅ Robotics Lab with kits and tools</li>
+                <li>✅ Innovation/Maker Space with 3D printers</li>
+                <li>✅ Mathematics Lab with manipulatives</li>
+                <li>✅ Electronics Lab with testing equipment</li>
+                <li>✅ Planetarium for astronomy education</li>
+                <li>✅ Virtual Reality learning stations</li>
+                <li>✅ High-speed internet and cloud computing</li>
+                <li>✅ Scientific software and simulation tools</li>
+            </ul>
+        </section>
+
+        <section style="background: #f0fdf4; padding: 2rem; border-radius: 12px; margin: 3rem 0;">
+            <h2>Career Pathways</h2>
+            <p>Our STEM program prepares students for careers in:</p>
+            <div class="feature-grid" style="margin-top: 2rem;">
+                <div>
+                    <h4 style="color: #059669;">🔧 Engineering</h4>
+                    <ul>
+                        <li>Computer Engineering</li>
+                        <li>Mechanical Engineering</li>
+                        <li>Electrical Engineering</li>
+                        <li>Aerospace Engineering</li>
+                        <li>Biomedical Engineering</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color: #059669;">💻 Technology</h4>
+                    <ul>
+                        <li>Software Development</li>
+                        <li>Data Science</li>
+                        <li>Cybersecurity</li>
+                        <li>AI/Machine Learning</li>
+                        <li>Game Development</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color: #059669;">🔬 Science</h4>
+                    <ul>
+                        <li>Research Scientist</li>
+                        <li>Biotechnology</li>
+                        <li>Environmental Science</li>
+                        <li>Pharmaceutical Sciences</li>
+                        <li>Space Sciences</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section style="margin: 3rem 0; text-align: center;">
+            <h2>Join Our STEM Revolution</h2>
+            <p style="margin: 1rem 0 2rem;">Discover the excitement of STEM education and prepare for the careers of tomorrow!</p>
+            <a href="/portfolio/contact" class="btn btn-primary" style="display: inline-block; padding: 1rem 2rem; background: #059669; color: white; text-decoration: none; border-radius: 8px; font-weight: 600;">Contact Us</a>
+        </section>
+    </div>
+
+    <%- include('../../partials/footer') %>
+</body>
+</html>

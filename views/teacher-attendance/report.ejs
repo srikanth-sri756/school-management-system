@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/admin-head', { title: 'Teacher Attendance Report' }) %>
+</head>
+<body class="app">
+  <%- include('../partials/navbar', { page: 'teacher-attendance' }) %>
+
+  <%
+    const exportUrl = '/teacher-attendance/export?teacherId=' + encodeURIComponent(filters.teacherId || '') +
+      '&startDate=' + encodeURIComponent(filters.startDate || '') + '&endDate=' + encodeURIComponent(filters.endDate || '');
+  %>
+  <main class="container" id="main">
+    <div class="page-header">
+      <div>
+        <a href="/teacher-attendance" class="back-link"><%- icon('arrow-left') %>Teacher Attendance</a>
+        <h2>Teacher Attendance Report</h2>
+        <p>Filter by teacher and date range, then export to CSV.</p>
+      </div>
+      <% if (attendanceRecords.length) { %>
+        <div class="page-actions"><a href="<%= exportUrl %>" class="btn" download><%- icon('download') %>Export to CSV</a></div>
+      <% } %>
+    </div>
+
+    <form method="GET" action="/teacher-attendance/report" class="card">
+      <div class="filter-bar">
+        <div class="form-group">
+          <label for="teacherId">Teacher</label>
+          <select id="teacherId" name="teacherId" class="form-control">
+            <option value="">All teachers</option>
+            <% teachers.forEach(teacher => { %>
+              <option value="<%= teacher._id %>" <%= filters.teacherId === teacher._id.toString() ? 'selected' : '' %>><%= teacher.name %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="startDate">From</label>
+          <input type="date" id="startDate" name="startDate" class="form-control" value="<%= filters.startDate || '' %>">
+        </div>
+        <div class="form-group">
+          <label for="endDate">To</label>
+          <input type="date" id="endDate" name="endDate" class="form-control" value="<%= filters.endDate || '' %>">
+        </div>
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary btn-block"><%- icon('filter') %>Apply filters</button>
+        </div>
+        <div class="form-group">
+          <a href="/teacher-attendance/report" class="btn btn-block"><%- icon('x') %>Reset</a>
+        </div>
+      </div>
+    </form>
+
+    <section class="card card--flush">
+      <div class="card-header">
+        <h3><%- icon('user-check') %>Records</h3>
+        <span class="result-count"><%= attendanceRecords.length %> records</span>
+      </div>
+      <% if (attendanceRecords.length) { %>
+        <div class="table-container">
+          <table>
+            <thead><tr><th>Date</th><th>Teacher</th><th>Subject</th><th>Class</th><th>Status</th><th>Check-in</th><th>Check-out</th><th>Notes</th></tr></thead>
+            <tbody>
+              <% attendanceRecords.forEach(record => { const t = record.teacher; %>
+                <tr>
+                  <td><%= new Date(record.date).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) %></td>
+                  <td class="cell-strong"><%= t ? t.name : '—' %></td>
+                  <td><%= t && t.subject ? t.subject.name : '—' %></td>
+                  <td><%= t && t.class ? t.class.name : '—' %><%= t && t.section ? ' – ' + t.section : '' %></td>
+                  <td><%- statusBadge(record.status) %></td>
+                  <td><%= record.checkIn || '—' %></td>
+                  <td><%= record.checkOut || '—' %></td>
+                  <td><div class="truncate" title="<%= record.notes || '' %>"><%= record.notes || '—' %></div></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } else { %>
+        <div class="empty-state">
+          <span class="stat-icon"><%- icon('calendar-x') %></span>
+          <strong>No records found</strong>
+          <p>Try a different teacher or a wider date range.</p>
+        </div>
+      <% } %>
+    </section>
+  </main>
+</body>
+</html>

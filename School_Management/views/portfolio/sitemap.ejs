@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sitemap of Akansha Grammar High School - Complete navigation guide to all pages and resources">
+    <title>Sitemap | Akansha Grammar High School</title>
+    <link rel="stylesheet" href="/css/modern.css">
+    <link rel="stylesheet" href="/css/portfolio.css">
+    <style>
+        .content-wrapper {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem 4rem;
+        }
+        .page-header {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            color: white;
+            padding: 3rem 2rem;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+        .page-header h1 {
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+        .sitemap-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        .sitemap-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .sitemap-section h2 {
+            color: #059669;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #d1fae5;
+            font-size: 1.5rem;
+        }
+        .sitemap-section h3 {
+            color: #047857;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+        }
+        .sitemap-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sitemap-links li {
+            margin: 0.75rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        .sitemap-links li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #059669;
+            font-weight: bold;
+        }
+        .sitemap-links a {
+            color: #0f172a;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .sitemap-links a:hover {
+            color: #059669;
+            text-decoration: underline;
+        }
+        .sub-links {
+            list-style: none;
+            padding-left: 1rem;
+            margin-top: 0.5rem;
+        }
+        .sub-links li:before {
+            content: "▸";
+            color: #10b981;
+        }
+        .search-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 3rem;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #d1fae5;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        .search-box input:focus {
+            outline: none;
+            border-color: #059669;
+        }
+        .highlight-box {
+            background: #f0fdfa;
+            border-left: 4px solid #059669;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <%- include('../partials/public-navbar') %>
+
+    <div class="page-header">
+        <h1>🗺️ Sitemap</h1>
+        <p style="font-size: 1.1rem; max-width: 700px; margin: 1rem auto 0;">Navigate through all pages and resources available on our website</p>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="search-box">
+            <input type="text" id="sitemapSearch" placeholder="🔍 Search for a page or section..." onkeyup="filterSitemap()">
+        </div>
+
+        <div class="highlight-box">
+            <p><strong>Quick Navigation:</strong> Click on any link below to go directly to that page. Use the search box above to find specific pages quickly.</p>
+        </div>
+
+        <div class="sitemap-grid">
+            <!-- Main Pages Section -->
+            <div class="sitemap-section" data-section="main">
+                <h2>📱 Main Pages</h2>
+                <ul class="sitemap-links">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/portfolio/about">About Us</a></li>
+                    <li><a href="/portfolio/academics">Academics</a></li>
+                    <li><a href="/portfolio/admissions">Admissions</a></li>
+                    <li><a href="/portfolio/contact">Contact Us</a></li>
+                </ul>
+            </div>
+
+            <!-- Academic Programs Section -->
+            <div class="sitemap-section" data-section="programs">
+                <h2>🎓 Academic Programs</h2>
+                <ul class="sitemap-links">
+                    <li><a href="/portfolio/programs/primary">Primary School (K-5)</a></li>
+                    <li><a href="/portfolio/programs/middle">Middle School (6-8)</a></li>
+                    <li><a href="/portfolio/programs/high">High School (9-12)</a></li>
+                </ul>
+                
+                <h3>Specialized Programs</h3>
+                <ul class="sitemap-links">
+                    <li><a href="/portfolio/programs/stem">STEM Education</a></li>
+                    <li><a href="/portfolio/programs/sports">Sports Academy</a></li>
+                    <li><a href="/portfolio/programs/arts">Arts & Culture</a></li>
+                </ul>
+            </div>
+
+            <!-- Administration Section -->
+            <div class="sitemap-section" data-section="admin">
+                <h2>🔐 Administration</h2>
+                <ul class="sitemap-links">
+                    <li><a href="/login">Staff Login</a></li>
+                </ul>
+                
+                <h3>Admin Functions (Login Required)</h3>
+                <ul class="sitemap-links sub-links">
+                    <li><a href="/admin/dashboard">Dashboard</a></li>
+                    <li><a href="/admin/students">Student Management</a></li>
+                    <li><a href="/admin/teachers">Teacher Management</a></li>
+                    <li><a href="/admin/import">Import Data (CSV/Excel)</a></li>
+                    <li><a href="/admin/classes">Class Management</a></li>
+                    <li><a href="/admin/subjects">Subject Management</a></li>
+                </ul>
+            </div>
+
+            <!-- Attendance Section -->
+            <div class="sitemap-section" data-section="attendance">
+                <h2>📊 Attendance Management</h2>
+                <ul class="sitemap-links">
+                    <li><a href="/attendance">Student Attendance</a>
+                        <ul class="sub-links">
+                            <li><a href="/attendance/mark">Mark Attendance</a></li>
+                            <li><a href="/attendance/report">Attendance Report</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="/teacher-attendance">Teacher Attendance</a>
+                        <ul class="sub-links">
+                            <li><a href="/teacher-attendance/mark">Mark Teacher Attendance</a></li>
+                            <li><a href="/teacher-attendance/report">Teacher Attendance Report</a></li>
+                            <li><a href="/teacher-attendance/export">Export to CSV</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Academic Records Section -->
+            <div class="sitemap-section" data-section="academics">
+                <h2>📚 Academic Records</h2>
+                <ul class="sitemap-links">
+                    <li><a href="/marks">Marks Management</a>
+                        <ul class="sub-links">
+                            <li><a href="/marks/add">Add Marks</a></li>
+                            <li><a href="/marks/view">View Marks</a></li>
+                            <li><a href="/marks/report">Generate Report Card</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="/exams">Examination Management</a></li>
+                    <li><a href="/assignments">Assignments & Homework</a></li>
+                </ul>
+            </div>
+
+            <!-- Financial Section -->
+            <div class="sitemap-section" data-section="finance">
+                <h2>💰 Financial Management</h2>
+                <ul class="sitemap-links">
+                    <li><a href="/fees">Fee Management</a>
+                        <ul class="sub-links">
+                            <li><a href="/fees/structure">Fee Structure</a></li>
+                            <li><a href="/fees/payment">Fee Payment</a></li>
+                            <li><a href="/fees/report">Fee Reports</a></li>
+                            <li><a href="/fees/due">Fee Due List</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="/salary">Salary Management</a></li>
+                    <li><a href="/expenses">Expense Tracking</a></li>
+                </ul>
+            </div>
+
+            <!-- Communication Section -->
+            <div class="sitemap-section" data-section="communication">
+                <h2>📢 Communication</h2>
+                <ul class="sitemap-links">
+                    <li><a href="/notices">Notices & Announcements</a></li>
+                    <li><a href="/messages">Internal Messaging</a></li>
+                    <li><a href="/events">School Events Calendar</a></li>
+                    <li><a href="/notifications">Notifications Center</a></li>
+                </ul>
+            </div>
+
+            <!-- Library Section -->
+            <div class="sitemap-section" data-section="library">
+                <h2>📖 Library Management</h2>
+                <ul class="sitemap-links">
+                    <li><a href="/library">Library Dashboard</a>
+                        <ul class="sub-links">
+                            <li><a href="/library/books">Books Catalog</a></li>
+                            <li><a href="/library/issue">Issue Books</a></li>
+                            <li><a href="/library/return">Return Books</a></li>
+                            <li><a href="/library/members">Library Members</a></li>
+                            <li><a href="/library/reports">Library Reports</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Transport Section -->
+            <div class="sitemap-section" data-section="transport">
+                <h2>🚌 Transport Management</h2>
+                <ul class="sitemap-links">
+                    <li><a href="/transport">Transport Dashboard</a>
+                        <ul class="sub-links">
+                            <li><a href="/transport/routes">Bus Routes</a></li>
+                            <li><a href="/transport/vehicles">Vehicle Management</a></li>
+                            <li><a href="/transport/drivers">Driver Management</a></li>
+                            <li><a href="/transport/tracking">GPS Tracking</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Reports Section -->
+            <div class="sitemap-section" data-section="reports">
+                <h2>📈 Reports & Analytics</h2>
+                <ul class="sitemap-links">
+                    <li><a href="/reports">Reports Dashboard</a>
+                        <ul class="sub-links">
+                            <li><a href="/reports/academic">Academic Reports</a></li>
+                            <li><a href="/reports/attendance">Attendance Reports</a></li>
+                            <li><a href="/reports/financial">Financial Reports</a></li>
+                            <li><a href="/reports/custom">Custom Reports</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Settings Section -->
+            <div class="sitemap-section" data-section="settings">
+                <h2>⚙️ Settings & Configuration</h2>
+                <ul class="sitemap-links">
+                    <li><a href="/settings">System Settings</a>
+                        <ul class="sub-links">
+                            <li><a href="/settings/school">School Information</a></li>
+                            <li><a href="/settings/academic">Academic Year Settings</a></li>
+                            <li><a href="/settings/users">User Management</a></li>
+                            <li><a href="/settings/permissions">Roles & Permissions</a></li>
+                            <li><a href="/settings/backup">Backup & Restore</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Legal & Information Section -->
+            <div class="sitemap-section" data-section="legal">
+                <h2>📄 Legal & Information</h2>
+                <ul class="sitemap-links">
+                    <li><a href="/portfolio/privacy-policy">Privacy Policy</a></li>
+                    <li><a href="/portfolio/terms-of-service">Terms of Service</a></li>
+                    <li><a href="/portfolio/sitemap">Sitemap (This Page)</a></li>
+                </ul>
+                
+                <h3>Downloads</h3>
+                <ul class="sitemap-links sub-links">
+                    <li><a href="/admin/sample-template/students">Student Import Template (CSV)</a></li>
+                    <li><a href="/admin/sample-template/teachers">Teacher Import Template (CSV)</a></li>
+                    <li><a href="/admin/sample-template/classes">Class Import Template (CSV)</a></li>
+                    <li><a href="/admin/sample-template/subjects">Subject Import Template (CSV)</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="highlight-box" style="margin-top: 3rem;">
+            <h3 style="color: #059669; margin-top: 0;">🔍 Can't Find What You're Looking For?</h3>
+            <p style="margin-bottom: 0.5rem;">If you can't find a specific page or feature, please try:</p>
+            <ul style="margin-top: 0.5rem;">
+                <li>Using the search box at the top of this page</li>
+                <li>Checking your user role - some features require specific permissions</li>
+                <li>Logging in with your account to access restricted areas</li>
+                <li>Contacting our support team at <strong>support@akanshaschool.edu</strong></li>
+            </ul>
+        </div>
+
+        <div style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); margin-top: 2rem;">
+            <h3 style="color: #059669; margin-top: 0;">📞 Need Help?</h3>
+            <p style="margin-bottom: 1rem;">Our support team is here to help you navigate our website and services.</p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                <div>
+                    <strong>📧 Email:</strong><br>
+                    support@akanshaschool.edu
+                </div>
+                <div>
+                    <strong>📞 Phone:</strong><br>
+                    +91-11-2345-6789
+                </div>
+                <div>
+                    <strong>🕒 Office Hours:</strong><br>
+                    Monday - Friday, 9:00 AM - 5:00 PM
+                </div>
+            </div>
+            <div style="margin-top: 2rem; text-align: center;">
+                <a href="/portfolio/contact" class="btn btn-primary" style="display: inline-block; padding: 1rem 2rem; background: #059669; color: white; text-decoration: none; border-radius: 8px; font-weight: 600;">Contact Us</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function filterSitemap() {
+            const searchInput = document.getElementById('sitemapSearch').value.toLowerCase();
+            const sections = document.querySelectorAll('.sitemap-section');
+            
+            sections.forEach(section => {
+                const text = section.textContent.toLowerCase();
+                if (text.includes(searchInput)) {
+                    section.style.display = 'block';
+                } else {
+                    section.style.display = 'none';
+                }
+            });
+        }
+    </script>
+
+    <%- include('../partials/footer') %>
+</body>
+</html>

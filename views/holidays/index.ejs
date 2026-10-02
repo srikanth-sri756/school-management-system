@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/admin-head', { title: 'Holidays' }) %>
+</head>
+<body class="app">
+  <%- include('../partials/navbar', { page: 'holidays' }) %>
+
+  <%
+    const isAdmin = user.role === 'admin';
+    const typeTone = { 'National': 'navy', 'Religious': 'violet', 'Festival': 'warning', 'School Event': 'info' };
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const upcoming = holidays.filter(h => { const d = new Date(h.date); d.setHours(0, 0, 0, 0); return d >= today; }).length;
+  %>
+  <main class="container" id="main">
+    <div class="page-header">
+      <div>
+        <h2>Holiday Calendar</h2>
+        <p><%= upcoming %> upcoming · <%= holidays.length %> declared in total</p>
+      </div>
+      <% if (isAdmin) { %>
+        <div class="page-actions"><a href="/holidays/add" class="btn btn-primary"><%- icon('plus') %>Add Holiday</a></div>
+      <% } %>
+    </div>
+
+    <div class="alert alert-info">
+      <%- icon('info') %>
+      <div>Sundays are weekly offs. Attendance can’t be marked on Sundays or on declared holidays.</div>
+    </div>
+
+    <section class="card">
+      <div class="card-header"><h3><%- icon('calendar-days') %>Declared Holidays</h3></div>
+      <% if (holidays.length) { %>
+        <div class="holidays-grid">
+          <% holidays.forEach(holiday => {
+            const d = new Date(holiday.date);
+            d.setHours(0, 0, 0, 0);
+            const isPast = d < today;
+            const isToday = d.getTime() === today.getTime();
+          %>
+            <article class="holiday-card <%= isPast ? 'past' : '' %> <%= isToday ? 'today' : '' %>">
+              <div class="holiday-header">
+                <div class="holiday-date">
+                  <div class="date-day"><%= d.getDate() %></div>
+                  <div class="date-month"><%= d.toLocaleString('en-IN', { month: 'short' }) %> <%= d.getFullYear() %></div>
+                </div>
+                <div class="holiday-info">
+                  <h4><%= holiday.title %></h4>
+                  <span class="badge badge-<%= typeTone[holiday.type] || 'navy' %> badge--plain"><%= holiday.type %></span>
+                  <% if (holiday.isRecurring) { %><span class="badge badge--plain"><%- icon('refresh-cw') %>Every year</span><% } %>
+                  <div class="holiday-day"><%= d.toLocaleString('en-IN', { weekday: 'long' }) %><%= isToday ? ' · Today' : '' %></div>
+                </div>
+              </div>
+              <% if (holiday.description) { %><p class="holiday-description"><%= holiday.description %></p><% } %>
+              <div class="holiday-footer">
+                <span>Added by <%= holiday.createdBy ? (holiday.createdBy.name || holiday.createdBy.email) : '—' %></span>
+                <% if (isAdmin && !isPast) { %>
+                  <form method="POST" action="/holidays/<%= holiday._id %>/delete" data-confirm="Delete “<%= holiday.title %>”?">
+                    <button type="submit" class="btn btn-sm btn-danger"><%- icon('trash-2') %>Delete</button>
+                  </form>
+                <% } %>
+              </div>
+            </article>
+          <% }) %>
+        </div>
+      <% } else { %>
+        <div class="empty-state">
+          <span class="stat-icon"><%- icon('calendar-days') %></span>
+          <strong>No holidays declared yet</strong>
+          <p>Declared holidays block attendance for that day.</p>
+          <% if (isAdmin) { %><a href="/holidays/add" class="btn btn-primary"><%- icon('plus') %>Add First Holiday</a><% } %>
+        </div>
+      <% } %>
+    </section>
+  </main>
+</body>
+</html>

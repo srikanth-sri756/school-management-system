@@ -1,0 +1,33 @@
+<!-- Teacher Navigation Bar -->
+<% if (typeof user !== 'undefined' && user && user.role === 'teacher') { %>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <div class="school-brand">
+        <img src="/images/school-logo.svg" alt="Akansha Grammer High School" class="school-logo">
+        <div class="school-name-wrapper">
+          <h1 class="school-name">Akansha Grammer High School</h1>
+          <p class="school-tagline">Teacher Portal - <%= typeof teacher !== 'undefined' && teacher ? teacher.name : user.name %></p>
+        </div>
+      </div>
+      <div class="user-info">
+        <span class="user-welcome">Welcome, <strong><%= user.name %></strong></span>
+        <span class="user-role">Teacher</span>
+        <a href="/logout" class="btn-logout">Logout</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="nav-content">
+      <a href="/teacher/dashboard" class="<%= typeof page !== 'undefined' && page === 'teacher-dashboard' ? 'active' : '' %>">Dashboard</a>
+      <a href="/teacher/attendance" class="<%= typeof page !== 'undefined' && page === 'teacher-attendance' ? 'active' : '' %>">Attendance</a>
+      <a href="/teacher/marks" class="<%= typeof page !== 'undefined' && page === 'teacher-marks' ? 'active' : '' %>">Marks</a>
+      <a href="/teacher/remarks" class="<%= typeof page !== 'undefined' && page === 'teacher-remarks' ? 'active' : '' %>">Remarks</a>
+      <a href="/teacher/notes" class="<%= typeof page !== 'undefined' && page === 'teacher-notes' ? 'active' : '' %>">Notes</a>
+      <a href="/teacher/test-papers" class="<%= typeof page !== 'undefined' && page === 'teacher-test-papers' ? 'active' : '' %>">Test Papers</a>
+      <a href="/holidays" class="<%= typeof page !== 'undefined' && page === 'holidays' ? 'active' : '' %>">Holidays</a>
+    </div>
+  </nav>
+<% } %>

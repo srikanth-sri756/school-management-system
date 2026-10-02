@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/admin-head', { title: 'Remarks' }) %>
+</head>
+<body class="app">
+  <%- include('../partials/navbar', { page }) %>
+
+  <%
+    const typeTone = { Positive: 'success', Negative: 'danger', Neutral: 'navy' };
+    const hints = { Positive: 'Praise or achievement', Neutral: 'General observation', Negative: 'Concern to follow up' };
+  %>
+  <main class="container" id="main">
+    <div class="page-header">
+      <div>
+        <h2>Remarks</h2>
+        <p>Record praise, observations and concerns about the students in <%= teacher.class ? classLabel(teacher.class) : 'your class' %>.</p>
+      </div>
+    </div>
+
+    <% if (!teacher.class) { %>
+      <div class="alert alert-info"><%- icon('info') %><div>You don’t have a class assigned yet, so there are no students to write remarks for. Please ask the school office.</div></div>
+    <% } else { %>
+      <form method="POST" action="/teacher/remarks/add" class="card">
+        <div class="card-header"><h3><%- icon('plus') %>Add a remark</h3></div>
+        <div class="form-group">
+          <label for="student">Student <span class="req">*</span></label>
+          <select id="student" name="student" class="form-control" required>
+            <option value=""><%= students.length ? 'Select student' : 'No students in your class' %></option>
+            <% students.forEach(s => { %><option value="<%= s._id %>"><%= s.firstName %> <%= s.lastName %> (Roll <%= s.rollNumber || '—' %>)</option><% }) %>
+          </select>
+        </div>
+        <span class="field-label">Type <span class="req">*</span></span>
+        <div class="choice-list choice-list--3">
+          <% remarkTypes.forEach((t, i) => { %>
+            <label class="choice">
+              <input type="radio" name="type" value="<%= t %>" <%= t === 'Positive' ? 'checked' : '' %> required>
+              <div><strong><%= t %></strong><span><%= hints[t] %></span></div>
+            </label>
+          <% }) %>
+        </div>
+        <div class="form-group">
+          <label for="remark">Remark <span class="req">*</span></label>
+          <textarea id="remark" name="remark" class="form-control" rows="3" maxlength="1000" required placeholder="What did you notice?"></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" <%= students.length ? '' : 'disabled' %>><%- icon('check') %>Add remark</button>
+        </div>
+      </form>
+    <% } %>
+
+    <section class="card card--flush">
+      <div class="card-header">
+        <h3><%- icon('message-square-text') %>My remarks</h3>
+        <span class="result-count"><%= remarks.length %> <%= remarks.length === 1 ? 'remark' : 'remarks' %></span>
+      </div>
+      <% if (remarks.length) { %>
+        <div class="table-container">
+          <table>
+            <thead><tr><th>Date</th><th>Student</th><th>Type</th><th>Remark</th><th class="num"></th></tr></thead>
+            <tbody>
+              <% remarks.forEach(r => { %>
+                <tr>
+                  <td><%= new Date(r.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %></td>
+                  <td>
+                    <span class="cell-strong"><%= r.student ? r.student.firstName + ' ' + (r.student.lastName || '') : 'Former student' %></span>
+                    <% if (r.subject) { %><span class="cell-sub"><%= r.subject.name %></span><% } %>
+                  </td>
+                  <td><span class="badge badge-<%= typeTone[r.type] || 'navy' %>"><%= r.type %></span></td>
+                  <td><span class="remark-text"><%= r.remark %></span></td>
+                  <td class="num">
+                    <form method="POST" action="/teacher/remarks/<%= r._id %>/delete" data-confirm="Delete this remark?">
+                      <button type="submit" class="btn btn-sm btn-ghost" title="Delete" aria-label="Delete remark"><%- icon('trash-2') %></button>
+                    </form>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } else { %>
+        <div class="empty-state">
+          <span class="stat-icon"><%- icon('message-square-text') %></span>
+          <strong>No remarks yet</strong>
+          <p>Remarks you add will be listed here.</p>
+        </div>
+      <% } %>
+    </section>
+  </main>
+</body>
+</html>

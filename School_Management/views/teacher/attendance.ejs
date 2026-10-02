@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attendance - Teacher Portal</title>
+  <link rel="stylesheet" href="/css/modern.css">
+  <style>
+    .notification {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      padding: 15px 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      z-index: 9999;
+      animation: slideIn 0.3s ease-out;
+      max-width: 400px;
+    }
+    .notification.success {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+    }
+    .notification.error {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: white;
+    }
+    @keyframes slideIn {
+      from { transform: translateX(400px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOut {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(400px); opacity: 0; }
+    }
+    .notification.hiding {
+      animation: slideOut 0.3s ease-in;
+    }
+  </style>
+</head>
+<body>
+  <%- include('../partials/teacher-navbar') %>
+
+  <div class="container">
+    <div class="page-header">
+      <h2>Mark Attendance - <%= teacher.class ? teacher.class.name : 'No Class Assigned' %><%= teacher.section ? ' (Section ' + teacher.section + ')' : '' %></h2>
+    </div>
+
+    <% if (typeof success !== 'undefined' && success && success.length > 0) { %>
+      <div class="notification success" id="successNotification">
+        <strong>✓ Success!</strong><br>
+        <%= success %>
+      </div>
+    <% } %>
+
+    <% if (typeof error !== 'undefined' && error && error.length > 0) { %>
+      <div class="notification error" id="errorNotification">
+        <strong>✗ Error!</strong><br>
+        <%= error %>
+      </div>
+    <% } %>
+
+    <!-- Date Selector -->
+    <div class="card" style="margin-bottom: 20px; background: rgba(255,255,255,0.1); padding: 15px;">
+      <form method="GET" action="/teacher/attendance" style="display: flex; gap: 15px; align-items: flex-end;">
+        <div style="flex: 1; max-width: 300px;">
+          <label style="color: white; font-weight: 600; margin-bottom: 5px; display: block;">Select Date:</label>
+          <input type="date" name="date" class="form-control" value="<%= todayDate %>" max="<%= new Date().toISOString().split('T')[0] %>" onchange="this.form.submit()">
+        </div>
+        <button type="submit" class="btn btn-secondary">Load Attendance</button>
+        <% if (todayDate !== new Date().toISOString().split('T')[0]) { %>
+          <a href="/teacher/attendance" class="btn btn-primary">Back to Today</a>
+        <% } %>
+      </form>
+    </div>
+
+    <% if (students.length > 0) { %>
+      <div class="card" style="margin-bottom: 20px; background: rgba(255,255,255,0.1); padding: 15px;">
+        <h3 style="margin: 0; color: white;">📅 Selected Date: <%= new Date(todayDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %></h3>
+        <p style="margin: 5px 0 0 0; color: rgba(255,255,255,0.7);">
+          Attendance Status: 
+          <% const markedCount = Object.keys(attendanceRecords).length; %>
+          <% if (markedCount === 0) { %>
+            <span style="color: #fbbf24; font-weight: 600;">⚠️ Not marked yet</span>
+          <% } else if (markedCount === students.length) { %>
+            <span style="color: #10b981; font-weight: 600;">✓ All students marked (<%= markedCount %>/<%= students.length %>)</span>
+          <% } else { %>
+            <span style="color: #3b82f6; font-weight: 600;">⏳ Partially marked (<%= markedCount %>/<%= students.length %>)</span>
+          <% } %>
+        </p>
+        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.2);">
+          <strong style="color: white;">Legend:</strong>
+          <div style="display: flex; gap: 20px; margin-top: 8px; flex-wrap: wrap;">
+            <span style="color: rgba(255,255,255,0.8);">
+              <span style="color: #10b981; font-size: 20px; font-weight: bold;">✓</span> Attendance marked
+            </span>
+            <span style="color: rgba(255,255,255,0.8);">
+              <span style="color: #6b7280; font-size: 18px;">○</span> Not marked yet
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <form method="POST" action="/teacher/attendance/mark" id="attendanceForm">
+        <input type="hidden" name="selectedDate" value="<%= todayDate %>">
+        <div class="card">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Status</th>
+                <th>Roll No</th>
+                <th>Student Name</th>
+                <th>Attendance</th>
+                <th>Remarks</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% students.forEach(student => { %>
+                <% const attendance = attendanceRecords[student._id.toString()]; %>
+                <% const isMarked = !!attendance; %>
+                <tr style="<%= isMarked ? 'background: rgba(16, 185, 129, 0.1);' : '' %>">
+                  <td style="text-align: center;">
+                    <% if (isMarked) { %>
+                      <span style="color: #10b981; font-size: 24px; font-weight: bold;" title="Attendance marked">✓</span>
+                    <% } else { %>
+                      <span style="color: #6b7280; font-size: 20px;">○</span>
+                    <% } %>
+                  </td>
+                  <td><%= student.rollNumber %></td>
+                  <td><%= student.firstName %> <%= student.lastName %></td>
+                  <td>
+                    <select name="status_<%= student._id %>" class="attendance-status" style="<%= isMarked ? 'border: 2px solid #10b981;' : '' %>">
+                      <option value="Present" <%= isMarked && attendance.status === 'Present' ? 'selected' : '' %>>Present</option>
+                      <option value="Absent" <%= isMarked && attendance.status === 'Absent' ? 'selected' : '' %>>Absent</option>
+                      <option value="Late" <%= isMarked && attendance.status === 'Late' ? 'selected' : '' %>>Late</option>
+                      <option value="Excused" <%= isMarked && attendance.status === 'Excused' ? 'selected' : '' %>>Excused</option>
+                    </select>
+                  </td>
+                  <td>
+                    <input type="text" name="remarks_<%= student._id %>" placeholder="Optional remarks" value="<%= isMarked && attendance.remarks ? attendance.remarks : '' %>" style="<%= isMarked ? 'border: 2px solid #10b981;' : '' %>">
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <button type="submit" class="btn btn-primary">
+              <% if (Object.keys(attendanceRecords).length === students.length) { %>
+                Update Attendance
+              <% } else { %>
+                Submit Attendance
+              <% } %>
+            </button>
+            <% if (Object.keys(attendanceRecords).length > 0) { %>
+              <span style="color: #10b981; font-weight: 600;">
+                ✓ <%= Object.keys(attendanceRecords).length %> student(s) already marked today
+              </span>
+            <% } %>
+          </div>
+        </div>
+        <input type="hidden" name="attendanceData" id="attendanceData">
+      </form>
+
+      <script>
+        // Auto-hide notifications after 5 seconds
+        setTimeout(() => {
+          const successNotif = document.getElementById('successNotification');
+          const errorNotif = document.getElementById('errorNotification');
+          
+          if (successNotif) {
+            successNotif.classList.add('hiding');
+            setTimeout(() => successNotif.remove(), 300);
+          }
+          if (errorNotif) {
+            errorNotif.classList.add('hiding');
+            setTimeout(() => errorNotif.remove(), 300);
+          }
+        }, 5000);
+
+        document.getElementById('attendanceForm').addEventListener('submit', function(e) {
+          e.preventDefault();
+          
+          // Confirmation dialog
+          const confirmed = confirm('Are you sure you want to submit attendance for <%= students.length %> students?');
+          if (!confirmed) {
+            return false;
+          }
+
+          // Show loading notification
+          const loadingNotif = document.createElement('div');
+          loadingNotif.className = 'notification success';
+          loadingNotif.id = 'loadingNotification';
+          loadingNotif.innerHTML = '<strong>⏳ Processing...</strong><br>Submitting attendance, please wait...';
+          document.body.appendChild(loadingNotif);
+
+          const studentIds = <%- JSON.stringify(students.map(s => s._id.toString())) %>;
+          const data = studentIds.map(id => ({
+            studentId: id,
+            status: document.querySelector(`select[name="status_${id}"]`).value,
+            remarks: document.querySelector(`input[name="remarks_${id}"]`).value
+          }));
+          document.getElementById('attendanceData').value = JSON.stringify(data);
+          this.submit();
+        });
+      </script>
+    <% } else { %>
+      <div class="card">
+        <p>No students assigned to your class.</p>
+      </div>
+    <% } %>
+  </div>
+
+</body>
+</html>

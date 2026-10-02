@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/admin-head', { title: 'Fees' }) %>
+</head>
+<body class="app">
+  <%- include('../partials/navbar', { page: 'fees' }) %>
+
+  <%
+    const inr = (n) => '₹' + Number(n || 0).toLocaleString('en-IN');
+    const billed = fees.reduce((sum, f) => sum + (f.amount || 0), 0);
+    const collected = fees.reduce((sum, f) => sum + (f.paid || 0), 0);
+    const terms = ['Term 1', 'Term 2', 'Term 3', 'Annual', 'Admission', 'Development', 'Transport', 'Other'];
+  %>
+  <main class="container" id="main">
+    <div class="page-header">
+      <div>
+        <h2>Fees</h2>
+        <p>Fee records, payments and instalment plans.</p>
+      </div>
+      <div class="page-actions">
+        <a href="/fees/export" class="btn"><%- icon('download') %>Export to Excel</a>
+        <a href="/fees/add" class="btn btn-primary"><%- icon('plus') %>Create Fee</a>
+      </div>
+    </div>
+
+    <div class="stats-grid stats-grid--3">
+      <div class="stat-card">
+        <span class="stat-icon"><%- icon('receipt') %></span>
+        <div class="stat-body"><p class="stat-label">Total Billed</p><div class="stat-value"><%= inr(billed) %></div><p class="stat-sub"><%= fees.length %> fee <%= fees.length === 1 ? 'record' : 'records' %></p></div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon stat-icon--green"><%- icon('hand-coins') %></span>
+        <div class="stat-body"><p class="stat-label">Collected</p><div class="stat-value text-success"><%= inr(collected) %></div><p class="stat-sub"><%= billed ? Math.round((collected / billed) * 100) : 0 %>% of billed</p></div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon <%= billed - collected > 0 ? 'stat-icon--red' : 'stat-icon--green' %>"><%- icon('hourglass') %></span>
+        <div class="stat-body"><p class="stat-label">Outstanding</p><div class="stat-value <%= billed - collected > 0 ? 'text-danger' : '' %>"><%= inr(billed - collected) %></div><p class="stat-sub"><% const unpaid = fees.filter(f => f.status !== 'Paid').length; %><%= unpaid %> <%= unpaid === 1 ? 'record' : 'records' %> not fully paid</p></div>
+      </div>
+    </div>
+
+    <section class="card">
+      <div class="filter-bar" data-filter-for="feesTable">
+        <div class="form-group">
+          <label for="filterStudent">Student</label>
+          <div class="search-input">
+            <%- icon('search') %>
+            <input type="text" id="filterStudent" class="form-control" placeholder="Search name" data-col="0">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="filterTerm">Term</label>
+          <select id="filterTerm" class="form-control" data-col="1" data-match="equals">
+            <option value="">All terms</option>
+            <% terms.forEach(t => { %><option value="<%= t %>"><%= t %></option><% }) %>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="filterStatus">Status</label>
+          <select id="filterStatus" class="form-control" data-col="6" data-match="equals">
+            <option value="">All statuses</option>
+            <option value="Paid">Paid</option>
+            <option value="Partial">Partial</option>
+            <option value="Unpaid">Unpaid</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="filterMinAmount">Min amount (₹)</label>
+          <input type="number" id="filterMinAmount" class="form-control" min="0" placeholder="0" data-col="2" data-match="min">
+        </div>
+        <div class="form-group">
+          <label for="filterMaxAmount">Max amount (₹)</label>
+          <input type="number" id="filterMaxAmount" class="form-control" min="0" placeholder="Any" data-col="2" data-match="max">
+        </div>
+        <div class="form-group">
+          <button type="button" class="btn btn-block" data-filter-reset><%- icon('x') %>Clear filters</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card card--flush">
+      <div class="card-header">
+        <h3><%- icon('wallet') %>Fee Records</h3>
+        <span class="result-count" data-filter-count="feesTable"></span>
+      </div>
+      <% if (fees.length) { %>
+        <div class="table-container">
+          <table id="feesTable">
+            <thead>
+              <tr>
+                <th>Student</th><th>Term</th><th class="num">Amount</th><th class="num">Paid</th><th class="num">Balance</th>
+                <th>Plan</th><th>Status</th><th>Due</th><th class="num">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% fees.forEach(fee => { const balance = (fee.amount || 0) - (fee.paid || 0); %>
+                <tr>
+                  <td class="cell-strong"><%= fee.student ? fee.student.firstName + ' ' + fee.student.lastName : '—' %></td>
+                  <td><%= fee.term %></td>
+                  <td class="num" data-value="<%= fee.amount || 0 %>"><%= inr(fee.amount) %></td>
+                  <td class="num"><%= inr(fee.paid) %></td>
+                  <td class="num"><strong class="<%= balance > 0 ? 'text-danger' : 'text-success' %>"><%= inr(balance) %></strong></td>
+                  <td>
+                    <% if (fee.hasInstallmentPlan) { %>
+                      <span class="badge badge-navy badge--plain"><%- icon('calendar-days') %><%= fee.numberOfInstallments %> instalments</span>
+                    <% } else { %>
+                      <span class="text-muted">Full payment</span>
+                    <% } %>
+                  </td>
+                  <td data-value="<%= fee.status %>"><%- statusBadge(fee.status) %></td>
+                  <td><%= fee.dueDate ? new Date(fee.dueDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—' %></td>
+                  <td class="num">
+                    <div class="actions actions--end">
+                      <% if (fee.hasInstallmentPlan) { %>
+                        <a href="/fees/<%= fee._id %>/installments" class="btn btn-sm"><%- icon('list-checks') %>Instalments</a>
+                      <% } %>
+                      <% if (fee.student) { %>
+                        <a href="/students/<%= fee.student._id %>#receipts" class="btn btn-sm" title="Receipts"><%- icon('receipt') %>Receipts<% if (fee.receipts && fee.receipts.length) { %> · <%= fee.receipts.length %><% } %></a>
+                      <% } %>
+                      <a href="/fees/<%= fee._id %>/edit" class="btn btn-sm" title="Edit"><%- icon('pencil') %>Edit</a>
+                      <form method="POST" action="/fees/<%= fee._id %>/delete" data-confirm="Delete this fee record? This cannot be undone.">
+                        <button type="submit" class="btn btn-sm btn-danger" title="Delete" aria-label="Delete fee record"><%- icon('trash-2') %></button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              <% }) %>
+              <tr data-filter-empty hidden><td colspan="9" class="text-center text-muted">No fee records match these filters.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      <% } else { %>
+        <div class="empty-state">
+          <span class="stat-icon"><%- icon('receipt') %></span>
+          <strong>No fee records yet</strong>
+          <p>Create a fee for a student, paid in full or in instalments.</p>
+          <a href="/fees/add" class="btn btn-primary"><%- icon('plus') %>Create Fee</a>
+        </div>
+      <% } %>
+    </section>
+  </main>
+</body>
+</html>

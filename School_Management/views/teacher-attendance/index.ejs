@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Attendance - School Management System</title>
+  <link rel="stylesheet" href="/css/modern.css">
+</head>
+<body>
+  <%- include('../partials/navbar') %>
+
+  <div class="container">
+    <div class="page-header">
+      <h2>Teacher Attendance Management</h2>
+      <div class="flex gap-2">
+        <a href="/teacher-attendance/mark" class="btn btn-primary">Mark Attendance</a>
+        <a href="/teacher-attendance/report" class="btn btn-secondary">View Report</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="mb-3">Today's Teacher Attendance Summary</h3>
+      <p>Date: <%= selectedDate %></p>
+      <p>Total Records: <%= todayAttendance.length %></p>
+      <% if (todayAttendance.length > 0) { %>
+        <p>Present: <%= todayAttendance.filter(a => a.status === 'Present').length %></p>
+        <p>Absent: <%= todayAttendance.filter(a => a.status === 'Absent').length %></p>
+        <p>Late: <%= todayAttendance.filter(a => a.status === 'Late').length %></p>
+        <p>Half-Day: <%= todayAttendance.filter(a => a.status === 'Half-Day').length %></p>
+        <p>Leave: <%= todayAttendance.filter(a => a.status === 'Leave').length %></p>
+      <% } else { %>
+        <p class="mt-2">No attendance marked for today yet.</p>
+      <% } %>
+    </div>
+
+    <% if (todayAttendance.length > 0) { %>
+    <div class="card mt-3">
+      <h3 class="mb-3">Today's Teacher Attendance Records</h3>
+      <div class="table-container">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Teacher Name</th>
+              <th>Subject</th>
+              <th>Class</th>
+              <th>Status</th>
+              <th>Check-In</th>
+              <th>Check-Out</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% todayAttendance.forEach(record => { 
+              let statusColor = '#6b7280';
+              let statusBg = '#f3f4f6';
+              if (record.status === 'Present') {
+                statusColor = '#10b981';
+                statusBg = '#d1fae5';
+              } else if (record.status === 'Late') {
+                statusColor = '#f59e0b';
+                statusBg = '#fef3c7';
+              } else if (record.status === 'Half-Day') {
+                statusColor = '#3b82f6';
+                statusBg = '#dbeafe';
+              } else if (record.status === 'Leave') {
+                statusColor = '#8b5cf6';
+                statusBg = '#ede9fe';
+              } else {
+                statusColor = '#dc2626';
+                statusBg = '#fee2e2';
+              }
+            %>
+              <tr>
+                <td><strong><%= record.teacher ? record.teacher.name : 'N/A' %></strong></td>
+                <td><%= record.teacher && record.teacher.subject ? record.teacher.subject.name : 'N/A' %></td>
+                <td><%= record.teacher && record.teacher.class ? record.teacher.class.name : 'N/A' %><%= record.teacher && record.teacher.section ? ' (' + record.teacher.section + ')' : '' %></td>
+                <td>
+                  <span style="padding: 4px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; background-color: <%= statusBg %>; color: <%= statusColor %>;">
+                    <%= record.status %>
+                  </span>
+                </td>
+                <td><%= record.checkIn || '-' %></td>
+                <td><%= record.checkOut || '-' %></td>
+                <td>
+                  <a href="/teacher-attendance/edit/<%= record._id %>" class="btn btn-sm btn-secondary">Edit</a>
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <% } %>
+  </div>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

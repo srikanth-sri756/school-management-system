@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/admin-head', { title: 'Edit Student' }) %>
+</head>
+<body class="app">
+  <%- include('../partials/navbar', { page: 'students' }) %>
+
+  <main class="container container--narrow" id="main">
+    <div class="page-header">
+      <div>
+        <a href="/students/<%= student.id %>" class="back-link"><%- icon('arrow-left') %><%= student.firstName %> <%= student.lastName %></a>
+        <h2>Edit Student</h2>
+        <p><%= student.studentId || '' %></p>
+      </div>
+    </div>
+
+    <form action="/students/<%= student.id %>/edit" method="POST" class="card" enctype="multipart/form-data">
+      <%- include('_form', { s: student }) %>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary"><%- icon('check') %>Save Changes</button>
+        <a href="/students/<%= student.id %>" class="btn">Cancel</a>
+      </div>
+    </form>
+  </main>
+</body>
+</html>

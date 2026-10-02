@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/public-head', { title: 'Contact Us', description: 'Contact Akansha Grammar High School: address, phone numbers, email addresses, office hours and map.' }) %>
+</head>
+<body class="site">
+  <%- include('../partials/public-navbar') %>
+
+  <main id="main">
+    <%- include('../partials/page-hero', {
+      heroPhoto: 'library-rows',
+      heroCrumbs: [{ href: '/', label: 'Home' }, { label: 'Contact' }],
+      heroTitle: 'Get in touch',
+      heroText: 'Questions about admissions, academics or a campus visit? We’d love to hear from you.'
+    }) %>
+
+    <section class="section">
+      <div class="container contact-grid">
+        <div data-reveal>
+          <h2 class="display display-m">Send us<br>a message</h2>
+          <p class="lede">We usually reply within one working day.</p>
+
+          <% if (typeof success !== 'undefined' && success.length > 0) { %>
+            <div class="alert alert-success" role="status"><%- icon('circle-check') %><span><%= success %></span></div>
+          <% } %>
+
+          <form action="/portfolio/contact" method="POST" class="form">
+            <div class="form-row">
+              <div class="field">
+                <label for="name">Full name <span class="req">*</span></label>
+                <input type="text" id="name" name="name" required autocomplete="name" placeholder="Your name">
+              </div>
+              <div class="field">
+                <label for="email">Email <span class="req">*</span></label>
+                <input type="email" id="email" name="email" required autocomplete="email" placeholder="you@example.com">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label for="phone">Phone <span class="req">*</span></label>
+                <input type="tel" id="phone" name="phone" required autocomplete="tel" placeholder="+91 98765 43210">
+              </div>
+              <div class="field">
+                <label for="subject">Subject <span class="req">*</span></label>
+                <select id="subject" name="subject" required>
+                  <option value="">Select a subject</option>
+                  <option value="admission">Admission inquiry</option>
+                  <option value="academic">Academic information</option>
+                  <option value="visit">Campus visit</option>
+                  <option value="general">General query</option>
+                  <option value="feedback">Feedback</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label for="message">Message <span class="req">*</span></label>
+              <textarea id="message" name="message" rows="4" required placeholder="How can we help?"></textarea>
+            </div>
+            <div class="pills"><button type="submit" class="pill pill--light">Send Message <%- icon('arrow-right') %></button></div>
+          </form>
+        </div>
+
+        <div class="info-blocks" data-reveal>
+          <div class="info-block">
+            <span class="label">Address</span>
+            <p>123, Education Lane<br>Knowledge Park, City – 500001<br>Telangana, India</p>
+          </div>
+          <div class="info-block">
+            <span class="label">Phone</span>
+            <p>Main office <a href="tel:+919876543210">+91 98765 43210</a><br>Admissions <a href="tel:+919876543211">+91 98765 43211</a><br>Principal <a href="tel:+919876543212">+91 98765 43212</a></p>
+          </div>
+          <div class="info-block">
+            <span class="label">Email</span>
+            <p><a href="mailto:info@akanshaschool.edu">info@akanshaschool.edu</a><br><a href="mailto:admissions@akanshaschool.edu">admissions@akanshaschool.edu</a><br><a href="mailto:principal@akanshaschool.edu">principal@akanshaschool.edu</a></p>
+          </div>
+          <div class="info-block">
+            <span class="label">Office hours</span>
+            <p>Monday – Friday, 8:00 AM – 5:00 PM<br>Saturday, 9:00 AM – 2:00 PM<br><span class="muted">Closed on Sundays</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--tight">
+      <div class="container">
+        <div class="rows-head" data-reveal>
+          <h2 class="display display-m">Find us</h2>
+          <span class="count muted">Knowledge Park, Telangana</span>
+        </div>
+        <div class="map-frame" data-reveal="fade">
+          <iframe
+            title="Map showing the school's location"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3806.6282802892544!2d78.48696831487686!3d17.42470038805677!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb9a19c1f6b6b5%3A0x5f0b6b6b6b6b6b6b!2sHyderabad%2C%20Telangana!5e0!3m2!1sen!2sin!4v1234567890123!5m2!1sen!2sin"
+            allowfullscreen
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>

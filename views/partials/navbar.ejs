@@ -1,0 +1,115 @@
+<%# Admin / staff shell: sidebar, top bar and flash toasts. Include with { page: '<section key>' }. %>
+<% if (typeof user !== 'undefined' && user) {
+  const current = typeof page !== 'undefined' ? page : '';
+  const role = user.role || 'admin';
+  const isAdmin = role === 'admin';
+  const isStaff = isAdmin || role === 'staff';
+  const isTeacher = role === 'teacher';
+  const link = (href, key, iconName, label) =>
+    `<a href="${href}" class="nav-item${current === key ? ' active' : ''}"${current === key ? ' aria-current="page"' : ''}>${icon(iconName)}<span>${label}</span></a>`;
+  const sections = {
+    dashboard: 'Dashboard', students: 'Students', attendance: 'Student Attendance', marks: 'Marks',
+    teachers: 'Teachers', 'teacher-attendance': 'Teacher Attendance', fees: 'Fees',
+    holidays: 'Holidays', announcements: 'Important Dates', import: 'Import Data',
+    'teacher-dashboard': 'Dashboard', 'teacher-attendance-portal': 'Attendance', 'teacher-marks': 'Marks',
+    'teacher-remarks': 'Remarks', 'teacher-notes': 'Notes', 'teacher-test-papers': 'Question Papers',
+    'teacher-dates': 'Important Dates'
+  };
+  // The teacher's own profile (photo in the top bar), when the page has it
+  const me = isTeacher && typeof teacher !== 'undefined' ? teacher : null;
+  const today = new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+%>
+<aside class="sidebar" id="sidebar" aria-label="Sidebar">
+  <a href="<%= isTeacher ? '/teacher/dashboard' : '/dashboard' %>" class="sidebar-brand">
+    <img src="/images/crest-mono.svg" alt="">
+    <div>
+      <strong>Akansha Grammar</strong>
+      <span><%= isTeacher ? 'Teacher Portal' : 'Admin Portal' %></span>
+    </div>
+  </a>
+
+  <nav class="sidebar-nav" aria-label="Main">
+    <% if (isTeacher) { %>
+      <div class="nav-group">
+        <div class="nav-label">Teaching</div>
+        <%- link('/teacher/dashboard', 'teacher-dashboard', 'layout-dashboard', 'Dashboard') %>
+        <%- link('/teacher/attendance', 'teacher-attendance-portal', 'calendar-check', 'Attendance') %>
+        <%- link('/teacher/marks', 'teacher-marks', 'notebook-pen', 'Marks') %>
+        <%- link('/teacher/remarks', 'teacher-remarks', 'message-square-text', 'Remarks') %>
+        <%- link('/teacher/notes', 'teacher-notes', 'sticky-note', 'Notes') %>
+        <%- link('/teacher/test-papers', 'teacher-test-papers', 'file-text', 'Question Papers') %>
+      </div>
+      <div class="nav-group">
+        <div class="nav-label">School</div>
+        <%- link('/teacher/dates', 'teacher-dates', 'megaphone', 'Important Dates') %>
+        <%- link('/holidays', 'holidays', 'calendar-days', 'Holidays') %>
+      </div>
+    <% } else { %>
+      <div class="nav-group">
+        <div class="nav-label">Overview</div>
+        <%- link('/dashboard', 'dashboard', 'layout-dashboard', 'Dashboard') %>
+      </div>
+      <div class="nav-group">
+        <div class="nav-label">Academics</div>
+        <% if (isStaff) { %>
+          <%- link('/students', 'students', 'users', 'Students') %>
+          <%- link('/attendance', 'attendance', 'calendar-check', 'Attendance') %>
+        <% } %>
+        <%- link('/marks', 'marks', 'notebook-pen', 'Marks') %>
+      </div>
+      <% if (isAdmin) { %>
+        <div class="nav-group">
+          <div class="nav-label">Staff</div>
+          <%- link('/teachers', 'teachers', 'presentation', 'Teachers') %>
+          <%- link('/teacher-attendance', 'teacher-attendance', 'user-check', 'Teacher Attendance') %>
+        </div>
+        <div class="nav-group">
+          <div class="nav-label">Administration</div>
+          <%- link('/fees', 'fees', 'wallet', 'Fees') %>
+          <%- link('/announcements', 'announcements', 'megaphone', 'Important Dates') %>
+          <%- link('/holidays', 'holidays', 'calendar-days', 'Holidays') %>
+          <%- link('/admin/import', 'import', 'upload', 'Import Data') %>
+        </div>
+      <% } %>
+    <% } %>
+  </nav>
+
+  <div class="sidebar-foot">
+    <a href="/" class="btn-sidebar" target="_blank" rel="noopener"><%- icon('external-link') %>View website</a>
+    <a href="/logout" class="btn-sidebar"><%- icon('log-out') %>Sign out</a>
+  </div>
+</aside>
+<div class="sidebar-backdrop" data-sidebar-close></div>
+
+<header class="topbar">
+  <div class="topbar-left">
+    <button type="button" class="icon-btn menu-btn" data-sidebar-toggle aria-controls="sidebar" aria-expanded="false" aria-label="Open navigation"><%- icon('menu') %></button>
+    <div class="topbar-context">
+      <strong><%= sections[current] || (isTeacher ? 'Teacher Portal' : 'Admin Portal') %></strong>
+      <span><%= today %></span>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="user-chip">
+      <% if (me) { %><%- avatar('teacher', me) %><% } else { %><span class="avatar" aria-hidden="true"><%= initials(user.name || user.email) %></span><% } %>
+      <div class="user-chip-text">
+        <strong><%= user.name %></strong>
+        <span><%= role %></span>
+      </div>
+    </div>
+    <a href="/logout" class="icon-btn" title="Sign out" aria-label="Sign out"><%- icon('log-out') %></a>
+  </div>
+</header>
+
+<% const toastSuccess = typeof flash !== 'undefined' ? flash.success : []; const toastError = typeof flash !== 'undefined' ? flash.error : []; %>
+<% if ((toastSuccess && toastSuccess.length) || (toastError && toastError.length)) { %>
+  <div class="toasts" role="status" aria-live="polite">
+    <% (toastSuccess || []).forEach(message => { %>
+      <div class="toast toast-success"><%- icon('circle-check') %><div><strong>Success</strong><p><%= message %></p></div><button type="button" aria-label="Dismiss"><%- icon('x') %></button></div>
+    <% }) %>
+    <% (toastError || []).forEach(message => { %>
+      <div class="toast toast-error"><%- icon('circle-alert') %><div><strong>Something went wrong</strong><p><%= message %></p></div><button type="button" aria-label="Dismiss"><%- icon('x') %></button></div>
+    <% }) %>
+  </div>
+<% } %>
+<% } %>

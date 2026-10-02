@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/admin-head', { title: 'Students' }) %>
+</head>
+<body class="app">
+  <%- include('../partials/navbar', { page: 'students' }) %>
+  <% const showDocs = user && user.role === 'admin'; %>
+
+  <main class="container" id="main">
+    <div class="page-header">
+      <div>
+        <h2>Students</h2>
+        <p>Manage student records, classes and enrolment status.</p>
+      </div>
+      <div class="page-actions">
+        <a href="/students/export" class="btn"><%- icon('download') %>Export to Excel</a>
+        <a href="/students/add" class="btn btn-primary"><%- icon('plus') %>Add Student</a>
+      </div>
+    </div>
+
+    <section class="card">
+      <div class="filter-bar" data-filter-for="studentsTable">
+        <div class="form-group">
+          <label for="filterName">Search</label>
+          <div class="search-input">
+            <%- icon('search') %>
+            <input type="text" id="filterName" class="form-control" placeholder="Name or student ID" data-col="0">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="filterClass">Class</label>
+          <select id="filterClass" class="form-control" data-col="2" data-match="equals">
+            <option value="">All classes</option>
+            <% classes.forEach(cls => { %>
+              <option value="<%= cls.name %> - <%= cls.section %>"><%= cls.name %> – <%= cls.section %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="filterStatus">Status</label>
+          <select id="filterStatus" class="form-control" data-col="4" data-match="equals">
+            <option value="">All statuses</option>
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+          </select>
+        </div>
+        <% if (showDocs) { %>
+          <div class="form-group">
+            <label for="filterDocs">Documents</label>
+            <select id="filterDocs" class="form-control" data-col="5" data-match="equals">
+              <option value="">All</option>
+              <option value="Complete">Complete</option>
+              <option value="Missing">Missing</option>
+            </select>
+          </div>
+        <% } %>
+        <div class="form-group">
+          <label for="filterRoll">Roll number</label>
+          <input type="text" id="filterRoll" class="form-control" placeholder="e.g. 21" data-col="3">
+        </div>
+        <div class="form-group">
+          <button type="button" class="btn btn-block" data-filter-reset><%- icon('x') %>Clear filters</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card card--flush">
+      <div class="card-header">
+        <h3><%- icon('users') %>All Students</h3>
+        <span class="result-count" data-filter-count="studentsTable"></span>
+      </div>
+      <div class="table-container">
+        <table id="studentsTable">
+          <thead>
+            <tr>
+              <th>Student</th>
+              <th>Email</th>
+              <th>Class</th>
+              <th>Roll No.</th>
+              <th>Status</th>
+              <% if (showDocs) { %><th>Documents</th><% } %>
+              <th class="num">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% students.forEach(student => { %>
+              <tr>
+                <td>
+                  <div class="cell-person">
+                    <%- avatar('student', student) %>
+                    <div>
+                      <a href="/students/<%= student._id %>" class="cell-strong"><%= student.firstName %> <%= student.lastName %></a>
+                      <span class="cell-sub"><%= student.studentId || '—' %></span>
+                    </div>
+                  </div>
+                </td>
+                <td><%= student.email || '—' %></td>
+                <td data-value="<%= student.class ? student.class.name + ' - ' + student.class.section : '' %>"><%= student.class ? student.class.name + ' – ' + student.class.section : '—' %></td>
+                <td><%= student.rollNumber || '—' %></td>
+                <td data-value="<%= student.status %>"><%- statusBadge(student.status) %></td>
+                <% if (showDocs) { %>
+                  <td data-value="<%= missingDocuments('student', student).length ? 'Missing' : 'Complete' %>"><%- documentsStatus('student', student) %></td>
+                <% } %>
+                <td class="num">
+                  <div class="actions actions--end">
+                    <a href="/students/<%= student._id %>" class="btn btn-sm"><%- icon('eye') %>View</a>
+                    <a href="/students/<%= student._id %>/edit" class="btn btn-sm"><%- icon('pencil') %>Edit</a>
+                  </div>
+                </td>
+              </tr>
+            <% }) %>
+            <tr data-filter-empty hidden><td colspan="<%= showDocs ? 7 : 6 %>" class="text-center text-muted">No students match these filters.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <% if (!students.length) { %>
+        <div class="empty-state">
+          <span class="stat-icon"><%- icon('user-plus') %></span>
+          <strong>No students yet</strong>
+          <p>Add students one at a time, or import them from a spreadsheet.</p>
+          <div class="actions actions--center">
+            <a href="/students/add" class="btn btn-primary"><%- icon('plus') %>Add Student</a>
+            <a href="/admin/import" class="btn"><%- icon('upload') %>Import</a>
+          </div>
+        </div>
+      <% } %>
+    </section>
+  </main>
+</body>
+</html>

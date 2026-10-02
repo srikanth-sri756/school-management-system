@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/portal-head', { title: 'Fees' }) %>
+</head>
+<body class="app portal theme-light">
+  <%- include('../partials/student-shell', { page: 'fees' }) %>
+
+  <%
+    const inr = (n) => '₹' + Number(n || 0).toLocaleString('en-IN');
+    const paidPct = feeStructure.total > 0 ? Math.min(100, (feeStructure.paid / feeStructure.total) * 100) : 0;
+    const breakdown = [
+      ['Tuition fee', feeStructure.tuitionFee], ['Transport fee', feeStructure.transportFee],
+      ['Library fee', feeStructure.libraryFee], ['Laboratory fee', feeStructure.labFee],
+      ['Sports fee', feeStructure.sportsFee], ['Other fees', feeStructure.otherFees]
+    ].filter(([, amount]) => amount > 0);
+    const toneFor = { danger: 'alert-error', warning: 'alert-warning', info: 'alert-info' };
+    const receipts = (fees || [])
+      .flatMap(fee => (fee.receipts || []).map(receipt => ({ fee, receipt })))
+      .sort((a, b) => new Date(b.receipt.uploadedAt) - new Date(a.receipt.uploadedAt));
+    const kb = (bytes) => bytes >= 1048576 ? (bytes / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round((bytes || 0) / 1024)) + ' KB';
+  %>
+  <main class="container" id="main">
+    <div class="page-header">
+      <div>
+        <h2>Fees</h2>
+        <p>Your fee structure, payments and instalments.</p>
+      </div>
+    </div>
+
+    <% if (feeStructure.pending > 0) { %>
+      <div class="alert alert-warning">
+        <%- icon('triangle-alert') %>
+        <div><strong><%= inr(feeStructure.pending) %> is pending.</strong> You can pay below, or visit the school office during working hours for help.</div>
+      </div>
+    <% } %>
+
+    <div class="stats-grid stats-grid--3">
+      <div class="stat-card">
+        <span class="stat-icon"><%- icon('receipt') %></span>
+        <div class="stat-body"><p class="stat-label">Total fees</p><div class="stat-value"><%= inr(feeStructure.total) %></div></div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon stat-icon--green"><%- icon('hand-coins') %></span>
+        <div class="stat-body">
+          <p class="stat-label">Paid</p>
+          <div class="stat-value"><%= inr(feeStructure.paid) %></div>
+          <div class="mini-bar"><span style="width: <%= paidPct.toFixed(1) %>%"></span></div>
+          <p class="stat-sub"><%= paidPct.toFixed(0) %>% of total</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon <%= feeStructure.pending > 0 ? 'stat-icon--red' : 'stat-icon--green' %>"><%- icon('hourglass') %></span>
+        <div class="stat-body"><p class="stat-label">Pending</p><div class="stat-value <%= feeStructure.pending > 0 ? 'text-danger' : '' %>"><%= inr(feeStructure.pending) %></div></div>
+      </div>
+    </div>
+
+    <div class="grid grid-main">
+      <div>
+        <section class="card card--flush">
+          <div class="card-header"><h3><%- icon('receipt') %>Fee breakdown</h3></div>
+          <% if (breakdown.length) { %>
+            <div class="table-container">
+              <table>
+                <thead><tr><th>Fee type</th><th class="num">Amount</th></tr></thead>
+                <tbody>
+                  <% breakdown.forEach(([label, amount]) => { %>
+                    <tr><td><%= label %></td><td class="num"><%= inr(amount) %></td></tr>
+                  <% }) %>
+                  <tr><td class="cell-strong">Total</td><td class="num cell-strong"><%= inr(feeStructure.total) %></td></tr>
+                </tbody>
+              </table>
+            </div>
+          <% } else { %>
+            <div class="empty-state"><strong>No fees yet</strong><p>Your fees will appear here once the school adds them.</p></div>
+          <% } %>
+        </section>
+
+        <section class="card card--flush">
+          <div class="card-header">
+            <h3><%- icon('wallet') %>Payment history</h3>
+            <span class="result-count"><%= feeStructure.payments.length %> <%= feeStructure.payments.length === 1 ? 'payment' : 'payments' %></span>
+          </div>
+          <% if (feeStructure.payments && feeStructure.payments.length) { %>
+            <div class="table-container">
+              <table>
+                <thead><tr><th>Date</th><th>Fee</th><th>Method</th><th>Reference</th><th class="num">Amount</th></tr></thead>
+                <tbody>
+                  <% feeStructure.payments.forEach(payment => { %>
+                    <tr>
+                      <td><%= new Date(payment.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %></td>
+                      <td class="cell-strong"><%= payment.feeTerm || '—' %><% if (payment.remarks) { %><span class="cell-sub"><%= payment.remarks %></span><% } %></td>
+                      <td><span class="badge badge--plain"><%= payment.paymentMethod %></span></td>
+                      <td><%= payment.transactionId || '—' %><% if (payment.receivedBy) { %><span class="cell-sub"><%= payment.receivedBy %></span><% } %></td>
+                      <td class="num cell-strong"><%= inr(payment.amount) %></td>
+                    </tr>
+                  <% }) %>
+                </tbody>
+              </table>
+            </div>
+          <% } else { %>
+            <div class="empty-state"><strong>No payments yet</strong><p>Payments you make will be listed here.</p></div>
+          <% } %>
+        </section>
+
+        <section class="card card--flush" id="receipts">
+          <div class="card-header">
+            <div>
+              <h3><%- icon('file-text') %>Receipts</h3>
+              <p>Official receipts uploaded by the school office.</p>
+            </div>
+            <span class="result-count"><%= receipts.length %> <%= receipts.length === 1 ? 'receipt' : 'receipts' %></span>
+          </div>
+          <% if (receipts.length) { %>
+            <ul class="receipt-list receipt-list--flush">
+              <% receipts.forEach(({ fee, receipt }) => { %>
+                <li>
+                  <span class="receipt-icon"><%- icon(receipt.mimeType === 'application/pdf' ? 'file-text' : 'camera') %></span>
+                  <div class="receipt-info">
+                    <a href="/media/receipts/<%= fee._id %>/<%= receipt._id %>" target="_blank" rel="noopener" class="cell-strong"><%= fee.term %> receipt</a>
+                    <span class="cell-sub"><%= receipt.note ? receipt.note + ' · ' : '' %><%= new Date(receipt.uploadedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %> · <%= kb(receipt.size) %></span>
+                  </div>
+                  <div class="actions actions--end">
+                    <a href="/media/receipts/<%= fee._id %>/<%= receipt._id %>" target="_blank" rel="noopener" class="btn btn-sm"><%- icon('eye') %>View</a>
+                    <a href="/media/receipts/<%= fee._id %>/<%= receipt._id %>?download=1" class="btn btn-sm btn-primary"><%- icon('download') %>Download</a>
+                  </div>
+                </li>
+              <% }) %>
+            </ul>
+          <% } else { %>
+            <div class="empty-state"><strong>No receipts yet</strong><p>When you pay at the school office, your receipt will appear here.</p></div>
+          <% } %>
+        </section>
+      </div>
+
+      <div>
+        <% if (installmentNotifications && installmentNotifications.length) { %>
+          <section class="card">
+            <div class="card-header"><h3><%- icon('calendar-days') %>Instalment reminders</h3></div>
+            <% installmentNotifications.forEach(n => { %>
+              <div class="reminder">
+                <div class="alert <%= toneFor[n.type] || 'alert-info' %> mb-0"><%- icon(n.type === 'info' ? 'info' : 'triangle-alert') %><div><%= n.message %></div></div>
+                <div class="reminder-meta">
+                  <span>Amount <strong><%= inr(n.amount) %></strong></span>
+                  <% if (n.paidAmount > 0) { %><span>Remaining <strong><%= inr(n.amount - n.paidAmount) %></strong></span><% } %>
+                  <span>Due <%= new Date(n.dueDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) %></span>
+                </div>
+                <div>
+                  <button type="button" class="btn btn-sm btn-pay-installment"
+                          data-fee-id="<%= n.feeId %>"
+                          data-installment-id="<%= n.installmentId %>"
+                          data-amount="<%= n.amount - n.paidAmount %>"
+                          data-term="<%= n.feeTerm %>"><%- icon('hand-coins') %>Pay this instalment</button>
+                </div>
+              </div>
+            <% }) %>
+          </section>
+        <% } %>
+
+        <% if (feeStructure.pending > 0 && fees && fees.length) { %>
+          <section class="card make-payment">
+            <div class="card-header"><h3><%- icon('hand-coins') %>Make a payment</h3></div>
+            <form id="paymentForm">
+              <div class="form-group">
+                <label for="feeSelect">Fee</label>
+                <select id="feeSelect" name="feeId" class="form-control" required>
+                  <option value="">Select a fee</option>
+                  <% fees.forEach(fee => { if (fee.amount - fee.paid > 0) { %>
+                    <option value="<%= fee._id %>" data-amount="<%= fee.amount %>" data-paid="<%= fee.paid %>" data-has-installment="<%= fee.hasInstallmentPlan %>">
+                      <%= fee.term %> — <%= inr(fee.amount - fee.paid) %> pending
+                    </option>
+                  <% } }) %>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="paymentType">Payment type</label>
+                <select id="paymentType" name="paymentType" class="form-control" required>
+                  <option value="full">Full payment</option>
+                  <option value="installment" disabled>Instalment payment</option>
+                </select>
+              </div>
+              <div class="form-group" id="installmentSection" hidden>
+                <label for="installmentSelect">Instalment</label>
+                <select id="installmentSelect" name="installmentId" class="form-control">
+                  <option value="">Select an instalment</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="amount">Amount (₹)</label>
+                  <input type="number" id="amount" name="amount" class="form-control" min="1" step="0.01" required>
+                </div>
+                <div class="form-group">
+                  <label for="paymentMethod">Method</label>
+                  <select id="paymentMethod" name="paymentMethod" class="form-control" required>
+                    <option value="Online">Online</option>
+                    <option value="Card">Card</option>
+                    <option value="Cash">Cash</option>
+                    <option value="Cheque">Cheque</option>
+                  </select>
+                </div>
+              </div>
+              <span class="form-hint">The amount is filled in when you choose a fee, and can’t exceed what’s pending.</span>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary"><%- icon('check') %>Pay now</button>
+                <button type="reset" class="btn">Reset</button>
+              </div>
+            </form>
+          </section>
+        <% } else if (feeStructure.total > 0) { %>
+          <section class="card">
+            <div class="empty-state">
+              <span class="stat-icon stat-icon--green"><%- icon('circle-check') %></span>
+              <strong>All fees are paid</strong>
+              <p>Thank you. There’s nothing pending right now.</p>
+            </div>
+          </section>
+        <% } %>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const feeSelect = document.getElementById('feeSelect');
+    const paymentTypeSelect = document.getElementById('paymentType');
+    const installmentSection = document.getElementById('installmentSection');
+    const installmentSelect = document.getElementById('installmentSelect');
+    const amountInput = document.getElementById('amount');
+    const paymentForm = document.getElementById('paymentForm');
+    const feesData = <%- JSON.stringify(fees || []) %>;
+
+    const pendingFor = (option) => parseFloat(option.dataset.amount || 0) - parseFloat(option.dataset.paid || 0);
+
+    if (feeSelect) {
+      feeSelect.addEventListener('change', function () {
+        const option = this.options[this.selectedIndex];
+        const pending = pendingFor(option);
+        amountInput.max = pending;
+        amountInput.value = pending || '';
+        amountInput.placeholder = pending ? `Up to ₹${pending.toFixed(2)}` : '';
+
+        const installmentOption = paymentTypeSelect.querySelector('option[value="installment"]');
+        if (option.dataset.hasInstallment === 'true') {
+          installmentOption.disabled = false;
+          const fee = feesData.find(f => f._id.toString() === this.value);
+          installmentSelect.innerHTML = '<option value="">Select an instalment</option>';
+          (fee && fee.installments ? fee.installments : []).forEach(inst => {
+            if (inst.status === 'Paid') return;
+            const remaining = inst.amount - inst.paidAmount;
+            const opt = document.createElement('option');
+            opt.value = inst._id;
+            opt.dataset.amount = remaining;
+            opt.textContent = `Instalment ${inst.installmentNumber} — ₹${remaining.toLocaleString('en-IN')} (due ${new Date(inst.dueDate).toLocaleDateString('en-IN')})`;
+            installmentSelect.appendChild(opt);
+          });
+        } else {
+          installmentOption.disabled = true;
+          paymentTypeSelect.value = 'full';
+          installmentSection.hidden = true;
+        }
+      });
+    }
+
+    if (paymentTypeSelect) {
+      paymentTypeSelect.addEventListener('change', function () {
+        const isInstallment = this.value === 'installment';
+        installmentSection.hidden = !isInstallment;
+        installmentSelect.required = isInstallment;
+        if (!isInstallment && feeSelect.selectedIndex > 0) {
+          amountInput.value = pendingFor(feeSelect.options[feeSelect.selectedIndex]);
+        }
+      });
+    }
+
+    if (installmentSelect) {
+      installmentSelect.addEventListener('change', function () {
+        const amount = parseFloat(this.options[this.selectedIndex].dataset.amount || 0);
+        amountInput.value = amount;
+        amountInput.max = amount;
+      });
+    }
+
+    document.querySelectorAll('.btn-pay-installment').forEach(btn => {
+      btn.addEventListener('click', function () {
+        feeSelect.value = this.dataset.feeId;
+        feeSelect.dispatchEvent(new Event('change'));
+        paymentTypeSelect.value = 'installment';
+        paymentTypeSelect.dispatchEvent(new Event('change'));
+        installmentSelect.value = this.dataset.installmentId;
+        installmentSelect.dispatchEvent(new Event('change'));
+        document.querySelector('.make-payment').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    if (paymentForm) {
+      paymentForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const data = Object.fromEntries(new FormData(this).entries());
+        try {
+          const response = await fetch('/student/fees/pay', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+          });
+          const result = await response.json();
+          if (result.success) {
+            alert(`Payment recorded.\n\nTotal: ₹${result.fee.total.toLocaleString('en-IN')}\nPaid: ₹${result.fee.paid.toLocaleString('en-IN')}\nPending: ₹${result.fee.pending.toLocaleString('en-IN')}\nStatus: ${result.fee.status}`);
+            window.location.reload();
+          } else {
+            alert('Error: ' + result.message);
+          }
+        } catch (error) {
+          console.error('Payment error:', error);
+          alert('The payment could not be processed. Please try again.');
+        }
+      });
+    }
+  </script>
+</body>
+</html>

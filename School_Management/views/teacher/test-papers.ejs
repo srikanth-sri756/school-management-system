@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Papers - Teacher Portal</title>
+  <link rel="stylesheet" href="/css/modern.css">
+</head>
+<body>
+  <%- include('../partials/teacher-navbar') %>
+  <%- include('../partials/notification') %>
+
+  <div class="container">
+    <div class="page-header">
+      <h2>Test Papers Management</h2>
+    </div>
+
+    <!-- Add New Test Paper -->
+    <div class="card">
+      <h3>Upload Question Paper</h3>
+      <form method="POST" action="/teacher/test-papers/add" enctype="multipart/form-data">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Test Title</label>
+            <input type="text" name="title" required placeholder="e.g., Mid Term Exam - Math">
+          </div>
+
+          <div class="form-group">
+            <label>Section</label>
+            <input type="text" name="section" placeholder="e.g., A, B, C">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Exam Type</label>
+            <select name="examType" required>
+              <option value="Test">Test</option>
+              <option value="Quiz">Quiz</option>
+              <option value="Mid-Term">Mid-Term</option>
+              <option value="Final">Final</option>
+              <option value="Assignment">Assignment</option>
+              <option value="Practice">Practice</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Test Date</label>
+            <input type="date" name="date" required>
+          </div>
+
+          <div class="form-group">
+            <label>Maximum Marks</label>
+            <input type="number" name="maxMarks" required min="1" value="100">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Description</label>
+          <textarea name="description" rows="3" placeholder="Enter test details, topics covered, instructions, etc."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Upload Question Paper <span style="color: #ef4444;">*</span></label>
+          <input type="file" name="questionPaper" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" required>
+          <small style="display: block; margin-top: 5px; color: rgba(255,255,255,0.6);">
+            Supported formats: PDF, DOC, DOCX, Images (Max: 10MB)
+          </small>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Upload Question Paper</button>
+      </form>
+    </div>
+
+    <!-- View Existing Test Papers -->
+    <div class="card">
+      <h3>My Question Papers</h3>
+      <% if (testPapers.length > 0) { %>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Type</th>
+              <th>Subject</th>
+              <th>Class/Section</th>
+              <th>Date</th>
+              <th>Max Marks</th>
+              <th>File</th>
+              <th>Downloads</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% testPapers.forEach(paper => { %>
+              <tr>
+                <td><strong><%= paper.title %></strong></td>
+                <td>
+                  <span class="exam-badge <%= paper.examType ? paper.examType.toLowerCase() : 'test' %>">
+                    <%= paper.examType || 'Test' %>
+                  </span>
+                </td>
+                <td><%= paper.subject.name %></td>
+                <td>
+                  <%= paper.class.name %>
+                  <% if (paper.section) { %>
+                    - Sec <%= paper.section %>
+                  <% } %>
+                </td>
+                <td><%= new Date(paper.date).toLocaleDateString() %></td>
+                <td><%= paper.maxMarks %></td>
+                <td>
+                  <% if (paper.file && paper.file.filename) { %>
+                    <a href="/teacher/test-papers/<%= paper._id %>/download" class="file-link">
+                      📄 <%= paper.file.originalName %>
+                    </a>
+                    <br>
+                    <small style="color: rgba(255,255,255,0.5);">
+                      <%= (paper.file.size / 1024).toFixed(2) %> KB
+                    </small>
+                  <% } else { %>
+                    <span style="color: rgba(255,255,255,0.5)">No file</span>
+                  <% } %>
+                </td>
+                <td><%= paper.downloads || 0 %></td>
+                <td>
+                  <form method="POST" action="/teacher/test-papers/<%= paper._id %>/delete" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this question paper?');">
+                    <button type="submit" class="btn-delete-small">Delete</button>
+                  </form>
+                </td>
+              </tr>
+              <% if (paper.description) { %>
+                <tr class="description-row">
+                  <td colspan="9">
+                    <small><strong>Description:</strong> <%= paper.description %></small>
+                  </td>
+                </tr>
+              <% } %>
+            <% }) %>
+          </tbody>
+        </table>
+      <% } else { %>
+        <p>No question papers uploaded yet.</p>
+      <% } %>
+    </div>
+  </div>
+
+  <style>
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    .exam-badge {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      display: inline-block;
+    }
+    .exam-badge.quiz {
+      background-color: #8b5cf6;
+      color: white;
+    }
+    .exam-badge.test {
+      background-color: #3b82f6;
+      color: white;
+    }
+    .exam-badge.mid-term {
+      background-color: #f59e0b;
+      color: white;
+    }
+    .exam-badge.final {
+      background-color: #ef4444;
+      color: white;
+    }
+    .exam-badge.assignment {
+      background-color: #10b981;
+      color: white;
+    }
+    .exam-badge.practice {
+      background-color: #6b7280;
+      color: white;
+    }
+    .file-link {
+      color: #60a5fa;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .file-link:hover {
+      color: #93c5fd;
+      text-decoration: underline;
+    }
+    .btn-small {
+      padding: 5px 10px;
+      font-size: 14px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      display: inline-block;
+    }
+    .btn-small:hover {
+      opacity: 0.9;
+    }
+    .btn-delete-small {
+      background-color: #ef4444;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.3s;
+    }
+    .btn-delete-small:hover {
+      background-color: #dc2626;
+    }
+    .description-row {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+    .description-row td {
+      padding: 10px 20px;
+      color: rgba(255, 255, 255, 0.7);
+    }
+  </style>
+
+</body>
+</html>

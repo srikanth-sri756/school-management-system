@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Holidays - School Management</title>
+  <link rel="stylesheet" href="/css/modern.css">
+</head>
+<body>
+  <% if (user.role === 'admin') { %>
+    <%- include('../partials/navbar') %>
+  <% } else if (user.role === 'teacher') { %>
+    <%- include('../partials/teacher-navbar') %>
+  <% } %>
+  <%- include('../partials/notification') %>
+
+  <div class="container">
+    <div class="page-header">
+      <h2>📅 School Holidays Calendar</h2>
+      <% if (user.role === 'admin') { %>
+        <a href="/holidays/add" class="btn btn-primary">Add Holiday</a>
+      <% } %>
+    </div>
+
+    <!-- Info Card -->
+    <div class="info-card">
+      <div class="info-item">
+        <span class="info-icon">📌</span>
+        <div>
+          <strong>Note:</strong> Sundays are automatically marked as weekly offs. 
+          Attendance cannot be marked on Sundays or declared holidays.
+        </div>
+      </div>
+    </div>
+
+    <!-- Holidays List -->
+    <div class="card">
+      <h3>Declared Holidays</h3>
+      <% if (holidays.length > 0) { %>
+        <div class="holidays-grid">
+          <% 
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            holidays.forEach(holiday => { 
+              const holidayDate = new Date(holiday.date);
+              holidayDate.setHours(0, 0, 0, 0);
+              const isPast = holidayDate < today;
+              const isToday = holidayDate.getTime() === today.getTime();
+          %>
+            <div class="holiday-card <%= isPast ? 'past' : '' %> <%= isToday ? 'today' : '' %>">
+              <div class="holiday-header">
+                <div class="holiday-date">
+                  <div class="date-day"><%= holidayDate.getDate() %></div>
+                  <div class="date-month">
+                    <%= holidayDate.toLocaleString('default', { month: 'short' }) %>
+                    <%= holidayDate.getFullYear() %>
+                  </div>
+                </div>
+                <div class="holiday-info">
+                  <h4><%= holiday.title %></h4>
+                  <span class="holiday-type <%= holiday.type.toLowerCase().replace(' ', '-') %>">
+                    <%= holiday.type %>
+                  </span>
+                  <div class="holiday-day">
+                    <%= holidayDate.toLocaleString('default', { weekday: 'long' }) %>
+                  </div>
+                </div>
+              </div>
+              
+              <% if (holiday.description) { %>
+                <p class="holiday-description"><%= holiday.description %></p>
+              <% } %>
+              
+              <div class="holiday-footer">
+                <small>
+                  Added by: <%= holiday.createdBy.name || holiday.createdBy.email %>
+                  <% if (holiday.isRecurring) { %>
+                    <span class="recurring-badge">🔄 Recurring</span>
+                  <% } %>
+                </small>
+                <% if (user.role === 'admin' && !isPast) { %>
+                  <form method="POST" action="/holidays/<%= holiday._id %>/delete" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this holiday?');">
+                    <button type="submit" class="btn-delete-mini">Delete</button>
+                  </form>
+                <% } %>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      <% } else { %>
+        <p style="text-align: center; padding: 40px; color: rgba(255,255,255,0.6);">
+          No holidays declared yet.
+          <% if (user.role === 'admin') { %>
+            <br><a href="/holidays/add" class="btn btn-primary" style="margin-top: 15px; display: inline-block;">Add First Holiday</a>
+          <% } %>
+        </p>
+      <% } %>
+    </div>
+
+    <!-- Sunday Info -->
+    <div class="card">
+      <h3>Weekly Offs</h3>
+      <div class="sunday-info">
+        <span class="sunday-icon">🗓️</span>
+        <div>
+          <strong>Every Sunday</strong>
+          <p>Automatically marked as weekly off. No attendance can be recorded on Sundays.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .info-card {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 30px;
+    }
+    .info-item {
+      display: flex;
+      gap: 15px;
+      align-items: flex-start;
+    }
+    .info-icon {
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+    .holidays-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .holiday-card {
+      background: rgba(255, 255, 255, 0.08);
+      border: 2px solid rgba(16, 185, 129, 0.3);
+      border-radius: 12px;
+      padding: 20px;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s;
+    }
+    .holiday-card:hover {
+      border-color: rgba(16, 185, 129, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+    .holiday-card.past {
+      border-color: rgba(107, 114, 128, 0.3);
+      opacity: 0.7;
+    }
+    .holiday-card.today {
+      border-color: rgba(239, 68, 68, 0.5);
+      background: rgba(239, 68, 68, 0.1);
+    }
+    .holiday-header {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+      margin-bottom: 15px;
+    }
+    .holiday-date {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      border-radius: 10px;
+      padding: 10px 15px;
+      text-align: center;
+      min-width: 70px;
+    }
+    .holiday-card.past .holiday-date {
+      background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+    }
+    .holiday-card.today .holiday-date {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.8; }
+    }
+    .date-day {
+      font-size: 28px;
+      font-weight: bold;
+      color: white;
+      line-height: 1;
+    }
+    .date-month {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.9);
+      margin-top: 5px;
+      text-transform: uppercase;
+    }
+    .holiday-info {
+      flex: 1;
+    }
+    .holiday-info h4 {
+      margin: 0 0 8px 0;
+      color: white;
+      font-size: 18px;
+    }
+    .holiday-type {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .holiday-type.national {
+      background-color: #ef4444;
+      color: white;
+    }
+    .holiday-type.religious {
+      background-color: #8b5cf6;
+      color: white;
+    }
+    .holiday-type.festival {
+      background-color: #f59e0b;
+      color: white;
+    }
+    .holiday-type.school-event {
+      background-color: #3b82f6;
+      color: white;
+    }
+    .holiday-type.other {
+      background-color: #6b7280;
+      color: white;
+    }
+    .holiday-day {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 14px;
+      margin-top: 5px;
+    }
+    .holiday-description {
+      color: rgba(255, 255, 255, 0.8);
+      margin: 15px 0;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 6px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .holiday-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 15px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 13px;
+    }
+    .recurring-badge {
+      display: inline-block;
+      margin-left: 10px;
+      padding: 2px 8px;
+      background: rgba(59, 130, 246, 0.2);
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      border-radius: 10px;
+      font-size: 11px;
+    }
+    .btn-delete-mini {
+      background-color: #ef4444;
+      color: white;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.3s;
+    }
+    .btn-delete-mini:hover {
+      background-color: #dc2626;
+    }
+    .sunday-info {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      padding: 20px;
+      background: rgba(59, 130, 246, 0.1);
+      border-radius: 10px;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+    .sunday-icon {
+      font-size: 48px;
+    }
+    .sunday-info strong {
+      color: white;
+      font-size: 18px;
+      display: block;
+      margin-bottom: 5px;
+    }
+    .sunday-info p {
+      color: rgba(255, 255, 255, 0.7);
+      margin: 0;
+    }
+  </style>
+
+</body>
+</html>

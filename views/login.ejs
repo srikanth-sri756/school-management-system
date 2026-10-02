@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/public-head', { title: 'Staff Login', description: 'Sign in to the Akansha Grammar High School staff portal.' }) %>
+</head>
+<body class="site">
+  <div class="auth">
+    <aside class="auth-visual">
+      <div class="photo photo--even"><%- photo('library-ladder', { eager: true, decorative: true, sizes: '60vw' }) %></div>
+      <a href="/" class="brand on-photo"><img src="/images/crest-mono.svg" alt="" width="30" height="30"><span>Akansha Grammar<small>High School · Est. 1995</small></span></a>
+      <div class="on-photo">
+        <span class="label label--light">Staff Portal</span>
+        <h2 class="display display-l">Students, attendance,<br>marks and fees.<br>One place.</h2>
+      </div>
+    </aside>
+
+    <main class="auth-panel" id="main">
+      <div class="auth-card">
+        <span class="label">Staff Portal</span>
+        <h1 class="display display-m">Welcome back</h1>
+        <p>Sign in with your school email address and password.</p>
+
+        <% if (error && error.length > 0) { %>
+          <div class="alert alert-error" role="alert"><%- icon('circle-alert') %><span><%= error %></span></div>
+        <% } %>
+
+        <form action="/login" method="POST" class="form">
+          <div class="field">
+            <label for="email">Email address</label>
+            <input type="text" id="email" name="email" placeholder="name@school.com" required autocomplete="username" autofocus>
+          </div>
+          <div class="field">
+            <label for="password">Password</label>
+            <div class="input-wrap">
+              <input type="password" id="password" name="password" placeholder="Your password" required autocomplete="current-password">
+              <button type="button" class="reveal" aria-label="Show password" aria-pressed="false" data-toggle-password="password">
+                <%- icon('eye', 'icon-show') %><%- icon('eye-off', 'icon-hide') %>
+              </button>
+            </div>
+          </div>
+          <button type="submit" class="pill pill--light pill--block">Sign In <%- icon('arrow-right') %></button>
+        </form>
+
+        <p class="auth-note">Forgotten your password? Please contact the school administrator to reset it.</p>
+        <p class="auth-switch">Are you a student? <a href="/student/login">Go to the Student Portal</a></p>
+      </div>
+    </main>
+  </div>
+
+  <%- include('partials/password-toggle') %>
+</body>
+</html>

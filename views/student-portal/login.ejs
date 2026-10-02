@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/public-head', { title: 'Student Portal', description: 'Sign in to the Akansha Grammar High School student portal.' }) %>
+</head>
+<body class="site">
+  <div class="auth">
+    <aside class="auth-visual">
+      <div class="photo photo--even"><%- photo('hallway', { eager: true, decorative: true, sizes: '60vw' }) %></div>
+      <a href="/" class="brand on-photo"><img src="/images/crest-mono.svg" alt="" width="30" height="30"><span>Akansha Grammar<small>High School · Est. 1995</small></span></a>
+      <div class="on-photo">
+        <span class="label label--light">Student Portal</span>
+        <h2 class="display display-l">Attendance, marks,<br>fees and notes.<br>Always with you.</h2>
+      </div>
+    </aside>
+
+    <main class="auth-panel" id="main">
+      <div class="auth-card">
+        <span class="label">Student Portal</span>
+        <h1 class="display display-m">Sign in</h1>
+        <p>Use your Student ID and password.</p>
+
+        <% if (error && error.length > 0) { %>
+          <div class="alert alert-error" role="alert"><%- icon('circle-alert') %><span><%= error %></span></div>
+        <% } %>
+        <% if (success && success.length > 0) { %>
+          <div class="alert alert-success" role="status"><%- icon('circle-check') %><span><%= success %></span></div>
+        <% } %>
+
+        <form action="/student/login" method="POST" class="form">
+          <div class="field">
+            <label for="studentId">Student ID</label>
+            <input type="text" id="studentId" name="studentId" placeholder="e.g. STU0001" required autocomplete="username" autocapitalize="characters" autofocus>
+          </div>
+          <div class="field">
+            <label for="password">Password</label>
+            <div class="input-wrap">
+              <input type="password" id="password" name="password" placeholder="Your password" required autocomplete="current-password">
+              <button type="button" class="reveal" aria-label="Show password" aria-pressed="false" data-toggle-password="password">
+                <%- icon('eye', 'icon-show') %><%- icon('eye-off', 'icon-hide') %>
+              </button>
+            </div>
+          </div>
+          <button type="submit" class="pill pill--light pill--block">Sign In <%- icon('arrow-right') %></button>
+        </form>
+
+        <p class="auth-note">First time signing in? Your password is your date of birth in DDMMYYYY format. Contact the school office if you need help.</p>
+        <p class="auth-switch">Staff member? <a href="/login">Go to Staff Login</a></p>
+      </div>
+    </main>
+  </div>
+
+  <%- include('../partials/password-toggle') %>
+</body>
+</html>

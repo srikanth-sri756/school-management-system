@@ -1,0 +1,59 @@
+<%# Student Portal header, mobile menu and flash toasts. Include with { page: '<section key>' }. %>
+<%
+  const current = typeof page !== 'undefined' ? page : '';
+  const me = (typeof portalStudent !== 'undefined' && portalStudent) || (typeof studentDetails !== 'undefined' && studentDetails) || student;
+  const links = [
+    ['/student/dashboard', 'dashboard', 'Dashboard'],
+    ['/student/attendance', 'attendance', 'Attendance'],
+    ['/student/marks', 'marks', 'Marks'],
+    ['/student/fees', 'fees', 'Fees'],
+    ['/student/notes', 'notes', 'Notes'],
+    ['/student/testpapers', 'testpapers', 'Test Papers'],
+    ['/student/dates', 'dates', 'Dates'],
+    ['/student/profile', 'profile', 'Profile']
+  ];
+%>
+<header class="portal-header">
+  <div class="portal-header-inner">
+    <a href="/student/dashboard" class="portal-brand">
+      <img src="/images/crest-mono.svg" alt="">
+      <div><strong>Akansha Grammar</strong><span>Student Portal</span></div>
+    </a>
+
+    <nav class="portal-nav" aria-label="Student portal">
+      <% links.forEach(([href, key, label]) => { %>
+        <a href="<%= href %>"<%- current === key ? ' aria-current="page"' : '' %>><%= label %></a>
+      <% }) %>
+    </nav>
+
+    <div class="portal-user">
+      <a href="/student/profile" class="user-chip" aria-label="My profile">
+        <%- avatar('student', me) %>
+        <span class="user-chip-text"><strong><%= me.firstName %> <%= me.lastName %></strong><span><%= me.studentId %></span></span>
+      </a>
+      <a href="/student/logout" class="icon-btn" title="Sign out" aria-label="Sign out"><%- icon('log-out') %></a>
+      <button type="button" class="icon-btn portal-menu-btn" data-menu-toggle aria-controls="portalMenu" aria-expanded="false" aria-label="Open menu"><%- icon('menu') %></button>
+    </div>
+  </div>
+</header>
+
+<div class="portal-mobile-menu" id="portalMenu">
+  <nav aria-label="Student portal (mobile)">
+    <% links.forEach(([href, key, label]) => { %>
+      <a href="<%= href %>"<%- current === key ? ' aria-current="page"' : '' %>><%= label %></a>
+    <% }) %>
+  </nav>
+  <a href="/student/logout" class="btn btn-primary btn-block"><%- icon('log-out') %>Sign out</a>
+</div>
+
+<% const toastSuccess = typeof flash !== 'undefined' ? flash.success : []; const toastError = typeof flash !== 'undefined' ? flash.error : []; %>
+<% if ((toastSuccess && toastSuccess.length) || (toastError && toastError.length)) { %>
+  <div class="toasts" role="status" aria-live="polite">
+    <% (toastSuccess || []).forEach(message => { %>
+      <div class="toast toast-success"><%- icon('circle-check') %><div><strong>Done</strong><p><%= message %></p></div><button type="button" aria-label="Dismiss"><%- icon('x') %></button></div>
+    <% }) %>
+    <% (toastError || []).forEach(message => { %>
+      <div class="toast toast-error"><%- icon('circle-alert') %><div><strong>Something went wrong</strong><p><%= message %></p></div><button type="button" aria-label="Dismiss"><%- icon('x') %></button></div>
+    <% }) %>
+  </div>
+<% } %>

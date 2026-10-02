@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Akansha Grammer High School - Excellence in Education</title>
+  <link rel="stylesheet" href="/css/modern.css">
+  <link rel="stylesheet" href="/css/portfolio.css">
+</head>
+<body>
+  <%- include('../partials/public-navbar') %>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <img src="/images/school-logo.svg" alt="School Logo" class="hero-logo">
+      <h1 class="hero-title">Akansha Grammer High School</h1>
+      <p class="hero-tagline">Excellence in Education Since 1995</p>
+      <p class="hero-description">Empowering minds, Building futures - Where tradition meets innovation</p>
+      <div class="hero-buttons">
+        <a href="/portfolio/admissions" class="btn-hero btn-primary-hero">Apply Now</a>
+        <a href="/portfolio/about" class="btn-hero btn-secondary-hero">Learn More</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Welcome Section -->
+  <section class="welcome-section">
+    <div class="container-portfolio">
+      <div class="welcome-grid">
+        <div class="welcome-image">
+          <img src="/images/school-building.jpg" alt="School Building" onerror="this.src='/images/school-logo.svg'; this.style.padding='40px';">
+        </div>
+        <div class="welcome-text">
+          <h2 class="section-title">Welcome to Our School</h2>
+          <p class="section-description">
+            Akansha Grammer High School has been a beacon of educational excellence for over 25 years. 
+            We are committed to nurturing young minds and preparing them for the challenges of tomorrow.
+          </p>
+          <p class="section-description">
+            Our dedicated faculty, state-of-the-art facilities, and comprehensive curriculum ensure that 
+            every student receives the best possible education in a supportive and inspiring environment.
+          </p>
+          <a href="/portfolio/about" class="btn-learn-more">Discover Our Story →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features-section">
+    <div class="container-portfolio">
+      <h2 class="section-title-center">Why Choose Akansha?</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🎓</div>
+          <h3>Academic Excellence</h3>
+          <p>Comprehensive curriculum with focus on holistic development and critical thinking skills.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">👨‍🏫</div>
+          <h3>Expert Faculty</h3>
+          <p>Highly qualified and experienced teachers dedicated to student success.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🏆</div>
+          <h3>Sports & Activities</h3>
+          <p>Wide range of extracurricular activities to develop well-rounded personalities.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💻</div>
+          <h3>Modern Facilities</h3>
+          <p>State-of-the-art classrooms, labs, and technology infrastructure.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🌍</div>
+          <h3>Global Perspective</h3>
+          <p>International curriculum standards preparing students for global opportunities.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🤝</div>
+          <h3>Community Values</h3>
+          <p>Strong emphasis on ethics, values, and social responsibility.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Statistics Section -->
+  <section class="stats-section">
+    <div class="container-portfolio">
+      <div class="stats-grid-portfolio">
+        <div class="stat-item">
+          <div class="stat-number">25+</div>
+          <div class="stat-label">Years of Excellence</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">1000+</div>
+          <div class="stat-label">Happy Students</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">50+</div>
+          <div class="stat-label">Expert Teachers</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">95%</div>
+          <div class="stat-label">Success Rate</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="container-portfolio">
+      <h2 class="cta-title">Ready to Join Our Family?</h2>
+      <p class="cta-description">Enroll your child in a school that values excellence, integrity, and innovation.</p>
+      <a href="/portfolio/admissions" class="btn-cta">Start Application Process</a>
+    </div>
+  </section>
+
+  <%- include('../partials/footer') %>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

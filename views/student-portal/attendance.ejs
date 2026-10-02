@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/portal-head', { title: 'Attendance' }) %>
+</head>
+<body class="app portal theme-light">
+  <%- include('../partials/student-shell', { page: 'attendance' }) %>
+
+  <%
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const thisYear = new Date().getFullYear();
+    const rate = Number(stats.percentage) || 0;
+    const filtered = filters.month && filters.year;
+  %>
+  <main class="container" id="main">
+    <div class="page-header">
+      <div>
+        <h2>My attendance</h2>
+        <p><%= filtered ? months[filters.month - 1] + ' ' + filters.year : 'All recorded school days' %></p>
+      </div>
+    </div>
+
+    <form method="GET" action="/student/attendance" class="card">
+      <div class="filter-bar">
+        <div class="form-group">
+          <label for="month">Month</label>
+          <select id="month" name="month" class="form-control">
+            <option value="">All months</option>
+            <% months.forEach((m, i) => { %><option value="<%= i + 1 %>" <%= filters.month === String(i + 1) ? 'selected' : '' %>><%= m %></option><% }) %>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="year">Year</label>
+          <select id="year" name="year" class="form-control">
+            <option value="">All years</option>
+            <% for (let y = thisYear; y >= thisYear - 5; y--) { %><option value="<%= y %>" <%= filters.year === String(y) ? 'selected' : '' %>><%= y %></option><% } %>
+          </select>
+        </div>
+        <div class="form-group"><button type="submit" class="btn btn-primary btn-block"><%- icon('filter') %>Apply</button></div>
+        <div class="form-group"><a href="/student/attendance" class="btn btn-block"><%- icon('x') %>Clear</a></div>
+      </div>
+      <p class="form-hint mb-0">Choose both a month and a year to filter.</p>
+    </form>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-icon"><%- icon('calendar-days') %></span>
+        <div class="stat-body"><p class="stat-label">School days</p><div class="stat-value"><%= stats.total %></div></div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon stat-icon--green"><%- icon('user-check') %></span>
+        <div class="stat-body"><p class="stat-label">Present</p><div class="stat-value"><%= stats.present %></div></div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon stat-icon--red"><%- icon('user-x') %></span>
+        <div class="stat-body"><p class="stat-label">Absent</p><div class="stat-value"><%= stats.absent %></div></div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon"><%- icon('chart-column') %></span>
+        <div class="stat-body">
+          <p class="stat-label">Attendance rate</p>
+          <div class="stat-value"><%= rate %>%</div>
+          <div class="mini-bar"><span style="width: <%= Math.min(rate, 100) %>%"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <section class="card card--flush">
+      <div class="card-header">
+        <h3><%- icon('calendar-check') %>Attendance records</h3>
+        <span class="result-count"><%= attendance.length %> <%= attendance.length === 1 ? 'day' : 'days' %></span>
+      </div>
+      <% if (attendance.length) { %>
+        <div class="table-container">
+          <table>
+            <thead><tr><th>Date</th><th>Day</th><th class="num">Status</th></tr></thead>
+            <tbody>
+              <% attendance.forEach(record => { const d = new Date(record.date); %>
+                <tr>
+                  <td class="cell-strong"><%= d.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) %></td>
+                  <td><%= d.toLocaleDateString('en-IN', { weekday: 'long' }) %></td>
+                  <td class="num"><%- statusBadge(record.status) %></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } else { %>
+        <div class="empty-state">
+          <span class="stat-icon"><%- icon('calendar-x') %></span>
+          <strong>No attendance records</strong>
+          <p><%= filtered ? 'Nothing was recorded for this month. Try another month or clear the filter.' : 'Your attendance will appear here once it’s marked.' %></p>
+        </div>
+      <% } %>
+    </section>
+  </main>
+</body>
+</html>

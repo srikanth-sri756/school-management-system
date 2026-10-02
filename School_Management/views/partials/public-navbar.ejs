@@ -1,0 +1,54 @@
+<nav class="public-navbar">
+  <div class="public-nav-container">
+    <div class="public-nav-brand">
+      <img src="/images/school-logo.svg" alt="School Logo" class="public-nav-logo">
+      <div class="public-nav-text">
+        <span class="public-nav-name">Akansha Grammer High School</span>
+        <span class="public-nav-tagline">Excellence in Education</span>
+      </div>
+    </div>
+    
+    <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <div class="public-nav-links" id="publicNavLinks">
+      <a href="/" class="public-nav-link <%= typeof currentPage !== 'undefined' && currentPage === 'home' ? 'active' : '' %>">Home</a>
+      <a href="/portfolio/about" class="public-nav-link <%= typeof currentPage !== 'undefined' && currentPage === 'about' ? 'active' : '' %>">About</a>
+      <a href="/portfolio/academics" class="public-nav-link <%= typeof currentPage !== 'undefined' && currentPage === 'academics' ? 'active' : '' %>">Academics</a>
+      <a href="/portfolio/admissions" class="public-nav-link <%= typeof currentPage !== 'undefined' && currentPage === 'admissions' ? 'active' : '' %>">Admissions</a>
+      <a href="/portfolio/contact" class="public-nav-link <%= typeof currentPage !== 'undefined' && currentPage === 'contact' ? 'active' : '' %>">Contact</a>
+      <a href="/student/login" class="public-nav-login" style="margin-right: 0.5rem;">
+        <span class="login-icon">🎓</span>
+        <span>Student</span>
+      </a>
+      <a href="/login" class="public-nav-login">
+        <span class="login-icon">🔐</span>
+        <span>Staff</span>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<script>
+  function toggleMobileMenu() {
+    const navLinks = document.getElementById('publicNavLinks');
+    const toggle = document.querySelector('.mobile-menu-toggle');
+    navLinks.classList.toggle('active');
+    toggle.classList.toggle('active');
+  }
+
+  // Close mobile menu when clicking outside
+  document.addEventListener('click', function(event) {
+    const navbar = document.querySelector('.public-navbar');
+    const navLinks = document.getElementById('publicNavLinks');
+    const toggle = document.querySelector('.mobile-menu-toggle');
+    
+    if (!navbar.contains(event.target) && navLinks.classList.contains('active')) {
+      navLinks.classList.remove('active');
+      toggle.classList.remove('active');
+    }
+  });
+</script>

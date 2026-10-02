@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/admin-head', { title: 'Attendance' }) %>
+</head>
+<body class="app">
+  <%- include('../partials/navbar', { page }) %>
+
+  <%
+    const saved = Object.values(records);
+    const count = (status) => saved.filter(r => r.status === status).length;
+    const notMarked = students.length - saved.length;
+  %>
+  <main class="container" id="main">
+    <div class="page-header">
+      <div>
+        <h2>Attendance</h2>
+        <p><%= teacher.class ? classLabel(teacher.class) + ' · ' + dayLabel : 'No class assigned' %></p>
+      </div>
+    </div>
+
+    <% if (!teacher.class) { %>
+      <section class="card">
+        <div class="empty-state">
+          <span class="stat-icon"><%- icon('calendar-check') %></span>
+          <strong>No class assigned</strong>
+          <p>Attendance is taken for your own class. Please ask the school office to assign one to you.</p>
+        </div>
+      </section>
+    <% } else { %>
+      <section class="card">
+        <form method="GET" action="/teacher/attendance" class="filter-bar">
+          <div class="form-group">
+            <label for="date">Date</label>
+            <input type="date" id="date" name="date" class="form-control" value="<%= day %>" max="<%= today %>" onchange="this.form.submit()">
+          </div>
+          <div class="form-group">
+            <% if (day !== today) { %>
+              <a href="/teacher/attendance" class="btn btn-block"><%- icon('calendar') %>Back to today</a>
+            <% } else { %>
+              <noscript><button type="submit" class="btn btn-block">Show</button></noscript>
+            <% } %>
+          </div>
+          <div class="form-group att-counts" aria-label="Summary">
+            <span class="badge badge-success">Present <%= count('Present') %></span>
+            <span class="badge badge-warning">Late <%= count('Late') %></span>
+            <span class="badge badge-danger">Absent <%= count('Absent') %></span>
+            <span class="badge">Not marked <%= notMarked %></span>
+          </div>
+        </form>
+      </section>
+
+      <% if (closed) { %>
+        <div class="alert alert-warning" role="status"><%- icon('triangle-alert') %><div><%= closed %> Attendance can’t be marked for this day.</div></div>
+      <% } %>
+
+      <% if (!students.length) { %>
+        <section class="card">
+          <div class="empty-state">
+            <span class="stat-icon"><%- icon('users') %></span>
+            <strong>No students in <%= classLabel(teacher.class) %></strong>
+            <p>Active students added to your class will appear here.</p>
+          </div>
+        </section>
+      <% } else { %>
+        <form method="POST" action="/teacher/attendance/mark" class="card card--flush" id="attendanceForm">
+          <input type="hidden" name="date" value="<%= day %>">
+          <div class="card-header">
+            <div>
+              <h3><%- icon('users') %><%= classLabel(teacher.class) %></h3>
+              <p><%= students.length %> students · <%= saved.length ? saved.length + ' saved for this day' : 'not marked yet' %></p>
+            </div>
+            <% if (!closed) { %><button type="button" class="btn btn-sm" data-all-present><%- icon('check') %>All present</button><% } %>
+          </div>
+          <div class="table-container">
+            <table class="att-table">
+              <thead><tr><th>Roll</th><th>Student</th><th>Status</th><th>Remark</th></tr></thead>
+              <tbody>
+                <% students.forEach(student => {
+                     const record = records[student.id];
+                     const current = record ? record.status : 'Present';
+                %>
+                  <tr>
+                    <td class="cell-strong"><%= student.rollNumber || '—' %></td>
+                    <td>
+                      <div class="cell-person">
+                        <%- avatar('student', student) %>
+                        <div>
+                          <span class="cell-strong"><%= student.firstName %> <%= student.lastName %></span>
+                          <span class="cell-sub <%= record ? 'text-success' : 'text-warning' %>"><%= record ? 'Saved' : 'Not marked yet' %></span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="segmented" role="radiogroup" aria-label="Attendance for <%= student.firstName %> <%= student.lastName %>">
+                        <% statuses.forEach(status => { %>
+                          <label>
+                            <input type="radio" name="status[<%= student.id %>]" value="<%= status %>" <%= current === status ? 'checked' : '' %> <%= closed ? 'disabled' : '' %>>
+                            <span><%= status %></span>
+                          </label>
+                        <% }) %>
+                      </div>
+                    </td>
+                    <td>
+                      <input type="text" name="remarks[<%= student.id %>]" class="form-control att-remark" maxlength="200" placeholder="Optional" value="<%= record && record.remarks ? record.remarks : '' %>" aria-label="Remark for <%= student.firstName %>" <%= closed ? 'disabled' : '' %>>
+                    </td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+          <div class="card-footer">
+            <span class="text-muted"><%= saved.length ? 'Saving again updates the attendance for this day.' : 'Everyone starts as Present — change only the students who are late or absent.' %></span>
+            <button type="submit" class="btn btn-primary" <%= closed ? 'disabled' : '' %>><%- icon('check') %><%= saved.length ? 'Update attendance' : 'Save attendance' %></button>
+          </div>
+        </form>
+      <% } %>
+    <% } %>
+  </main>
+
+  <script>
+    // "All present" sets every student back to Present
+    document.querySelectorAll('[data-all-present]').forEach((button) => {
+      button.addEventListener('click', () => {
+        document.querySelectorAll('#attendanceForm input[type="radio"][value="Present"]').forEach((radio) => { radio.checked = true; });
+      });
+    });
+  </script>
+</body>
+</html>

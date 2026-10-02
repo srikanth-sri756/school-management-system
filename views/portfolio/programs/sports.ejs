@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../../partials/public-head', { title: 'Sports Academy', description: 'Sports Academy at Akansha Grammar High School - Developing champions through comprehensive athletic programs and professional coaching' }) %>
+</head>
+<body class="site program-page">
+    <%- include('../../partials/public-navbar') %>
+
+    <main id="main">
+    <%- include('../../partials/page-hero', {
+      heroPhoto: 'program-sports',
+      heroCrumbs: [{ href: '/', label: 'Home' }, { href: '/portfolio/academics', label: 'Academics' }, { label: 'Sports Academy' }],
+      heroTitle: 'Sports<br>Academy',
+      heroText: 'Developing champions through comprehensive athletic programs and professional coaching'
+    }) %>
+
+    <div class="program-content program-body">
+        <section>
+            <h2>Overview</h2>
+            <p>Our Sports Academy is committed to developing well-rounded athletes who excel both on the field and in the classroom. With professional coaches, state-of-the-art facilities, and a comprehensive athletic program, we nurture talent from grassroots to competitive levels while instilling values of teamwork, discipline, and sportsmanship.</p>
+        </section>
+
+        <div class="stats-container">
+            <div class="stat-box">
+                <div class="stat-number">15+</div>
+                <div class="stat-label">Sports Disciplines</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">20+</div>
+                <div class="stat-label">Professional Coaches</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">50+</div>
+                <div class="stat-label">Championships Won</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Student Participation</div>
+            </div>
+        </div>
+
+        <section>
+            <h2>Sports Programs Offered</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><%- icon('target') %></div>
+                    <h3>Cricket Academy</h3>
+                    <p>Professional coaching in batting, bowling, and fielding. State-of-the-art turf wicket, nets, and indoor practice facilities. Regular matches and tournaments.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><%- icon('goal') %></div>
+                    <h3>Football Program</h3>
+                    <p>FIFA-standard grass field, professional coaching from certified trainers. Age-group teams competing in inter-school and district tournaments.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><%- icon('circle-dot') %></div>
+                    <h3>Basketball Training</h3>
+                    <p>Indoor and outdoor courts, specialized coaching in techniques and strategies. School teams for boys and girls competing at various levels.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><%- icon('circle-dashed') %></div>
+                    <h3>Tennis Academy</h3>
+                    <p>Multiple tennis courts with professional coaching. Individual and group lessons, tournament preparation, and competitive play opportunities.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><%- icon('volleyball') %></div>
+                    <h3>Volleyball & Badminton</h3>
+                    <p>Indoor courts for volleyball and badminton. Professional coaching, regular practice sessions, and participation in competitions.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><%- icon('waves') %></div>
+                    <h3>Swimming Program</h3>
+                    <p>Olympic-size swimming pool with certified instructors. Learn all strokes, water safety, and competitive swimming techniques.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><%- icon('shield') %></div>
+                    <h3>Martial Arts</h3>
+                    <p>Karate, Taekwondo, and Judo training with certified black belt instructors. Self-defense skills, discipline, and character development.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><%- icon('footprints') %></div>
+                    <h3>Athletics & Track</h3>
+                    <p>400m synthetic track, field events facilities. Coaching in sprints, distance running, hurdles, long jump, high jump, shot put, and javelin.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><%- icon('flower-2') %></div>
+                    <h3>Yoga & Fitness</h3>
+                    <p>Daily yoga sessions, meditation, and fitness training. Modern gym with cardio and strength training equipment for senior students.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel">
+            <h2>Training Programs</h2>
+            <div class="feature-grid">
+                <div class="level-item">
+                    <h4>Grassroots Program (Nursery-5)</h4>
+                    <ul>
+                        <li>Introduction to multiple sports</li>
+                        <li>Fundamental movement skills</li>
+                        <li>Games and fun activities</li>
+                        <li>Basic rules and sportsmanship</li>
+                        <li>Focus on enjoyment and participation</li>
+                    </ul>
+                </div>
+                <div class="level-item">
+                    <h4>Development Program (6-8)</h4>
+                    <ul>
+                        <li>Skill development in chosen sports</li>
+                        <li>Team strategies and tactics</li>
+                        <li>Inter-house competitions</li>
+                        <li>Fitness and conditioning</li>
+                        <li>Sports psychology introduction</li>
+                    </ul>
+                </div>
+                <div class="level-item">
+                    <h4>Elite Program (9-10)</h4>
+                    <ul>
+                        <li>Advanced training and specialization</li>
+                        <li>Competitive tournament participation</li>
+                        <li>Sports science and nutrition</li>
+                        <li>Injury prevention and recovery</li>
+                        <li>Sports scholarship opportunities</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>World-Class Facilities</h2>
+            <ul class="check-list check-list--cols">
+                <li>FIFA-standard football field with floodlights</li>
+                <li>Cricket ground with turf wicket and practice nets</li>
+                <li>Indoor sports complex (basketball, badminton, volleyball)</li>
+                <li>Olympic-size swimming pool (25m x 50m)</li>
+                <li>400-meter synthetic athletic track</li>
+                <li>Six tennis courts (hard court surface)</li>
+                <li>Squash courts</li>
+                <li>Table tennis hall with 10 tables</li>
+                <li>Fully-equipped gymnasium</li>
+                <li>Yoga and aerobics studio</li>
+                <li>Sports science laboratory</li>
+                <li>Physiotherapy and recovery center</li>
+                <li>Indoor archery range</li>
+                <li>Chess and carrom room</li>
+                <li>Changing rooms and lockers</li>
+                <li>Sports equipment store</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Coaching & Support Staff</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>Professional Coaches</h4>
+                    <p>All coaches hold national or international certifications. Many are former state or national level players with years of experience.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Sports Medicine</h4>
+                    <p>On-campus physiotherapist and sports medicine doctor. Regular health checkups and fitness assessments for all athletes.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Sports Nutritionist</h4>
+                    <p>Personalized nutrition plans for athletes. Guidance on diet, hydration, and supplementation for optimal performance.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Sports Psychologist</h4>
+                    <p>Mental conditioning, stress management, and performance psychology. Help students develop mental toughness and focus.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel">
+            <h2>Achievements & Recognition</h2>
+            <div class="info-grid">
+                <div>
+                    <h4>Championships</h4>
+                    <ul>
+                        <li>State Cricket Champions (2023)</li>
+                        <li>District Football Tournament Winners</li>
+                        <li>Inter-School Basketball Champions</li>
+                        <li>Swimming State Medalists</li>
+                        <li>Athletics Meet Winners (5 consecutive years)</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Individual Honors</h4>
+                    <ul>
+                        <li>10+ students selected for state teams</li>
+                        <li>3 students in national training camps</li>
+                        <li>Multiple gold medalists in athletics</li>
+                        <li>Tennis players ranked in under-18 circuit</li>
+                        <li>Martial arts black belts</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Scholarships</h4>
+                    <ul>
+                        <li>Sports scholarships to top universities</li>
+                        <li>Professional academy selections</li>
+                        <li>National Sports Authority recognition</li>
+                        <li>Olympic pathway program participants</li>
+                        <li>Corporate sponsorships for athletes</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Sports Events & Competitions</h2>
+            <ul class="check-list check-list--cols">
+                <li>Annual Sports Day with track and field events</li>
+                <li>Inter-house sports competitions</li>
+                <li>Inter-school tournaments and leagues</li>
+                <li>District and state level competitions</li>
+                <li>National level tournaments</li>
+                <li>Sports camps during vacations</li>
+                <li>Fitness challenges and marathons</li>
+                <li>Yoga and wellness workshops</li>
+                <li>Guest sessions with professional athletes</li>
+                <li>Sports leadership conferences</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Academic-Athletic Balance</h2>
+            <p>We believe in developing complete individuals who excel both academically and athletically. Our program includes:</p>
+            <ul class="detail-list">
+                <li><strong>Flexible Scheduling:</strong> Training sessions scheduled around academic commitments</li>
+                <li><strong>Academic Support:</strong> Tutoring and extra help for student-athletes</li>
+                <li><strong>Time Management:</strong> Teaching students to balance sports and studies effectively</li>
+                <li><strong>Study Halls:</strong> Dedicated study time for athletes during tournament season</li>
+                <li><strong>Eligibility Requirements:</strong> Maintaining academic standards to participate in sports</li>
+            </ul>
+        </section>
+
+        <section class="program-cta">
+            <h2>Join Our Sports Academy</h2>
+            <p>Whether you're a beginner or aspiring champion, we have a program for you!</p>
+            <div class="hero-actions">
+                <a href="/portfolio/contact" class="pill pill--light">Contact Us <%- icon('arrow-right') %></a>
+                <a href="/portfolio/admissions" class="pill pill--dark">Admissions</a>
+            </div>
+        </section>
+    </div>
+    </main>
+
+
+    <%- include('../../partials/footer') %>
+</body>
+</html>

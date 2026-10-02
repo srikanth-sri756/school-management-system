@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/admin-head', { title: 'Edit Teacher' }) %>
+</head>
+<body class="app">
+  <%- include('../partials/navbar', { page: 'teachers' }) %>
+
+  <main class="container container--narrow" id="main">
+    <div class="page-header">
+      <div>
+        <a href="/teachers" class="back-link"><%- icon('arrow-left') %>Teachers</a>
+        <h2>Edit Teacher</h2>
+      </div>
+    </div>
+
+    <form method="POST" action="/teachers/<%= teacher._id %>/edit" class="card" id="teacherForm" enctype="multipart/form-data">
+      <div class="profile-head">
+        <%- avatar('teacher', teacher) %>
+        <div>
+          <h3><%= teacher.name %></h3>
+          <div class="meta"><span><%= teacher.email %></span><% if (teacher.user) { %><span class="badge badge-success">Portal access</span><% } %></div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 class="form-section-title"><%- icon('camera') %>Photo</h3>
+        <div class="photo-field">
+          <span class="photo-preview" data-photo-preview><%- avatar('teacher', teacher, 'avatar--xl') %></span>
+          <div class="photo-field-body">
+            <label for="photo" class="field-label"><%= teacher.photo && teacher.photo.filename ? 'Replace photo' : 'Upload a photo' %></label>
+            <input type="file" id="photo" name="photo" class="form-control" accept="image/jpeg,image/png,image/webp" data-photo-input>
+            <span class="form-hint">JPG, PNG or WebP, up to 5 MB.</span>
+            <% if (teacher.photo && teacher.photo.filename) { %>
+              <label class="check mt-2"><input type="checkbox" name="removePhoto" value="yes"> Remove the current photo</label>
+            <% } %>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 class="form-section-title"><%- icon('user-round') %>Personal information</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name">Full name <span class="req">*</span></label>
+            <input type="text" id="name" name="name" class="form-control" value="<%= teacher.name %>" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Email <span class="req">*</span></label>
+            <input type="email" id="email" name="email" class="form-control" value="<%= teacher.email %>" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="phone">Phone</label>
+            <input type="tel" id="phone" name="phone" class="form-control" value="<%= teacher.phone || '' %>">
+          </div>
+          <div class="form-group">
+            <label for="salary">Monthly salary (₹)</label>
+            <input type="number" id="salary" name="salary" class="form-control" value="<%= teacher.salary || '' %>" min="0">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="address">Address</label>
+          <textarea id="address" name="address" class="form-control" rows="2"><%= teacher.address || '' %></textarea>
+        </div>
+      </div>
+
+      <%- include('_assignment', {
+            subjectId: teacher.subject && teacher.subject._id,
+            isClassTeacher: teacher.isClassTeacher,
+            grade: teacher.class ? teacher.class.name : '',
+            section: teacher.class ? teacher.class.section : ''
+          }) %>
+
+      <%- include('_identity', { t: teacher, isEdit: true }) %>
+
+      <div class="form-section">
+        <h3 class="form-section-title"><%- icon('lock') %>Teacher portal access</h3>
+        <% if (teacher.user) { %>
+          <div class="form-group">
+            <label for="currentUsername">Current username</label>
+            <input type="text" id="currentUsername" class="form-control" value="<%= teacher.user.email %>" readonly>
+          </div>
+          <label class="check mb-3"><input type="checkbox" id="changePassword" onchange="togglePasswordFields()"> Change username or password</label>
+          <div id="passwordFields" class="subpanel" hidden>
+            <div class="form-group">
+              <label for="newUsername">New username</label>
+              <input type="text" name="newUsername" id="newUsername" class="form-control" placeholder="Leave blank to keep the current one" autocomplete="off">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="newPassword">New password <span class="req">*</span></label>
+                <input type="password" name="newPassword" id="newPassword" class="form-control" autocomplete="new-password">
+                <span class="form-hint">At least 6 characters.</span>
+              </div>
+              <div class="form-group">
+                <label for="confirmNewPassword">Confirm new password <span class="req">*</span></label>
+                <input type="password" name="confirmNewPassword" id="confirmNewPassword" class="form-control" autocomplete="new-password">
+              </div>
+            </div>
+          </div>
+        <% } else { %>
+          <label class="check mb-3"><input type="checkbox" id="createLogin" name="createLogin" value="yes" onchange="toggleNewLoginFields()"> Create a teacher portal login</label>
+          <div id="newLoginFields" class="subpanel" hidden>
+            <div class="form-group">
+              <label for="username">Username <span class="req">*</span></label>
+              <input type="text" name="username" id="username" class="form-control" placeholder="Used to sign in" autocomplete="off">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="password">Password <span class="req">*</span></label>
+                <input type="password" name="password" id="password" class="form-control" autocomplete="new-password">
+                <span class="form-hint">At least 6 characters.</span>
+              </div>
+              <div class="form-group">
+                <label for="confirmPassword">Confirm password <span class="req">*</span></label>
+                <input type="password" name="confirmPassword" id="confirmPassword" class="form-control" autocomplete="new-password">
+              </div>
+            </div>
+          </div>
+        <% } %>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary"><%- icon('check') %>Save Changes</button>
+        <a href="/teachers" class="btn">Cancel</a>
+      </div>
+    </form>
+  </main>
+
+  <script>
+    function togglePasswordFields() {
+      const on = document.getElementById('changePassword').checked;
+      document.getElementById('passwordFields').hidden = !on;
+      document.getElementById('newPassword').required = on;
+      document.getElementById('confirmNewPassword').required = on;
+    }
+
+    function toggleNewLoginFields() {
+      const on = document.getElementById('createLogin').checked;
+      document.getElementById('newLoginFields').hidden = !on;
+      ['username', 'password', 'confirmPassword'].forEach(id => { document.getElementById(id).required = on; });
+    }
+
+    document.getElementById('teacherForm').addEventListener('submit', function (e) {
+      <% if (teacher.user) { %>
+        if (!document.getElementById('changePassword').checked) return;
+        const password = document.getElementById('newPassword').value;
+        const confirmation = document.getElementById('confirmNewPassword').value;
+      <% } else { %>
+        if (!document.getElementById('createLogin').checked) return;
+        const password = document.getElementById('password').value;
+        const confirmation = document.getElementById('confirmPassword').value;
+      <% } %>
+      if (password !== confirmation) {
+        e.preventDefault();
+        alert('The passwords do not match.');
+      } else if (password.length < 6) {
+        e.preventDefault();
+        alert('The password must be at least 6 characters long.');
+      }
+    });
+  </script>
+</body>
+</html>

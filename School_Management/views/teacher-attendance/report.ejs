@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Attendance Report - School Management System</title>
+  <link rel="stylesheet" href="/css/modern.css">
+</head>
+<body>
+  <%- include('../partials/navbar') %>
+
+  <div class="container">
+    <div class="page-header">
+      <h2>Teacher Attendance Report</h2>
+      <a href="/teacher-attendance" class="btn btn-secondary">← Back</a>
+    </div>
+
+    <!-- Filters -->
+    <div class="card">
+      <h3 class="mb-3">Filter Report</h3>
+      <form method="GET" action="/teacher-attendance/report">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Teacher:</label>
+            <select name="teacherId" class="form-control">
+              <option value="">All Teachers</option>
+              <% teachers.forEach(teacher => { %>
+                <option value="<%= teacher._id %>" <%= filters.teacherId === teacher._id.toString() ? 'selected' : '' %>>
+                  <%= teacher.name %>
+                </option>
+              <% }); %>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Start Date:</label>
+            <input type="date" name="startDate" class="form-control" value="<%= filters.startDate || '' %>">
+          </div>
+          <div class="form-group">
+            <label>End Date:</label>
+            <input type="date" name="endDate" class="form-control" value="<%= filters.endDate || '' %>">
+          </div>
+        </div>
+        <div class="flex gap-2" style="display: flex; gap: 0.75rem; align-items: center;">
+          <button type="submit" class="btn btn-primary">
+            <span>📊</span> Apply Filter
+          </button>
+          <% if (attendanceRecords.length > 0) { %>
+            <a
+              href="/teacher-attendance/export?<%=
+                'teacherId=' + encodeURIComponent(filters.teacherId || '') +
+                '&startDate=' + encodeURIComponent(filters.startDate || '') +
+                '&endDate=' + encodeURIComponent(filters.endDate || '')
+              %>"
+              class="btn btn-success"
+              download
+            >
+              <span>📥</span> Export to CSV
+            </a>
+          <% } %>
+        </div>
+      </form>
+    </div>
+
+    <!-- Results -->
+    <div class="card mt-3">
+      <div class="flex justify-between items-center mb-3" style="display: flex; justify-content: space-between; align-items: center;">
+        <h3>Attendance Records (<%= attendanceRecords.length %> records)</h3>
+        <% if (attendanceRecords.length > 0) { %>
+          <a
+            href="/teacher-attendance/export?<%=
+              'teacherId=' + encodeURIComponent(filters.teacherId || '') +
+              '&startDate=' + encodeURIComponent(filters.startDate || '') +
+              '&endDate=' + encodeURIComponent(filters.endDate || '')
+            %>"
+            class="btn btn-success btn-sm"
+            download
+          >
+            <span>📥</span> Download CSV
+          </a>
+        <% } %>
+      </div>
+      
+      <% if (attendanceRecords.length > 0) { %>
+        <div class="table-container">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Teacher</th>
+                <th>Subject</th>
+                <th>Class</th>
+                <th>Status</th>
+                <th>Check-In</th>
+                <th>Check-Out</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% attendanceRecords.forEach(record => { 
+                let statusColor = '#6b7280';
+                let statusBg = '#f3f4f6';
+                if (record.status === 'Present') {
+                  statusColor = '#10b981';
+                  statusBg = '#d1fae5';
+                } else if (record.status === 'Late') {
+                  statusColor = '#f59e0b';
+                  statusBg = '#fef3c7';
+                } else if (record.status === 'Half-Day') {
+                  statusColor = '#3b82f6';
+                  statusBg = '#dbeafe';
+                } else if (record.status === 'Leave') {
+                  statusColor = '#8b5cf6';
+                  statusBg = '#ede9fe';
+                } else {
+                  statusColor = '#dc2626';
+                  statusBg = '#fee2e2';
+                }
+              %>
+                <tr>
+                  <td><%= new Date(record.date).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) %></td>
+                  <td><strong><%= record.teacher ? record.teacher.name : 'N/A' %></strong></td>
+                  <td><%= record.teacher && record.teacher.subject ? record.teacher.subject.name : 'N/A' %></td>
+                  <td>
+                    <%= record.teacher && record.teacher.class ? record.teacher.class.name : 'N/A' %>
+                    <%= record.teacher && record.teacher.section ? '(' + record.teacher.section + ')' : '' %>
+                  </td>
+                  <td>
+                    <span style="padding: 4px 12px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; background-color: <%= statusBg %>; color: <%= statusColor %>;">
+                      <%= record.status %>
+                    </span>
+                  </td>
+                  <td><%= record.checkIn || '-' %></td>
+                  <td><%= record.checkOut || '-' %></td>
+                  <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><%= record.notes || '-' %></td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      <% } else { %>
+        <p style="color: #6b7280; text-align: center; padding: 2rem;">No attendance records found for the selected filters.</p>
+      <% } %>
+    </div>
+  </div>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

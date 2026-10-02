@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fee Structure - School Management System</title>
+  <link rel="stylesheet" href="/css/modern.css">
+</head>
+<body>
+  <%- include('../partials/navbar') %>
+
+<div class="container">
+  <div class="page-header">
+    <h2>Fee Structure</h2>
+    <div>
+      <a href="/fees/export" class="btn btn-success" style="margin-right: 10px;">📥 Export to Excel</a>
+      <a href="/fees/add" class="btn btn-primary">Add Fee</a>
+    </div>
+  </div>
+
+  <!-- Filter Section -->
+  <div class="card" style="margin-bottom: 1.5rem;">
+    <h3 style="margin-bottom: 1rem;">Filter Records</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+      <div>
+        <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem;">Student Name:</label>
+        <input type="text" id="filterStudent" placeholder="Search student..." style="width: 100%; padding: 0.6rem; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem;">
+      </div>
+      <div>
+        <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem;">Term:</label>
+        <select id="filterTerm" style="width: 100%; padding: 0.6rem; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem;">
+          <option value="">All</option>
+          <option value="Term 1">Term 1</option>
+          <option value="Term 2">Term 2</option>
+          <option value="Term 3">Term 3</option>
+          <option value="Annual">Annual</option>
+        </select>
+      </div>
+      <div>
+        <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem;">Status:</label>
+        <select id="filterStatus" style="width: 100%; padding: 0.6rem; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem;">
+          <option value="">All</option>
+          <option value="Paid">Paid</option>
+          <option value="Pending">Pending</option>
+          <option value="Partial">Partial</option>
+          <option value="Overdue">Overdue</option>
+        </select>
+      </div>
+      <div>
+        <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem;">Min Amount:</label>
+        <input type="number" id="filterMinAmount" placeholder="Min amount" min="0" style="width: 100%; padding: 0.6rem; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem;">
+      </div>
+      <div>
+        <label style="display: block; margin-bottom: 0.3rem; font-size: 0.9rem;">Max Amount:</label>
+        <input type="number" id="filterMaxAmount" placeholder="Max amount" min="0" style="width: 100%; padding: 0.6rem; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem;">
+      </div>
+      <div style="display: flex; align-items: flex-end;">
+        <button onclick="clearFilters()" class="btn btn-secondary" style="width: 100%; padding: 0.6rem;">
+          Clear Filters
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Student</th>
+        <th>Term</th>
+        <th>Amount</th>
+        <th>Paid</th>
+        <th>Balance</th>
+        <th>Payment Type</th>
+        <th>Status</th>
+        <th>Due Date</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% fees.forEach(fee => { 
+        const balance = (fee.amount || 0) - (fee.paid || 0);
+      %>
+        <tr>
+          <td><%= fee.student ? fee.student.firstName + ' ' + fee.student.lastName : '' %></td>
+          <td><%= fee.term %></td>
+          <td>₹<%= fee.amount ? fee.amount.toLocaleString('en-IN') : '0' %></td>
+          <td>₹<%= fee.paid ? fee.paid.toLocaleString('en-IN') : '0' %></td>
+          <td>
+            <strong style="color: <%= balance > 0 ? '#dc2626' : '#10b981' %>;">
+              ₹<%= balance.toLocaleString('en-IN') %>
+            </strong>
+          </td>
+          <td>
+            <% if (fee.hasInstallmentPlan) { %>
+              <span style="padding: 4px 8px; background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; border-radius: 6px; font-size: 0.85rem; font-weight: 600;">
+                📅 <%= fee.numberOfInstallments %> Installments
+              </span>
+            <% } else { %>
+              <span style="color: #6b7280;">Full Payment</span>
+            <% } %>
+          </td>
+          <td>
+            <% 
+            let statusColor = '#6b7280';
+            let statusBg = '#f3f4f6';
+            if (fee.status === 'Paid') {
+              statusColor = '#10b981';
+              statusBg = '#d1fae5';
+            } else if (fee.status === 'Partial') {
+              statusColor = '#f59e0b';
+              statusBg = '#fef3c7';
+            } else if (fee.status === 'Unpaid') {
+              statusColor = '#ef4444';
+              statusBg = '#fee2e2';
+            }
+            %>
+            <span style="padding: 4px 12px; background: <%= statusBg %>; color: <%= statusColor %>; border-radius: 6px; font-size: 0.85rem; font-weight: 600;">
+              <%= fee.status %>
+            </span>
+          </td>
+          <td><%= fee.dueDate ? new Date(fee.dueDate).toLocaleDateString('en-IN') : '' %></td>
+          <td>
+            <% if (fee.hasInstallmentPlan) { %>
+              <a href="/fees/<%= fee._id %>/installments" class="btn btn-sm" style="background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; margin-right: 5px;">View Installments</a>
+            <% } %>
+            <a href="/fees/<%= fee._id %>/edit" class="btn btn-sm">Edit</a>
+            <form method="POST" action="/fees/<%= fee._id %>/delete" style="display:inline"><button type="submit" class="btn btn-sm btn-danger">Delete</button></form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+<script>
+  // Filter functionality
+  const filterStudent = document.getElementById('filterStudent');
+  const filterTerm = document.getElementById('filterTerm');
+  const filterStatus = document.getElementById('filterStatus');
+  const filterMinAmount = document.getElementById('filterMinAmount');
+  const filterMaxAmount = document.getElementById('filterMaxAmount');
+  const tableRows = document.querySelectorAll('tbody tr');
+
+  function applyFilters() {
+    const studentValue = filterStudent.value.toLowerCase();
+    const termValue = filterTerm.value.toLowerCase();
+    const statusValue = filterStatus.value.toLowerCase();
+    const minAmountValue = filterMinAmount.value ? parseFloat(filterMinAmount.value) : null;
+    const maxAmountValue = filterMaxAmount.value ? parseFloat(filterMaxAmount.value) : null;
+
+    tableRows.forEach(row => {
+      if (row.cells.length === 1) return; // Skip "no records found" row
+
+      const student = row.cells[0].textContent.toLowerCase();
+      const term = row.cells[1].textContent.toLowerCase();
+      const amount = parseFloat(row.cells[2].textContent);
+      const status = row.cells[4].textContent.toLowerCase();
+
+      const studentMatch = student.includes(studentValue);
+      const termMatch = !termValue || term.includes(termValue);
+      const statusMatch = !statusValue || status.includes(statusValue);
+      const minAmountMatch = minAmountValue === null || amount >= minAmountValue;
+      const maxAmountMatch = maxAmountValue === null || amount <= maxAmountValue;
+
+      if (studentMatch && termMatch && statusMatch && minAmountMatch && maxAmountMatch) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    });
+  }
+
+  function clearFilters() {
+    filterStudent.value = '';
+    filterTerm.value = '';
+    filterStatus.value = '';
+    filterMinAmount.value = '';
+    filterMaxAmount.value = '';
+    applyFilters();
+  }
+
+  // Add event listeners
+  filterStudent.addEventListener('input', applyFilters);
+  filterTerm.addEventListener('change', applyFilters);
+  filterStatus.addEventListener('change', applyFilters);
+  filterMinAmount.addEventListener('input', applyFilters);
+  filterMaxAmount.addEventListener('input', applyFilters);
+</script>
+
+</body>
+</html>

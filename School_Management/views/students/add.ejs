@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Student - School Management System</title>
+  <link rel="stylesheet" href="/css/modern.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <h1>🎓 School Management System</h1>
+      <div class="user-info">
+        <span>Welcome, <%= user.name %></span>
+        <a href="/logout" class="btn-logout">Logout</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="nav-content">
+      <a href="/">Dashboard</a>
+      <a href="/students" class="active">Students</a>
+      <a href="/attendance">Attendance</a>
+      <a href="/marks">Marks</a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="page-header">
+      <h2>Add New Student</h2>
+      <a href="/students" class="btn btn-secondary">← Back to Students</a>
+    </div>
+
+    <div class="card">
+      <form action="/students/add" method="POST">
+        <h3 class="mb-3">Personal Information</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="firstName">First Name *</label>
+            <input type="text" id="firstName" name="firstName" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="lastName">Last Name *</label>
+            <input type="text" id="lastName" name="lastName" class="form-control" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="dateOfBirth">Date of Birth *</label>
+            <input type="date" id="dateOfBirth" name="dateOfBirth" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="gender">Gender *</label>
+            <select id="gender" name="gender" class="form-control" required>
+              <option value="">Select Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" class="form-control">
+          </div>
+        </div>
+
+        <h3 class="mb-3 mt-3">Academic Information</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="classId">Class *</label>
+            <select id="classId" name="classId" class="form-control" required>
+              <option value="">Select Class</option>
+              <% classes.forEach(cls => { %>
+                <option value="<%= cls._id %>"><%= cls.name %></option>
+              <% }); %>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="section">Section *</label>
+            <select id="section" name="section" class="form-control" required>
+              <option value="">Select Section</option>
+              <option value="A">Section A</option>
+              <option value="B">Section B</option>
+              <option value="C">Section C</option>
+              <option value="D">Section D</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="rollNumber">Roll Number *</label>
+            <input type="text" id="rollNumber" name="rollNumber" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="admissionDate">Admission Date *</label>
+            <input type="date" id="admissionDate" name="admissionDate" class="form-control" required>
+          </div>
+        </div>
+
+        <h3 class="mb-3 mt-3">Parent/Guardian Information</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="parentName">Parent/Guardian Name *</label>
+            <input type="text" id="parentName" name="parentName" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="parentPhone">Parent Phone *</label>
+            <input type="tel" id="parentPhone" name="parentPhone" class="form-control" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="parentEmail">Parent Email</label>
+          <input type="email" id="parentEmail" name="parentEmail" class="form-control">
+        </div>
+
+        <div class="form-group">
+          <label for="address">Address</label>
+          <textarea id="address" name="address" class="form-control" rows="3"></textarea>
+        </div>
+
+        <div class="flex gap-2 mt-3">
+          <button type="submit" class="btn btn-success">Add Student</button>
+          <a href="/students" class="btn btn-secondary">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

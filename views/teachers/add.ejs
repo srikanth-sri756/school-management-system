@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/admin-head', { title: 'Add Teacher' }) %>
+</head>
+<body class="app">
+  <%- include('../partials/navbar', { page: 'teachers' }) %>
+
+  <%
+    // Values typed before a validation error (empty on first load)
+    const v = locals.values || {};
+    const classTeacher = v.isClassTeacher === 'yes';
+    const withLogin = v.createLogin === 'yes';
+  %>
+  <main class="container container--narrow" id="main">
+    <div class="page-header">
+      <div>
+        <a href="/teachers" class="back-link"><%- icon('arrow-left') %>Teachers</a>
+        <h2>Add Teacher</h2>
+        <p>Fields marked <span class="req">*</span> are required.</p>
+      </div>
+    </div>
+
+    <% if (locals.formErrors && formErrors.length) { %>
+      <div class="alert alert-error" role="alert">
+        <%- icon('circle-alert') %>
+        <div>
+          <strong>The teacher was not saved.</strong>
+          <ul class="alert-list"><% formErrors.forEach(message => { %><li><%= message %></li><% }) %></ul>
+          <p>Your details are kept below, but files and passwords have to be entered again.</p>
+        </div>
+      </div>
+    <% } %>
+
+    <form method="POST" action="/teachers/add" class="card" id="teacherForm" enctype="multipart/form-data">
+      <div class="form-section">
+        <h3 class="form-section-title"><%- icon('camera') %>Photo</h3>
+        <div class="photo-field">
+          <span class="photo-preview" data-photo-preview><span class="avatar avatar--xl"><%- icon('camera') %></span></span>
+          <div class="photo-field-body">
+            <label for="photo" class="field-label">Upload a photo</label>
+            <input type="file" id="photo" name="photo" class="form-control" accept="image/jpeg,image/png,image/webp" data-photo-input>
+            <span class="form-hint">JPG, PNG or WebP, up to 5 MB.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 class="form-section-title"><%- icon('user-round') %>Personal information</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name">Full name <span class="req">*</span></label>
+            <input type="text" id="name" name="name" class="form-control" value="<%= v.name || '' %>" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Email <span class="req">*</span></label>
+            <input type="email" id="email" name="email" class="form-control" value="<%= v.email || '' %>" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="phone">Phone</label>
+            <input type="tel" id="phone" name="phone" class="form-control" value="<%= v.phone || '' %>">
+          </div>
+          <div class="form-group">
+            <label for="salary">Monthly salary (₹)</label>
+            <input type="number" id="salary" name="salary" class="form-control" value="<%= v.salary || '' %>" min="0">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="address">Address</label>
+          <textarea id="address" name="address" class="form-control" rows="2"><%= v.address || '' %></textarea>
+        </div>
+      </div>
+
+      <%- include('_assignment', { subjectId: v.subject, isClassTeacher: classTeacher, grade: v.grade || '', section: v.section || '' }) %>
+
+      <%- include('_identity', { t: v, isEdit: false }) %>
+
+      <div class="form-section">
+        <h3 class="form-section-title"><%- icon('lock') %>Teacher portal access</h3>
+        <div class="form-group">
+          <label for="createLogin">Create a login for the teacher portal?</label>
+          <select name="createLogin" id="createLogin" class="form-control" onchange="toggleLoginFields()">
+            <option value="no">No</option>
+            <option value="yes" <%= withLogin ? 'selected' : '' %>>Yes</option>
+          </select>
+        </div>
+        <div id="loginFields" class="subpanel" <%= withLogin ? '' : 'hidden' %>>
+          <div class="form-group">
+            <label for="username">Username <span class="req">*</span></label>
+            <input type="text" name="username" id="username" class="form-control" value="<%= v.username || '' %>" placeholder="Used to sign in" autocomplete="off" <%= withLogin ? 'required' : '' %>>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="password">Password <span class="req">*</span></label>
+              <input type="password" name="password" id="password" class="form-control" minlength="6" autocomplete="new-password" <%= withLogin ? 'required' : '' %>>
+              <span class="form-hint">At least 6 characters.</span>
+            </div>
+            <div class="form-group">
+              <label for="confirmPassword">Confirm password <span class="req">*</span></label>
+              <input type="password" name="confirmPassword" id="confirmPassword" class="form-control" autocomplete="new-password" <%= withLogin ? 'required' : '' %>>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary"><%- icon('check') %>Add Teacher</button>
+        <a href="/teachers" class="btn">Cancel</a>
+      </div>
+    </form>
+  </main>
+
+  <script>
+    function toggleLoginFields() {
+      const on = document.getElementById('createLogin').value === 'yes';
+      document.getElementById('loginFields').hidden = !on;
+      ['username', 'password', 'confirmPassword'].forEach(id => { document.getElementById(id).required = on; });
+    }
+
+    document.getElementById('teacherForm').addEventListener('submit', function (e) {
+      if (document.getElementById('createLogin').value !== 'yes') return;
+      const password = document.getElementById('password').value;
+      if (password !== document.getElementById('confirmPassword').value) {
+        e.preventDefault();
+        alert('The passwords do not match.');
+      } else if (password.length < 6) {
+        e.preventDefault();
+        alert('The password must be at least 6 characters long.');
+      }
+    });
+  </script>
+</body>
+</html>

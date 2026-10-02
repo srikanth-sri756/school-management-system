@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/admin-head', { title: 'Mark Attendance' }) %>
+</head>
+<body class="app">
+  <%- include('../partials/navbar', { page: 'attendance' }) %>
+
+  <main class="container container--narrow" id="main">
+    <div class="page-header">
+      <div>
+        <a href="/attendance" class="back-link"><%- icon('arrow-left') %>Attendance</a>
+        <h2>Mark Attendance</h2>
+        <p>Select a class, then untick any student who is absent.</p>
+      </div>
+    </div>
+
+    <section class="card">
+      <form action="/attendance/mark" method="GET">
+        <div class="form-group mb-0">
+          <label for="classId">Class</label>
+          <select id="classId" name="classId" class="form-control" onchange="this.form.submit()">
+            <option value="">Choose a class</option>
+            <% classes.forEach(cls => { %>
+              <option value="<%= cls.id %>" <%= selectedClassId == cls.id ? 'selected' : '' %>><%= cls.name %> – <%= cls.section %></option>
+            <% }) %>
+          </select>
+        </div>
+      </form>
+    </section>
+
+    <% if (students.length > 0) { %>
+      <form action="/attendance/mark" method="POST" id="attendanceForm" class="card card--flush">
+        <input type="hidden" name="classId" value="<%= selectedClassId %>">
+        <div class="card-header">
+          <div class="form-group mb-0">
+            <label for="date" class="field-label">Date</label>
+            <input type="date" id="date" name="date" class="form-control" value="<%= new Date().toISOString().split('T')[0] %>" required
+                   data-working-day data-warning="#dateWarning" data-submit="#submitBtn">
+          </div>
+          <label class="check"><input type="checkbox" id="toggleAll" checked> Mark all present</label>
+        </div>
+        <div class="alert alert-warning" id="dateWarning" hidden><%- icon('triangle-alert') %><span data-message></span></div>
+
+        <div class="table-container">
+          <table>
+            <thead><tr><th>Roll No.</th><th>Student</th><th class="num">Present</th></tr></thead>
+            <tbody>
+              <% students.forEach(student => { %>
+                <tr>
+                  <td><%= student.rollNumber %></td>
+                  <td>
+                    <label class="cell-person" for="att-<%= student.id %>">
+                      <%- avatar('student', student) %>
+                      <span class="cell-strong"><%= student.firstName %> <%= student.lastName %></span>
+                    </label>
+                  </td>
+                  <td class="num"><input type="checkbox" id="att-<%= student.id %>" name="attendance" value="<%= student.id %>" checked></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" id="submitBtn"><%- icon('check') %>Save Attendance</button>
+          <a href="/attendance" class="btn">Cancel</a>
+          <span class="result-count" id="presentCount"></span>
+        </div>
+      </form>
+    <% } else { %>
+      <section class="card">
+        <div class="empty-state">
+          <span class="stat-icon"><%- icon('users') %></span>
+          <% if (selectedClassId) { %>
+            <strong>No students in this class</strong>
+            <p>Add students to this class before marking attendance.</p>
+          <% } else { %>
+            <strong>Choose a class to begin</strong>
+            <p>The class list will appear here.</p>
+          <% } %>
+        </div>
+      </section>
+    <% } %>
+  </main>
+
+  <script>
+    (function () {
+      const boxes = Array.from(document.querySelectorAll('input[name="attendance"]'));
+      const all = document.getElementById('toggleAll');
+      const count = document.getElementById('presentCount');
+      if (!all) return;
+      const update = () => {
+        const present = boxes.filter(b => b.checked).length;
+        count.textContent = `${present} of ${boxes.length} present`;
+        all.checked = present === boxes.length;
+        all.indeterminate = present > 0 && present < boxes.length;
+      };
+      all.addEventListener('change', () => { boxes.forEach(b => { b.checked = all.checked; }); update(); });
+      boxes.forEach(b => b.addEventListener('change', update));
+      update();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/public-head', { title: 'Sitemap', description: 'All pages on the Akansha Grammar High School website.' }) %>
+</head>
+<body class="site">
+  <%- include('../partials/public-navbar') %>
+
+  <main id="main">
+    <%- include('../partials/page-hero', {
+      heroCrumbs: [{ href: '/', label: 'Home' }, { label: 'Sitemap' }],
+      heroTitle: 'Sitemap',
+      heroText: 'Every page on our website, in one place.'
+    }) %>
+
+    <section class="section section--light">
+      <div class="container">
+        <div class="sitemap-cols" data-reveal>
+          <div class="col">
+            <span class="label">School</span>
+            <ul>
+              <li><a href="/">Home</a></li>
+              <li><a href="/portfolio/about">About</a></li>
+              <li><a href="/portfolio/academics">Academics</a></li>
+              <li><a href="/portfolio/contact">Contact</a></li>
+            </ul>
+          </div>
+          <div class="col">
+            <span class="label">Programs</span>
+            <ul>
+              <li><a href="/portfolio/programs/primary">Primary School</a></li>
+              <li><a href="/portfolio/programs/middle">Middle School</a></li>
+              <li><a href="/portfolio/programs/high">High School</a></li>
+              <li><a href="/portfolio/programs/stem">STEM Education</a></li>
+              <li><a href="/portfolio/programs/sports">Sports Academy</a></li>
+              <li><a href="/portfolio/programs/arts">Arts &amp; Culture</a></li>
+            </ul>
+          </div>
+          <div class="col">
+            <span class="label">Admissions</span>
+            <ul>
+              <li><a href="/portfolio/admissions#process">How to apply</a></li>
+              <li><a href="/portfolio/admissions#documents">Required documents</a></li>
+              <li><a href="/portfolio/admissions#fees">Fee structure</a></li>
+              <li><a href="/portfolio/admissions#dates">Important dates</a></li>
+              <li><a href="/#faq">FAQ</a></li>
+            </ul>
+          </div>
+          <div class="col">
+            <span class="label">Portals &amp; legal</span>
+            <ul>
+              <li><a href="/student/login">Student Portal</a></li>
+              <li><a href="/login">Staff Login</a></li>
+              <li><a href="/portfolio/privacy-policy">Privacy Policy</a></li>
+              <li><a href="/portfolio/terms-of-service">Terms of Service</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>

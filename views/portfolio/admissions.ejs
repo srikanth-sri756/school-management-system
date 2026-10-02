@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/public-head', { title: 'Admissions', description: 'Admission process, required documents, fee structure and key dates at Akansha Grammar High School.' }) %>
+</head>
+<body class="site">
+  <%- include('../partials/public-navbar') %>
+
+  <main id="main">
+    <%- include('../partials/page-hero', {
+      heroPhoto: 'campus-sky',
+      heroCrumbs: [{ href: '/', label: 'Home' }, { label: 'Admissions' }],
+      heroTitle: 'Join our<br>community',
+      heroText: 'Applications are welcome throughout the year. Our process is transparent, fair and student-friendly.'
+    }) %>
+
+    <!-- Process -->
+    <section class="section" id="process">
+      <div class="container">
+        <div class="rows-head" data-reveal>
+          <h2 class="display display-m">How to apply</h2>
+          <span class="count muted">04</span>
+        </div>
+        <div class="cols cols-4" data-reveal>
+          <article class="col"><span class="num">01</span><h3>Inquiry &amp; registration</h3><p>Visit the campus or send an inquiry to receive full details of our programs and facilities.</p></article>
+          <article class="col"><span class="num">02</span><h3>Application</h3><p>Submit the completed form with the required documents and the application fee.</p></article>
+          <article class="col"><span class="num">03</span><h3>Entrance assessment</h3><p>Age-appropriate tests and an interview to understand each student’s academic readiness.</p></article>
+          <article class="col"><span class="num">04</span><h3>Confirmation</h3><p>Successful candidates receive an admission letter and complete enrolment.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Documents -->
+    <section class="section section--light" id="documents">
+      <div class="container">
+        <div class="rows-head" data-reveal>
+          <h2 class="display display-m">Required<br>documents</h2>
+          <span class="count">06</span>
+        </div>
+        <div class="rows" data-reveal>
+          <div class="row row--plain"><h3>Application form</h3><p>Completed and signed by a parent or guardian.</p></div>
+          <div class="row row--plain"><h3>Birth certificate</h3><p>A copy of the student’s birth certificate.</p></div>
+          <div class="row row--plain"><h3>Photographs</h3><p>Recent passport-size photographs of the student.</p></div>
+          <div class="row row--plain"><h3>Previous school records</h3><p>Report cards from the student’s previous school.</p></div>
+          <div class="row row--plain"><h3>Aadhaar cards</h3><p>For the student and both parents.</p></div>
+          <div class="row row--plain"><h3>Transfer certificate</h3><p>If the student is moving from another school.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Fees -->
+    <section class="section" id="fees">
+      <div class="container">
+        <div class="rows-head" data-reveal>
+          <h2 class="display display-m">Fee structure<br>2025–26</h2>
+        </div>
+        <div class="table-wrap" data-reveal>
+          <table class="table">
+            <thead>
+              <tr><th scope="col">Class</th><th scope="col">Admission fee</th><th scope="col">Tuition (annual)</th><th scope="col">Development fee</th><th scope="col">Total</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Classes 1–5</td><td>₹10,000</td><td>₹45,000</td><td>₹5,000</td><td>₹60,000</td></tr>
+              <tr><td>Classes 6–8</td><td>₹12,000</td><td>₹55,000</td><td>₹6,000</td><td>₹73,000</td></tr>
+              <tr><td>Classes 9–10</td><td>₹15,000</td><td>₹65,000</td><td>₹8,000</td><td>₹88,000</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="table-note" data-reveal>Fees for Nursery, LKG and UKG are available from the admissions office. Fees can be paid in instalments. Scholarships are available for deserving students.</p>
+      </div>
+    </section>
+
+    <!-- Dates (announced from the admin portal: Important Dates) -->
+    <%- include('../partials/public-dates', {
+          dates: importantDates,
+          id: 'dates',
+          emptyText: 'Dates for the next admission cycle will be announced here. Meanwhile, the admissions office is happy to help.'
+        }) %>
+
+    <!-- Help -->
+    <section class="section">
+      <div class="container">
+        <div class="rows-head" data-reveal>
+          <h2 class="display display-m">Questions about<br>admissions?</h2>
+        </div>
+        <div class="cols cols-3" data-reveal>
+          <article class="col">
+            <span class="num">Call</span>
+            <h3>+91 98765 43211</h3>
+            <p>Monday to Friday, 8:00 AM – 5:00 PM.</p>
+            <a href="tel:+919876543211" class="pill pill--dark pill--sm">Call admissions</a>
+          </article>
+          <article class="col">
+            <span class="num">Email</span>
+            <h3>admissions@akanshaschool.edu</h3>
+            <p>We usually reply within one working day.</p>
+            <a href="mailto:admissions@akanshaschool.edu" class="pill pill--dark pill--sm">Send an email</a>
+          </article>
+          <article class="col">
+            <span class="num">Visit</span>
+            <h3>Book a campus tour</h3>
+            <p>See the classrooms, labs and grounds with our team.</p>
+            <a href="/portfolio/contact" class="pill pill--light pill--sm">Book a visit</a>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>

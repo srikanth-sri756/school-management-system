@@ -1,0 +1,44 @@
+<!-- Navigation Bar Component -->
+<% if (typeof user !== 'undefined' && user) { %>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <div class="school-brand">
+        <img src="/images/school-logo.svg" alt="Akansha Grammer High School" class="school-logo">
+        <div class="school-name-wrapper">
+          <h1 class="school-name">Akansha Grammer High School</h1>
+          <p class="school-tagline">Excellence in Education Since 1995</p>
+        </div>
+      </div>
+      <div class="user-info">
+        <span class="user-welcome">Welcome, <strong><%= user.name %></strong></span>
+        <span class="user-role"><%= user.role || 'Admin' %></span>
+        <a href="/logout" class="btn-logout">Logout</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="nav-content">
+      <a href="/dashboard" class="<%= typeof page !== 'undefined' && page === 'dashboard' ? 'active' : '' %>">Dashboard</a>
+      
+      <% if (user.role === 'admin' || user.role === 'staff') { %>
+        <a href="/students" class="<%= typeof page !== 'undefined' && page === 'students' ? 'active' : '' %>">Students</a>
+        <a href="/attendance" class="<%= typeof page !== 'undefined' && page === 'attendance' ? 'active' : '' %>">Attendance</a>
+      <% } %>
+      
+      <% if (user.role === 'admin' || user.role === 'staff' || user.role === 'teacher') { %>
+        <a href="/marks" class="<%= typeof page !== 'undefined' && page === 'marks' ? 'active' : '' %>">Marks</a>
+      <% } %>
+      
+      <% if (user.role === 'admin') { %>
+        <a href="/fees" class="<%= typeof page !== 'undefined' && page === 'fees' ? 'active' : '' %>">Fees</a>
+        <a href="/teachers" class="<%= typeof page !== 'undefined' && page === 'teachers' ? 'active' : '' %>">Teachers</a>
+        <a href="/teacher-attendance" class="<%= typeof page !== 'undefined' && page === 'teacher-attendance' ? 'active' : '' %>">Teacher Attendance</a>
+        <a href="/holidays" class="<%= typeof page !== 'undefined' && page === 'holidays' ? 'active' : '' %>">Holidays</a>
+        <a href="/admin/import" class="<%= typeof page !== 'undefined' && page === 'import' ? 'active' : '' %>">📥 Import</a>
+      <% } %>
+    </div>
+  </nav>
+<% } %>

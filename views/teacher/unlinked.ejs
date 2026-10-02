@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/admin-head', { title: 'Teacher Portal' }) %>
+</head>
+<body class="app">
+  <%- include('../partials/navbar', { page }) %>
+
+  <main class="container container--narrow" id="main">
+    <section class="card">
+      <div class="empty-state">
+        <span class="stat-icon"><%- icon('user-x') %></span>
+        <strong>Your login isn’t linked to a teacher profile</strong>
+        <p>Please ask the school office to link it: in the Admin Portal, open Teachers, edit your profile and create your portal login there.</p>
+        <a href="/logout" class="btn btn-primary"><%- icon('log-out') %>Sign out</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

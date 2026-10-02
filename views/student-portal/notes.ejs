@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/portal-head', { title: 'Study Notes' }) %>
+</head>
+<body class="app portal theme-light">
+  <%- include('../partials/student-shell', { page: 'notes' }) %>
+
+  <main class="container" id="main">
+    <div class="page-header">
+      <div>
+        <h2>Study notes</h2>
+        <p>Notes and attachments shared by your teachers.</p>
+      </div>
+    </div>
+
+    <form method="GET" action="/student/notes" class="card">
+      <div class="filter-bar">
+        <div class="form-group">
+          <label for="subject">Subject</label>
+          <select id="subject" name="subject" class="form-control" onchange="this.form.submit()">
+            <option value="">All subjects</option>
+            <% subjects.forEach(subject => { %>
+              <option value="<%= subject._id %>" <%= filters.subject === subject._id.toString() ? 'selected' : '' %>><%= subject.name %></option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="form-group"><span class="result-count"><%= notes.length %> <%= notes.length === 1 ? 'note' : 'notes' %></span></div>
+      </div>
+    </form>
+
+    <% if (notes && notes.length) { %>
+      <div class="card-grid">
+        <% notes.forEach(note => { const content = note.content || ''; %>
+          <article class="item-card">
+            <div class="tags">
+              <% if (note.subject) { %><span class="badge badge-navy badge--plain"><%= note.subject.name %></span><% } %>
+            </div>
+            <h3><%= note.title %></h3>
+            <p><%= content.substring(0, 200) %><%= content.length > 200 ? '…' : '' %></p>
+            <% if (note.attachment && note.attachment.path) { %>
+              <div class="item-foot">
+                <span class="attachment"><%- icon('file-text') %><span><%= note.attachment.originalName %></span></span>
+                <a href="/student/notes/<%= note._id %>/download" class="btn btn-sm btn-primary"><%- icon('download') %>Download</a>
+              </div>
+            <% } %>
+            <div class="item-meta">
+              <span><%- icon('user-round') %><%= note.teacher ? note.teacher.name : 'School office' %></span>
+              <span><%- icon('calendar') %><%= new Date(note.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %></span>
+            </div>
+          </article>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <section class="card">
+        <div class="empty-state">
+          <span class="stat-icon"><%- icon('sticky-note') %></span>
+          <strong>No notes yet</strong>
+          <p><%= filters.subject ? 'There are no notes for this subject yet.' : 'Your teachers haven’t shared any notes for your class yet.' %></p>
+        </div>
+      </section>
+    <% } %>
+  </main>
+</body>
+</html>

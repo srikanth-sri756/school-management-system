@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/admin-head', { title: 'Attendance Report' }) %>
+</head>
+<body class="app">
+  <%- include('../partials/navbar', { page: 'attendance' }) %>
+
+  <main class="container" id="main">
+    <div class="page-header">
+      <div>
+        <a href="/attendance" class="back-link"><%- icon('arrow-left') %>Attendance</a>
+        <h2>Attendance Report</h2>
+        <p>Every student attendance record, newest first.</p>
+      </div>
+      <div class="page-actions">
+        <a href="/attendance/export" class="btn"><%- icon('download') %>Export to Excel</a>
+      </div>
+    </div>
+
+    <section class="card">
+      <div class="filter-bar" data-filter-for="attendanceTable">
+        <div class="form-group">
+          <label for="filterDateFrom">From</label>
+          <input type="date" id="filterDateFrom" class="form-control" data-col="0" data-match="from">
+        </div>
+        <div class="form-group">
+          <label for="filterDateTo">To</label>
+          <input type="date" id="filterDateTo" class="form-control" data-col="0" data-match="to">
+        </div>
+        <div class="form-group">
+          <label for="filterStudent">Student</label>
+          <div class="search-input">
+            <%- icon('search') %>
+            <input type="text" id="filterStudent" class="form-control" placeholder="Search name" data-col="1">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="filterClass">Class</label>
+          <input type="text" id="filterClass" class="form-control" placeholder="e.g. Class 1" data-col="3">
+        </div>
+        <div class="form-group">
+          <label for="filterStatus">Status</label>
+          <select id="filterStatus" class="form-control" data-col="4" data-match="equals">
+            <option value="">All</option>
+            <option value="Present">Present</option>
+            <option value="Absent">Absent</option>
+            <option value="Late">Late</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <button type="button" class="btn btn-block" data-filter-reset><%- icon('x') %>Clear filters</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card card--flush">
+      <div class="card-header">
+        <h3><%- icon('calendar-check') %>Records</h3>
+        <span class="result-count" data-filter-count="attendanceTable"></span>
+      </div>
+      <% if (attendance.length) { %>
+        <div class="table-container">
+          <table id="attendanceTable">
+            <thead><tr><th>Date</th><th>Student</th><th>Roll No.</th><th>Class</th><th>Status</th></tr></thead>
+            <tbody>
+              <% attendance.forEach(record => { const d = new Date(record.date); %>
+                <tr>
+                  <td data-value="<%= isoDate(d) %>"><%= d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) %></td>
+                  <td class="cell-strong"><%= record.student ? record.student.firstName + ' ' + record.student.lastName : 'Unknown' %></td>
+                  <td><%= record.student ? record.student.rollNumber : '—' %></td>
+                  <td><%= record.class ? record.class.name : '—' %></td>
+                  <td data-value="<%= record.status %>"><%- statusBadge(record.status) %></td>
+                </tr>
+              <% }) %>
+              <tr data-filter-empty hidden><td colspan="5" class="text-center text-muted">No records match these filters.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      <% } else { %>
+        <div class="empty-state">
+          <span class="stat-icon"><%- icon('calendar-x') %></span>
+          <strong>No attendance records yet</strong>
+          <p>Records appear here once attendance has been marked.</p>
+        </div>
+      <% } %>
+    </section>
+  </main>
+</body>
+</html>

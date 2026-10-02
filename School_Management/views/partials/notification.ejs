@@ -1,0 +1,63 @@
+<style>
+  .notification {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    z-index: 9999;
+    animation: slideIn 0.3s ease-out;
+    max-width: 400px;
+  }
+  .notification.success {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+  }
+  .notification.error {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+  }
+  @keyframes slideIn {
+    from { transform: translateX(400px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+  @keyframes slideOut {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(400px); opacity: 0; }
+  }
+  .notification.hiding {
+    animation: slideOut 0.3s ease-in;
+  }
+</style>
+
+<% if (typeof success !== 'undefined' && success && success.length > 0) { %>
+  <div class="notification success" id="successNotification">
+    <strong>✓ Success!</strong><br>
+    <%= success %>
+  </div>
+<% } %>
+
+<% if (typeof error !== 'undefined' && error && error.length > 0) { %>
+  <div class="notification error" id="errorNotification">
+    <strong>✗ Error!</strong><br>
+    <%= error %>
+  </div>
+<% } %>
+
+<script>
+  // Auto-hide notifications after 5 seconds
+  setTimeout(() => {
+    const successNotif = document.getElementById('successNotification');
+    const errorNotif = document.getElementById('errorNotification');
+    
+    if (successNotif) {
+      successNotif.classList.add('hiding');
+      setTimeout(() => successNotif.remove(), 300);
+    }
+    if (errorNotif) {
+      errorNotif.classList.add('hiding');
+      setTimeout(() => errorNotif.remove(), 300);
+    }
+  }, 5000);
+</script>

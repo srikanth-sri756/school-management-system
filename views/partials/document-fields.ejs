@@ -1,0 +1,50 @@
+<%# Document upload rows for the student and teacher forms (administrators only).
+    Include with { kind: 'student' | 'teacher', person: the record (or the submitted values), isEdit }.
+    Each row sends its file as "doc_<key>"; ticking Remove sends removeDoc=<key>.
+    Required documents are enforced when adding; existing records can be saved with gaps. %>
+<%
+  const person = locals.person || {};
+  const shortDate = (d) => d ? new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+  const docIcon = (key) => ['aadhaar', 'pan'].includes(key) ? 'id-card' : key === 'bank_proof' ? 'landmark' : 'file-text';
+%>
+<ul class="doc-list">
+  <% documentTypes(kind).forEach(type => {
+       const doc = (person.documents || []).find(d => d.type === type.key);
+       // Transfer-only rows are shown for transfers, or when a file is already on file
+       const transferRow = type.transferOnly && !doc;
+       const shown = !transferRow || person.isTransfer;
+       // Needed for this person (a transfer certificate only for transfers)
+       const needed = type.required({ isTransfer: true });
+       const requiredNow = !isEdit && shown && type.required(person);
+  %>
+    <li class="doc-row"<%- transferRow ? ' data-transfer-only' : '' %><%= shown ? '' : ' hidden' %>>
+      <div class="doc-row-head">
+        <span class="doc-icon"><%- icon(docIcon(type.key)) %></span>
+        <div class="doc-row-info">
+          <label for="doc_<%= type.key %>"><%= type.label %><% if (needed) { %> <span class="req">*</span><% } %></label>
+          <% if (type.hint) { %><span class="cell-sub"><%= type.hint %></span><% } %>
+        </div>
+        <% if (doc) { %>
+          <span class="badge badge-success">On file</span>
+        <% } else if (needed) { %>
+          <span class="badge <%= isEdit ? 'badge-warning' : 'badge--plain' %>"><%= isEdit ? 'Missing' : 'Required' %></span>
+        <% } else { %>
+          <span class="badge badge--plain">Optional</span>
+        <% } %>
+      </div>
+      <% if (doc) { %>
+        <div class="doc-file">
+          <%- icon(doc.mimeType === 'application/pdf' ? 'file-text' : 'camera') %>
+          <a href="/media/documents/<%= kind %>s/<%= person._id %>/<%= doc._id %>" target="_blank" rel="noopener"><%= doc.originalName || type.label %></a>
+          <span class="doc-file-meta"><%= fileSize(doc.size) %> · <%= shortDate(doc.uploadedAt) %></span>
+          <label class="check"><input type="checkbox" name="removeDoc" value="<%= type.key %>"> Remove</label>
+        </div>
+      <% } %>
+      <input type="file" id="doc_<%= type.key %>" name="doc_<%= type.key %>" class="form-control"
+             accept="application/pdf,image/jpeg,image/png,image/webp"
+             aria-label="<%= doc ? 'Replace ' : 'Upload ' %><%= type.label %>"
+             <%= requiredNow ? 'required' : '' %><%- type.transferOnly && needed && !isEdit ? ' data-transfer-required' : '' %>>
+    </li>
+  <% }) %>
+</ul>
+<p class="form-hint doc-note"><%- icon('lock') %>PDF, JPG, PNG or WebP, up to 10 MB each. Stored privately — only administrators can open these files.<% if (isEdit) { %> Choosing a new file replaces the one on file.<% } %></p>

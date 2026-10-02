@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/admin-head', { title: 'Mark Teacher Attendance' }) %>
+</head>
+<body class="app">
+  <%- include('../partials/navbar', { page: 'teacher-attendance' }) %>
+
+  <main class="container" id="main">
+    <div class="page-header">
+      <div>
+        <a href="/teacher-attendance" class="back-link"><%- icon('arrow-left') %>Teacher Attendance</a>
+        <h2>Mark Teacher Attendance</h2>
+        <p>Set a status for each teacher. Rows left as “Not marked” are skipped.</p>
+      </div>
+    </div>
+
+    <form method="POST" action="/teacher-attendance/mark" id="teacherAttendanceForm" class="card card--flush">
+      <div class="card-header">
+        <div class="form-group mb-0">
+          <label for="date" class="field-label">Date <span class="req">*</span></label>
+          <input type="date" name="date" id="date" class="form-control" value="<%= selectedDate %>" required
+                 data-working-day data-warning="#dateWarning" data-submit="#submitBtn">
+        </div>
+        <div class="actions">
+          <span class="field-label mb-0">Set all to</span>
+          <button type="button" class="btn btn-sm" data-set-all="Present">Present</button>
+          <button type="button" class="btn btn-sm" data-set-all="">Clear</button>
+        </div>
+      </div>
+      <div class="alert alert-warning" id="dateWarning" hidden><%- icon('triangle-alert') %><span data-message></span></div>
+
+      <div class="table-container">
+        <table>
+          <thead><tr><th>Teacher</th><th>Subject</th><th>Class</th><th>Status <span class="req">*</span></th><th>Check-in</th><th>Check-out</th><th>Notes</th></tr></thead>
+          <tbody>
+            <% teachers.forEach(teacher => { %>
+              <tr>
+                <td>
+                  <div class="cell-person">
+                    <%- avatar('teacher', teacher) %>
+                    <div>
+                      <span class="cell-strong"><%= teacher.name %></span>
+                      <% if (teacher.isClassTeacher) { %><span class="cell-sub">Class teacher</span><% } %>
+                    </div>
+                  </div>
+                </td>
+                <td><%= teacher.subject ? teacher.subject.name : '—' %></td>
+                <td><%= teacher.class ? teacher.class.name : '—' %><%= teacher.section ? ' – ' + teacher.section : '' %></td>
+                <td>
+                  <select name="attendanceData[<%= teacher._id %>][status]" class="form-control" aria-label="Status for <%= teacher.name %>">
+                    <option value="">Not marked</option>
+                    <% ['Present', 'Absent', 'Late', 'Half-Day', 'Leave'].forEach(st => { %><option value="<%= st %>"><%= st %></option><% }) %>
+                  </select>
+                </td>
+                <td><input type="time" name="attendanceData[<%= teacher._id %>][checkIn]" class="form-control" aria-label="Check-in for <%= teacher.name %>"></td>
+                <td><input type="time" name="attendanceData[<%= teacher._id %>][checkOut]" class="form-control" aria-label="Check-out for <%= teacher.name %>"></td>
+                <td><input type="text" name="attendanceData[<%= teacher._id %>][notes]" class="form-control" placeholder="Optional" aria-label="Notes for <%= teacher.name %>"></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+      <% if (!teachers.length) { %>
+        <div class="empty-state"><strong>No teachers found</strong><p>Add teachers before marking their attendance.</p></div>
+      <% } %>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" id="submitBtn"><%- icon('check') %>Save Attendance</button>
+        <a href="/teacher-attendance" class="btn">Cancel</a>
+      </div>
+    </form>
+  </main>
+
+  <script>
+    document.querySelectorAll('[data-set-all]').forEach(button => {
+      button.addEventListener('click', () => {
+        document.querySelectorAll('select[name$="[status]"]').forEach(select => { select.value = button.dataset.setAll; });
+      });
+    });
+  </script>
+</body>
+</html>

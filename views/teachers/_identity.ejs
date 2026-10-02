@@ -1,0 +1,38 @@
+<%# Identity documents and salary account, shared by teachers/add and teachers/edit.
+    Pass { t: the teacher (edit), the submitted values (add, after a validation error) or {}, isEdit }.
+    Adding a teacher requires the Aadhaar card, PAN card and bank details; an existing
+    teacher can be saved with them still missing, but bank details must be complete if entered. %>
+<% const b = t.bankDetails || {}; %>
+<div class="form-section" id="documents">
+  <h3 class="form-section-title"><%- icon('file-check') %>Identity documents</h3>
+  <%- include('../partials/document-fields', { kind: 'teacher', person: t, isEdit }) %>
+</div>
+
+<div class="form-section" id="bank"<%- isEdit ? ' data-all-or-none' : '' %>>
+  <h3 class="form-section-title"><%- icon('landmark') %>Bank details <span class="form-section-note">Salary account</span></h3>
+  <div class="form-row">
+    <div class="form-group">
+      <label for="accountHolder">Account holder name <span class="req">*</span></label>
+      <input type="text" id="accountHolder" name="accountHolder" class="form-control" value="<%= b.accountHolder || '' %>" maxlength="100" autocomplete="off" placeholder="As printed on the passbook" <%= isEdit ? '' : 'required' %> data-together>
+    </div>
+    <div class="form-group">
+      <label for="bankName">Bank name <span class="req">*</span></label>
+      <input type="text" id="bankName" name="bankName" class="form-control" value="<%= b.bankName || '' %>" maxlength="100" autocomplete="off" placeholder="e.g. State Bank of India" <%= isEdit ? '' : 'required' %> data-together>
+    </div>
+  </div>
+  <div class="form-row form-row--3">
+    <div class="form-group">
+      <label for="accountNumber">Account number <span class="req">*</span></label>
+      <input type="text" id="accountNumber" name="accountNumber" class="form-control" value="<%= b.accountNumber || '' %>" inputmode="numeric" pattern="\d{9,18}" maxlength="18" autocomplete="off" title="9 to 18 digits, numbers only" <%= isEdit ? '' : 'required' %> data-together>
+    </div>
+    <div class="form-group">
+      <label for="ifsc">IFSC code <span class="req">*</span></label>
+      <input type="text" id="ifsc" name="ifsc" class="form-control input-upper" value="<%= b.ifsc || '' %>" pattern="[A-Za-z]{4}0[A-Za-z0-9]{6}" maxlength="11" autocomplete="off" placeholder="e.g. SBIN0001234" title="11 characters, e.g. SBIN0001234" <%= isEdit ? '' : 'required' %> data-together>
+    </div>
+    <div class="form-group">
+      <label for="branch">Branch</label>
+      <input type="text" id="branch" name="branch" class="form-control" value="<%= b.branch || '' %>" maxlength="100" autocomplete="off" placeholder="Optional">
+    </div>
+  </div>
+  <p class="form-hint doc-note"><%- icon('lock') %>Only administrators can see bank details. Lists show just the last four digits of the account number.</p>
+</div>

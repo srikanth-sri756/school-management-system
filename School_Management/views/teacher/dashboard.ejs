@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Dashboard - School Management System</title>
+  <link rel="stylesheet" href="/css/modern.css">
+</head>
+<body>
+  <%- include('../partials/teacher-navbar') %>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="page-header">
+      <h2>Teacher Dashboard</h2>
+    </div>
+
+    <!-- Teacher Info Card -->
+    <div class="card" style="margin-bottom: 2rem;">
+      <h3>Your Profile</h3>
+      <p><strong>Name:</strong> <%= teacher.name %></p>
+      <p><strong>Email:</strong> <%= teacher.email %></p>
+      <p><strong>Subject:</strong> <%= stats.mySubject %></p>
+      <p><strong>Class:</strong> <%= stats.myClass %></p>
+      <p><strong>Class Teacher:</strong> <%= teacher.isClassTeacher ? 'Yes' : 'No' %></p>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="stats-grid">
+      <div class="stat-card glass-card">
+        <h4>My Class</h4>
+        <div class="stat-value"><%= stats.myClass %></div>
+      </div>
+      <div class="stat-card glass-card">
+        <h4>Total Students</h4>
+        <div class="stat-value"><%= stats.totalStudents %></div>
+      </div>
+      <div class="stat-card glass-card">
+        <h4>My Notes</h4>
+        <div class="stat-value"><%= stats.myNotes %></div>
+      </div>
+      <div class="stat-card glass-card">
+        <h4>Test Papers</h4>
+        <div class="stat-value"><%= stats.myTestPapers %></div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="card" style="margin-top: 2rem;">
+      <h3>Quick Actions</h3>
+      <div class="quick-links-grid">
+        <a href="/teacher/attendance" class="btn btn-primary">Mark Attendance</a>
+        <a href="/teacher/marks" class="btn btn-primary">Add Marks</a>
+        <a href="/teacher/remarks" class="btn btn-primary">Add Remark</a>
+        <a href="/teacher/notes" class="btn btn-primary">Create Note</a>
+        <a href="/teacher/test-papers" class="btn btn-primary">Add Test Paper</a>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

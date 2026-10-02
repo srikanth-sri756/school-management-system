@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('../partials/admin-head', { title: student.firstName + ' ' + student.lastName }) %>
+</head>
+<body class="app">
+  <%- include('../partials/navbar', { page: 'students' }) %>
+
+  <%
+    const fmt = (d) => d ? new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
+    const present = attendance.filter(a => a.status === 'Present').length;
+    const absent = attendance.filter(a => a.status === 'Absent').length;
+    const late = attendance.filter(a => a.status === 'Late').length;
+    const rate = attendance.length ? Math.round((present / attendance.length) * 100) : null;
+  %>
+  <main class="container" id="main">
+    <div class="page-header">
+      <div>
+        <a href="/students" class="back-link"><%- icon('arrow-left') %>Students</a>
+        <h2>Student Profile</h2>
+      </div>
+      <div class="page-actions">
+        <a href="/students/<%= student.id %>/edit" class="btn btn-primary"><%- icon('pencil') %>Edit Student</a>
+      </div>
+    </div>
+
+    <div class="grid grid-main">
+      <section class="card">
+        <div class="profile-head">
+          <%- avatar('student', student) %>
+          <div>
+            <h3><%= student.firstName %> <%= student.lastName %></h3>
+            <div class="meta">
+              <span><%= student.studentId || 'No ID' %></span>
+              <span>·</span>
+              <span><%= student.class ? classLabel(student.class) : 'No class' %></span>
+              <%- statusBadge(student.status) %>
+            </div>
+          </div>
+        </div>
+
+        <h4 class="form-section-title"><%- icon('user-round') %>Personal</h4>
+        <dl class="details mb-3">
+          <div><dt>Date of birth</dt><dd><%= fmt(student.dateOfBirth) %></dd></div>
+          <div><dt>Gender</dt><dd><%= student.gender || '—' %></dd></div>
+          <div class="full"><dt>Email</dt><dd><%= student.email || '—' %></dd></div>
+        </dl>
+
+        <h4 class="form-section-title mt-3"><%- icon('graduation-cap') %>Academic</h4>
+        <dl class="details mb-3">
+          <div><dt>Class</dt><dd><%= student.class ? student.class.name : '—' %></dd></div>
+          <div><dt>Section</dt><dd><%= student.class && student.class.section || '—' %></dd></div>
+          <div><dt>Roll number</dt><dd><%= student.rollNumber || '—' %></dd></div>
+          <div><dt>Admission date</dt><dd><%= fmt(student.admissionDate) %></dd></div>
+          <div class="full"><dt>Admission type</dt><dd><%= student.isTransfer ? 'Transfer' + (student.previousSchool ? ' from ' + student.previousSchool : '') : 'New admission' %></dd></div>
+        </dl>
+
+        <h4 class="form-section-title mt-3"><%- icon('users') %>Parent / guardian</h4>
+        <dl class="details">
+          <div><dt>Name</dt><dd><%= student.parentName || '—' %></dd></div>
+          <div><dt>Phone</dt><dd><%= student.parentPhone || '—' %></dd></div>
+          <div class="full"><dt>Email</dt><dd><%= student.parentEmail || '—' %></dd></div>
+          <div class="full"><dt>Address</dt><dd><%= student.address || '—' %></dd></div>
+        </dl>
+      </section>
+
+      <div>
+        <section class="card">
+          <div class="card-header"><h3><%- icon('calendar-check') %>Attendance</h3><% if (attendance.length) { %><span class="text-muted">Last <%= attendance.length %> records</span><% } %></div>
+          <% if (attendance.length) { %>
+            <div class="stat-value"><%= rate %>% <small>present</small></div>
+            <div class="progress mt-2"><span style="width: <%= rate %>%"></span></div>
+            <ul class="summary-list mt-2">
+              <li><span class="text-muted">Present</span><strong class="text-success"><%= present %></strong></li>
+              <li><span class="text-muted">Late</span><strong class="text-warning"><%= late %></strong></li>
+              <li><span class="text-muted">Absent</span><strong class="text-danger"><%= absent %></strong></li>
+            </ul>
+          <% } else { %>
+            <p class="text-muted">No attendance has been recorded for this student yet.</p>
+          <% } %>
+        </section>
+
+        <% if (user && user.role === 'admin') {
+          const checklist = documentChecklist('student', student);
+          const missing = checklist.filter(row => row.status === 'missing');
+        %>
+          <section class="card card--flush" id="documents">
+            <div class="card-header">
+              <div>
+                <h3><%- icon('file-check') %>Documents</h3>
+                <p><%= missing.length ? missing.length + ' required ' + (missing.length === 1 ? 'document is' : 'documents are') + ' missing' : 'All required documents are on file' %></p>
+              </div>
+              <a href="/students/<%= student.id %>/edit#documents" class="btn btn-sm"><%- icon('upload') %>Manage</a>
+            </div>
+            <ul class="receipt-list receipt-list--flush doc-checklist">
+              <% checklist.forEach(row => { %>
+                <li>
+                  <span class="receipt-icon"><%- icon(row.doc ? 'file-check' : 'file-text') %></span>
+                  <div class="receipt-info">
+                    <% if (row.doc) { %>
+                      <a href="/media/documents/students/<%= student.id %>/<%= row.doc._id %>" target="_blank" rel="noopener" class="cell-strong"><%= row.label %></a>
+                      <span class="cell-sub"><%= fileSize(row.doc.size) %> · uploaded <%= fmt(row.doc.uploadedAt) %></span>
+                    <% } else { %>
+                      <span class="cell-strong"><%= row.label %></span>
+                      <span class="cell-sub"><%= row.required ? 'Required — not uploaded yet' : 'Optional' %></span>
+                    <% } %>
+                  </div>
+                  <% if (row.doc) { %>
+                    <a href="/media/documents/students/<%= student.id %>/<%= row.doc._id %>?download=1" class="btn btn-sm btn-ghost" title="Download" aria-label="Download <%= row.label %>"><%- icon('download') %></a>
+                  <% } else if (row.required) { %>
+                    <span class="badge badge-warning">Missing</span>
+                  <% } %>
+                </li>
+              <% }) %>
+            </ul>
+          </section>
+        <% } %>
+      </div>
+    </div>
+
+    <% if (user && user.role === 'admin') {
+      const inr = (n) => '₹' + Number(n || 0).toLocaleString('en-IN');
+      const kb = (bytes) => bytes >= 1048576 ? (bytes / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round((bytes || 0) / 1024)) + ' KB';
+    %>
+      <section class="card" id="receipts">
+        <div class="card-header">
+          <div>
+            <h3><%- icon('receipt') %>Fees &amp; receipts</h3>
+            <p>Receipts you upload here appear on the student’s Fees page.</p>
+          </div>
+          <a href="/fees/add" class="btn btn-sm"><%- icon('plus') %>Create fee</a>
+        </div>
+
+        <% if (!fees.length) { %>
+          <div class="empty-state">
+            <span class="stat-icon"><%- icon('receipt') %></span>
+            <strong>No fee records yet</strong>
+            <p>Create a fee for this student first, then upload receipts against it.</p>
+          </div>
+        <% } else { %>
+          <div class="fee-blocks">
+            <% fees.forEach(fee => { %>
+              <div class="fee-block">
+                <div class="fee-block-head">
+                  <div>
+                    <span class="cell-strong"><%= fee.term %></span>
+                    <span class="cell-sub">Paid <%= inr(fee.paid) %> of <%= inr(fee.amount) %><%= fee.dueDate ? ' · due ' + fmt(fee.dueDate) : '' %></span>
+                  </div>
+                  <div class="actions">
+                    <%- statusBadge(fee.status) %>
+                    <a href="/fees/<%= fee._id %>/edit" class="btn btn-sm btn-ghost"><%- icon('pencil') %>Edit fee</a>
+                  </div>
+                </div>
+                <% if (fee.receipts && fee.receipts.length) { %>
+                  <ul class="receipt-list">
+                    <% fee.receipts.forEach(r => { %>
+                      <li>
+                        <span class="receipt-icon"><%- icon(r.mimeType === 'application/pdf' ? 'file-text' : 'camera') %></span>
+                        <div class="receipt-info">
+                          <a href="/media/receipts/<%= fee._id %>/<%= r._id %>" target="_blank" rel="noopener" class="cell-strong"><%= r.originalName || 'Receipt' %></a>
+                          <span class="cell-sub"><%= r.note ? r.note + ' · ' : '' %>Uploaded <%= fmt(r.uploadedAt) %><%= r.uploadedBy ? ' by ' + r.uploadedBy : '' %> · <%= kb(r.size) %></span>
+                        </div>
+                        <div class="actions actions--end">
+                          <a href="/media/receipts/<%= fee._id %>/<%= r._id %>?download=1" class="btn btn-sm btn-ghost" title="Download" aria-label="Download receipt"><%- icon('download') %></a>
+                          <form method="POST" action="/fees/<%= fee._id %>/receipts/<%= r._id %>/delete" data-confirm="Delete this receipt? The student will no longer see it.">
+                            <button type="submit" class="btn btn-sm btn-danger" title="Delete" aria-label="Delete receipt"><%- icon('trash-2') %></button>
+                          </form>
+                        </div>
+                      </li>
+                    <% }) %>
+                  </ul>
+                <% } else { %>
+                  <p class="fee-block-empty">No receipts uploaded for this fee yet.</p>
+                <% } %>
+              </div>
+            <% }) %>
+          </div>
+
+          <form class="receipt-upload" method="POST" action="/fees/<%= fees[0]._id %>/receipts" enctype="multipart/form-data" data-receipt-form>
+            <h4 class="form-section-title"><%- icon('upload') %>Upload a receipt</h4>
+            <div class="form-row form-row--3">
+              <div class="form-group">
+                <label for="receiptFee">Fee</label>
+                <select id="receiptFee" class="form-control" data-receipt-fee>
+                  <% fees.forEach(fee => { %>
+                    <option value="<%= fee._id %>"><%= fee.term %> — <%= fee.status %></option>
+                  <% }) %>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="receiptFile">Receipt file <span class="req">*</span></label>
+                <input type="file" id="receiptFile" name="receipt" class="form-control" accept="application/pdf,image/jpeg,image/png,image/webp" required>
+              </div>
+              <div class="form-group">
+                <label for="receiptNote">Note</label>
+                <input type="text" id="receiptNote" name="note" class="form-control" maxlength="200" placeholder="e.g. Receipt #1042, paid in cash">
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary"><%- icon('upload') %>Upload receipt</button>
+              <span class="form-hint">PDF, JPG, PNG or WebP, up to 10 MB.</span>
+            </div>
+          </form>
+        <% } %>
+      </section>
+    <% } %>
+
+    <section class="card card--flush">
+      <div class="card-header"><h3><%- icon('notebook-pen') %>Marks</h3><a href="/marks/add?classId=<%= student.class ? student.class._id : '' %>" class="btn btn-sm"><%- icon('plus') %>Add Marks</a></div>
+      <% if (marks.length) { %>
+        <div class="table-container">
+          <table>
+            <thead><tr><th>Subject</th><th>Exam</th><th class="num">Marks</th><th class="num">Percentage</th><th>Grade</th><th>Date</th></tr></thead>
+            <tbody>
+              <% marks.forEach(mark => { %>
+                <tr>
+                  <td class="cell-strong"><%= mark.subject ? mark.subject.name : '—' %></td>
+                  <td><%= mark.examType %></td>
+                  <td class="num"><%= mark.obtainedMarks %> / <%= mark.maxMarks %></td>
+                  <td class="num"><%= mark.percentage %>%</td>
+                  <td><%- gradeBadge(mark.grade) %></td>
+                  <td><%= fmt(mark.examDate || mark.date) %></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } else { %>
+        <div class="empty-state"><strong>No marks yet</strong><p>Marks entered for this student will appear here.</p></div>
+      <% } %>
+    </section>
+  </main>
+</body>
+</html>

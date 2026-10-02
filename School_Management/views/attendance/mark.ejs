@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mark Attendance - School Management System</title>
+  <link rel="stylesheet" href="/css/modern.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <h1>🎓 School Management System</h1>
+      <div class="user-info">
+        <span>Welcome, <%= user.name %></span>
+        <a href="/logout" class="btn-logout">Logout</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="nav-content">
+      <a href="/">Dashboard</a>
+      <a href="/students">Students</a>
+      <a href="/attendance" class="active">Attendance</a>
+      <a href="/marks">Marks</a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container">
+    <div class="page-header">
+      <h2>Mark Attendance</h2>
+      <a href="/attendance" class="btn btn-secondary">← Back</a>
+    </div>
+
+    <div class="card">
+      <form action="/attendance/mark" method="GET" class="mb-3">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="classId">Select Class</label>
+            <select id="classId" name="classId" class="form-control" onchange="this.form.submit()">
+              <option value="">Choose a class</option>
+              <% classes.forEach(cls => { %>
+                <option value="<%= cls.id %>" <%= selectedClassId == cls.id ? 'selected' : '' %>>
+                  <%= cls.name %> - <%= cls.section %>
+                </option>
+              <% }); %>
+            </select>
+          </div>
+        </div>
+      </form>
+
+      <% if (students.length > 0) { %>
+        <form action="/attendance/mark" method="POST" id="attendanceForm">
+          <input type="hidden" name="classId" value="<%= selectedClassId %>">
+          
+          <div class="form-group">
+            <label for="date">Date</label>
+            <input type="date" id="date" name="date" class="form-control" value="<%= new Date().toISOString().split('T')[0] %>" required>
+            <div id="dateWarning" style="display: none; margin-top: 10px;"></div>
+          </div>
+
+          <h3 class="mb-3">Students</h3>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Roll No</th>
+                  <th>Student Name</th>
+                  <th>Present</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% students.forEach(student => { %>
+                  <tr>
+                    <td><%= student.rollNumber %></td>
+                    <td><%= student.firstName %> <%= student.lastName %></td>
+                    <td>
+                      <input type="checkbox" name="attendance" value="<%= student.id %>" checked>
+                    </td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="mt-3">
+            <button type="submit" class="btn btn-success" id="submitBtn">Submit Attendance</button>
+            <a href="/attendance" class="btn btn-secondary">Cancel</a>
+          </div>
+        </form>
+      <% } else if (selectedClassId) { %>
+        <p>No students found in this class.</p>
+      <% } else { %>
+        <p>Please select a class to mark attendance.</p>
+      <% } %>
+    </div>
+  </div>
+
+  <script>
+    // Check if selected date is a working day
+    document.getElementById('date').addEventListener('change', async function() {
+      const selectedDate = this.value;
+      const warningDiv = document.getElementById('dateWarning');
+      const submitBtn = document.getElementById('submitBtn');
+      
+      try {
+        const response = await fetch(`/holidays/check-working-day?date=${selectedDate}`);
+        const data = await response.json();
+        
+        if (!data.isWorkingDay) {
+          let message = '';
+          if (data.type === 'sunday') {
+            message = '⚠️ Warning: This is a Sunday (Weekly Off). Attendance cannot be marked.';
+            warningDiv.style.backgroundColor = 'rgba(239, 68, 68, 0.1)';
+            warningDiv.style.borderLeft = '4px solid #ef4444';
+          } else if (data.type === 'holiday') {
+            message = `⚠️ Warning: This is a Holiday (${data.reason}). Attendance cannot be marked.`;
+            if (data.description) {
+              message += `<br><small>${data.description}</small>`;
+            }
+            warningDiv.style.backgroundColor = 'rgba(245, 158, 11, 0.1)';
+            warningDiv.style.borderLeft = '4px solid #f59e0b';
+          }
+          
+          warningDiv.innerHTML = message;
+          warningDiv.style.display = 'block';
+          warningDiv.style.padding = '12px';
+          warningDiv.style.borderRadius = '6px';
+          warningDiv.style.color = 'white';
+          
+          submitBtn.disabled = true;
+          submitBtn.style.opacity = '0.5';
+          submitBtn.style.cursor = 'not-allowed';
+        } else {
+          warningDiv.style.display = 'none';
+          submitBtn.disabled = false;
+          submitBtn.style.opacity = '1';
+          submitBtn.style.cursor = 'pointer';
+        }
+      } catch (error) {
+        console.error('Error checking date:', error);
+      }
+    });
+    
+    // Trigger check on page load for default date
+    window.addEventListener('load', function() {
+      document.getElementById('date').dispatchEvent(new Event('change'));
+    });
+  </script>
+  <script src="/js/main.js"></script>
+</body>
+</html>
