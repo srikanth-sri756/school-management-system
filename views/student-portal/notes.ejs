@@ -38,7 +38,7 @@
             </div>
             <h3><%= note.title %></h3>
             <p><%= content.substring(0, 200) %><%= content.length > 200 ? '…' : '' %></p>
-            <% if (note.attachment && note.attachment.path) { %>
+            <% if (note.attachment && (note.attachment.filename || note.attachment.path)) { %>
               <div class="item-foot">
                 <span class="attachment"><%- icon('file-text') %><span><%= note.attachment.originalName %></span></span>
                 <a href="/student/notes/<%= note._id %>/download" class="btn btn-sm btn-primary"><%- icon('download') %>Download</a>

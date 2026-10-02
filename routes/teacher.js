@@ -2,11 +2,11 @@
 // the signed-in teacher's own class. Every page and action works only on that class's
 // students and on the teacher's own notes and papers.
 const express = require('express');
-const fs = require('fs');
 const path = require('path');
 const mongoose = require('mongoose');
 const router = express.Router();
-const { upload, uploadNote, uploadQuestionPaper, withUploadErrors } = require('../config/multer');
+const { uploadAnswerSheet, uploadNote, uploadQuestionPaper, withUploadErrors, uploadsDir } = require('../config/multer');
+const { sendStoredFile, removeStoredFile } = require('../config/file-store');
 const { withImportantDates } = require('../middleware/important-dates');
 const { localDayKey, dayKey, longDay } = require('../config/dates');
 const Teacher = require('../models/Teacher');
@@ -26,7 +26,6 @@ const ATTENDANCE_STATUSES = ['Present', 'Late', 'Absent'];
 const REMARK_TYPES = ['Positive', 'Neutral', 'Negative'];
 
 const validId = (id) => typeof id === 'string' && mongoose.Types.ObjectId.isValid(id);
-const uploadsDir = path.join(__dirname, '../uploads');
 
 // Express 4 does not catch errors thrown by async handlers
 const page = (handler) => (req, res, next) => handler(req, res, next).catch(next);
@@ -41,7 +40,10 @@ const action = (fallback, handler) => async (req, res) => {
   }
 };
 
-const removeFile = (filePath) => { if (filePath) fs.promises.unlink(filePath).catch(() => {}); };
+// Deletes an uploaded file: the copy in MongoDB, and an older copy on disk if there is one
+const removeFile = (filename, legacyPath) => { if (filename || legacyPath) removeStoredFile(filename, [legacyPath]); };
+const discard = (file) => { if (file) removeFile(file.filename); };
+const legacyUpload = (filename) => (filename ? path.join(uploadsDir, path.basename(filename)) : null);
 
 const gradeFor = (percentage) => (
   percentage >= 90 ? 'A+' : percentage >= 80 ? 'A' : percentage >= 70 ? 'B+'
@@ -237,7 +239,7 @@ async function readMarks(body, teacher) {
 
 const classTeacherOnly = (req, res, next) => {
   if (req.teacher.isClassTeacher && req.teacher.class) return next();
-  if (req.file) removeFile(req.file.path);
+  discard(req.file);
   req.flash('error', 'Only the class teacher can add or change marks.');
   res.redirect('/teacher/marks');
 };
@@ -251,12 +253,12 @@ async function ownMark(teacher, id) {
   return inClass ? mark : null;
 }
 
-router.post('/marks/add', withUploadErrors(upload.single('answerSheet')), classTeacherOnly, action('/teacher/marks', async (req, res) => {
+router.post('/marks/add', withUploadErrors(uploadAnswerSheet.single('answerSheet')), classTeacherOnly, action('/teacher/marks', async (req, res) => {
   const { teacher } = req;
   const inClass = validId(req.body.student) && await Student.exists({ _id: req.body.student, class: teacher.class._id });
   const { data, error } = inClass ? await readMarks(req.body, teacher) : { error: 'Choose a student from your class.' };
   if (error) {
-    if (req.file) removeFile(req.file.path);
+    discard(req.file);
     req.flash('error', error);
     return res.redirect('/teacher/marks');
   }
@@ -266,16 +268,16 @@ router.post('/marks/add', withUploadErrors(upload.single('answerSheet')), classT
   res.redirect('/teacher/marks');
 }));
 
-router.post('/marks/edit', withUploadErrors(upload.single('answerSheet')), classTeacherOnly, action('/teacher/marks', async (req, res) => {
+router.post('/marks/edit', withUploadErrors(uploadAnswerSheet.single('answerSheet')), classTeacherOnly, action('/teacher/marks', async (req, res) => {
   const mark = await ownMark(req.teacher, req.body.markId);
   const { data, error } = mark ? await readMarks(req.body, req.teacher) : { error: 'That mark entry could not be found.' };
   if (error) {
-    if (req.file) removeFile(req.file.path);
+    discard(req.file);
     req.flash('error', error);
     return res.redirect('/teacher/marks');
   }
   if (req.file) {
-    if (mark.answerSheetFile) removeFile(path.join(uploadsDir, path.basename(mark.answerSheetFile)));
+    if (mark.answerSheetFile) removeFile(mark.answerSheetFile, legacyUpload(mark.answerSheetFile));
     data.answerSheetFile = req.file.filename;
   }
   mark.set(data);
@@ -290,7 +292,7 @@ router.post('/marks/delete/:id', classTeacherOnly, action('/teacher/marks', asyn
     req.flash('error', 'That mark entry could not be found.');
     return res.redirect('/teacher/marks');
   }
-  if (mark.answerSheetFile) removeFile(path.join(uploadsDir, path.basename(mark.answerSheetFile)));
+  if (mark.answerSheetFile) removeFile(mark.answerSheetFile, legacyUpload(mark.answerSheetFile));
   await mark.deleteOne();
   req.flash('success', 'Mark entry deleted.');
   res.redirect('/teacher/marks');
@@ -356,7 +358,7 @@ router.post('/notes/add', withUploadErrors(uploadNote.single('attachment')), act
   else if (!title || !content) error = 'Add a title and the note itself.';
   else if (title.length > 150) error = 'Keep the title to 150 characters or fewer.';
   if (error) {
-    if (req.file) removeFile(req.file.path);
+    discard(req.file);
     req.flash('error', error);
     return res.redirect('/teacher/notes');
   }
@@ -373,7 +375,6 @@ router.post('/notes/add', withUploadErrors(uploadNote.single('attachment')), act
     note.attachment = {
       filename: req.file.filename,
       originalName: req.file.originalname,
-      path: req.file.path,
       size: req.file.size,
       mimetype: req.file.mimetype,
       uploadDate: new Date()
@@ -382,7 +383,7 @@ router.post('/notes/add', withUploadErrors(uploadNote.single('attachment')), act
   try {
     await Note.create(note);
   } catch (err) {
-    if (req.file) removeFile(req.file.path);
+    discard(req.file);
     throw err;
   }
   req.flash('success', note.isPublic ? 'Note shared with your class.' : 'Note saved (only you can see it).');
@@ -391,11 +392,15 @@ router.post('/notes/add', withUploadErrors(uploadNote.single('attachment')), act
 
 router.get('/notes/:id/download', action('/teacher/notes', async (req, res) => {
   const note = validId(req.params.id) ? await Note.findOne({ _id: req.params.id, teacher: req.teacher._id }) : null;
-  if (!note || !note.attachment || !note.attachment.path || !fs.existsSync(note.attachment.path)) {
+  if (!note || !note.attachment || !note.attachment.filename) {
     req.flash('error', 'That file could not be found.');
     return res.redirect('/teacher/notes');
   }
-  res.download(path.resolve(note.attachment.path), note.attachment.originalName || note.attachment.filename);
+  await sendStoredFile(res, note.attachment.filename, {
+    download: true,
+    downloadName: note.attachment.originalName,
+    legacyPaths: [note.attachment.path]
+  });
 }));
 
 router.post('/notes/:id/delete', action('/teacher/notes', async (req, res) => {
@@ -404,7 +409,7 @@ router.post('/notes/:id/delete', action('/teacher/notes', async (req, res) => {
     req.flash('error', 'That note could not be found.');
     return res.redirect('/teacher/notes');
   }
-  if (note.attachment) removeFile(note.attachment.path);
+  if (note.attachment) removeFile(note.attachment.filename, note.attachment.path);
   req.flash('success', 'Note deleted.');
   res.redirect('/teacher/notes');
 }));
@@ -434,7 +439,7 @@ router.post('/test-papers/add', withUploadErrors(uploadQuestionPaper.single('que
   else if (!PAPER_TYPES.includes(req.body.examType)) error = 'Choose the type of test.';
   else if (!req.file) error = 'Attach the question paper file.';
   if (error) {
-    if (req.file) removeFile(req.file.path);
+    discard(req.file);
     req.flash('error', error);
     return res.redirect('/teacher/test-papers');
   }
@@ -453,14 +458,13 @@ router.post('/test-papers/add', withUploadErrors(uploadQuestionPaper.single('que
       file: {
         filename: req.file.filename,
         originalName: req.file.originalname,
-        path: req.file.path,
         size: req.file.size,
         mimetype: req.file.mimetype,
         uploadDate: new Date()
       }
     });
   } catch (err) {
-    removeFile(req.file.path);
+    discard(req.file);
     throw err;
   }
   req.flash('success', 'Question paper uploaded. Your class can now download it.');
@@ -469,11 +473,15 @@ router.post('/test-papers/add', withUploadErrors(uploadQuestionPaper.single('que
 
 router.get('/test-papers/:id/download', action('/teacher/test-papers', async (req, res) => {
   const paper = validId(req.params.id) ? await TestPaper.findOne({ _id: req.params.id, teacher: req.teacher._id }) : null;
-  if (!paper || !paper.file || !paper.file.path || !fs.existsSync(paper.file.path)) {
+  if (!paper || !paper.file || !paper.file.filename) {
     req.flash('error', 'That file could not be found.');
     return res.redirect('/teacher/test-papers');
   }
-  res.download(path.resolve(paper.file.path), paper.file.originalName || paper.file.filename);
+  await sendStoredFile(res, paper.file.filename, {
+    download: true,
+    downloadName: paper.file.originalName,
+    legacyPaths: [paper.file.path]
+  });
 }));
 
 router.post('/test-papers/:id/delete', action('/teacher/test-papers', async (req, res) => {
@@ -482,7 +490,7 @@ router.post('/test-papers/:id/delete', action('/teacher/test-papers', async (req
     req.flash('error', 'That question paper could not be found.');
     return res.redirect('/teacher/test-papers');
   }
-  if (paper.file) removeFile(paper.file.path);
+  if (paper.file) removeFile(paper.file.filename, paper.file.path);
   req.flash('success', 'Question paper deleted.');
   res.redirect('/teacher/test-papers');
 }));

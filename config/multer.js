@@ -1,41 +1,20 @@
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const { gridStorage, removeStoredFile } = require('./file-store');
 
-// Ensure upload directories exist
+// Uploaded files are stored in MongoDB (see config/file-store.js). The folders below
+// only hold files uploaded before that change, and spreadsheets being imported.
 const uploadsDir = path.join(__dirname, '../uploads');
-const notesDir = path.join(uploadsDir, 'notes');
-const questionPapersDir = path.join(uploadsDir, 'question-papers');
-
-[uploadsDir, notesDir, questionPapersDir].forEach(dir => {
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
+const privateDir = path.join(__dirname, '../storage');
+const photosDir = path.join(privateDir, 'photos');
+const receiptsDir = path.join(privateDir, 'receipts');
+const documentsDir = path.join(privateDir, 'documents');
+[uploadsDir, privateDir, photosDir, receiptsDir, documentsDir].forEach(dir => {
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 });
 
-// Storage configuration for Notes
-const notesStorage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, notesDir);
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, 'note-' + uniqueSuffix + path.extname(file.originalname));
-  }
-});
-
-// Storage configuration for Question Papers
-const questionPapersStorage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, questionPapersDir);
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, 'qp-' + uniqueSuffix + path.extname(file.originalname));
-  }
-});
-
-// File filter to accept specific file types
+// Notes, question papers and answer sheets: documents, spreadsheets, slides, images, text
 const fileFilter = (req, file, cb) => {
   const allowedTypes = [
     'application/pdf',
@@ -58,65 +37,38 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-// Multer upload configurations
 const uploadNote = multer({
-  storage: notesStorage,
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
-  fileFilter: fileFilter
+  storage: gridStorage('note'),
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter
 });
 
 const uploadQuestionPaper = multer({
-  storage: questionPapersStorage,
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
-  fileFilter: fileFilter
-});
-
-// General upload (for backward compatibility)
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, uploadsDir);
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
-  }
-});
-
-const upload = multer({
-  storage: storage,
+  storage: gridStorage('qp'),
   limits: { fileSize: 10 * 1024 * 1024 },
-  fileFilter: fileFilter
+  fileFilter
+});
+
+const uploadAnswerSheet = multer({
+  storage: gridStorage('answer-sheet'),
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter
+});
+
+// Spreadsheets for Admin → Import: saved to disk briefly, read, then deleted
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => cb(null, uploadsDir),
+    filename: (req, file, cb) => cb(null, `${file.fieldname}-${Date.now()}-${Math.round(Math.random() * 1E9)}${path.extname(file.originalname)}`)
+  }),
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter
 });
 
 // ---------------------------------------------------------------------------
-// Private files (photos and fee receipts). These live outside the public
-// /uploads folder and are only served through routes/media.js, which checks
-// who is signed in.
+// Private files (photos, fee receipts, documents). Only served through
+// routes/media.js, which checks who is signed in.
 // ---------------------------------------------------------------------------
-const privateDir = path.join(__dirname, '../storage');
-const photosDir = path.join(privateDir, 'photos');
-const receiptsDir = path.join(privateDir, 'receipts');
-const documentsDir = path.join(privateDir, 'documents');
-[privateDir, photosDir, receiptsDir, documentsDir].forEach(dir => {
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-});
-
-// The stored extension comes from the checked file type, never from the uploaded
-// name, so a file is always served back as the type it was accepted as.
-const EXTENSIONS = {
-  'application/pdf': '.pdf',
-  'image/jpeg': '.jpg',
-  'image/png': '.png',
-  'image/webp': '.webp'
-};
-const uniqueName = (prefix, file) =>
-  `${prefix}-${Date.now()}-${Math.round(Math.random() * 1E9)}${EXTENSIONS[file.mimetype] || ''}`;
-
-const privateStorage = (dir, prefix) => multer.diskStorage({
-  destination: (req, file, cb) => cb(null, dir),
-  filename: (req, file, cb) => cb(null, uniqueName(prefix, file))
-});
-
 const typeFilter = (allowed, message) => (req, file, cb) => {
   if (allowed.includes(file.mimetype)) return cb(null, true);
   const error = new Error(message);
@@ -125,13 +77,13 @@ const typeFilter = (allowed, message) => (req, file, cb) => {
 };
 
 const uploadPhoto = multer({
-  storage: privateStorage(photosDir, 'photo'),
+  storage: gridStorage('photo'),
   limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter: typeFilter(['image/jpeg', 'image/png', 'image/webp'], 'Photos must be JPG, PNG or WebP images.')
 });
 
 const uploadReceipt = multer({
-  storage: privateStorage(receiptsDir, 'receipt'),
+  storage: gridStorage('receipt'),
   limits: { fileSize: 10 * 1024 * 1024 },
   fileFilter: typeFilter(['application/pdf', 'image/jpeg', 'image/png', 'image/webp'], 'Receipts must be a PDF or a JPG, PNG or WebP image.')
 });
@@ -147,11 +99,12 @@ const withUploadErrors = (middleware) => (req, res, next) => {
   });
 };
 
-// Deletes a stored private file, ignoring files that are already gone.
+// Deletes a stored private file (and any old copy on disk), ignoring files that are already gone.
+const legacyPrivatePath = (kind, filename) =>
+  path.join({ receipt: receiptsDir, document: documentsDir }[kind] || photosDir, path.basename(filename));
 const removePrivateFile = (kind, filename) => {
   if (!filename) return;
-  const dir = { receipt: receiptsDir, document: documentsDir }[kind] || photosDir;
-  fs.promises.unlink(path.join(dir, path.basename(filename))).catch(() => {});
+  removeStoredFile(filename, [legacyPrivatePath(kind, filename)]);
 };
 
 // ---------------------------------------------------------------------------
@@ -162,11 +115,6 @@ const PHOTO_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 const DOCUMENT_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
 const PHOTO_MAX = 5 * 1024 * 1024;
 const DOCUMENT_MAX = 10 * 1024 * 1024;
-
-const personFilesStorage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, file.fieldname === 'photo' ? photosDir : documentsDir),
-  filename: (req, file, cb) => cb(null, uniqueName(file.fieldname === 'photo' ? 'photo' : 'doc', file))
-});
 
 // Everything multer accepted, as a flat list
 const uploadedFiles = (req) => Object.values(req.files || {}).flat();
@@ -180,7 +128,7 @@ const removeUploadedFiles = (req) => uploadedFiles(req).forEach((file) =>
 // deleted again once the response is sent (validation errors, crashes, ...).
 const uploadPersonFiles = (documentKeys) => {
   const parser = multer({
-    storage: personFilesStorage,
+    storage: gridStorage((req, file) => (file.fieldname === 'photo' ? 'photo' : 'doc')),
     limits: { fileSize: DOCUMENT_MAX, files: documentKeys.length + 1 },
     fileFilter: (req, file, cb) => {
       const isPhoto = file.fieldname === 'photo';
@@ -220,6 +168,7 @@ module.exports = {
   upload,
   uploadNote,
   uploadQuestionPaper,
+  uploadAnswerSheet,
   uploadPhoto,
   uploadReceipt,
   uploadPersonFiles,
@@ -227,6 +176,7 @@ module.exports = {
   removePrivateFile,
   removeUploadedFiles,
   fileInfo,
+  uploadsDir,
   photosDir,
   receiptsDir,
   documentsDir

@@ -2,6 +2,8 @@
 //   Photos: any signed-in staff account, or the student the photo belongs to.
 //   Receipts: administrators, or the student the fee belongs to.
 //   Documents (Aadhaar, PAN, transfer certificates, ...): administrators only.
+//   Answer sheets: staff, or the student the marks belong to.
+// The files themselves are stored in MongoDB (config/file-store.js).
 const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
@@ -9,7 +11,9 @@ const router = express.Router();
 const Student = require('../models/Student');
 const Teacher = require('../models/Teacher');
 const Fee = require('../models/Fee');
-const { photosDir, receiptsDir, documentsDir } = require('../config/multer');
+const Mark = require('../models/Mark');
+const { photosDir, receiptsDir, documentsDir, uploadsDir } = require('../config/multer');
+const { sendStoredFile } = require('../config/file-store');
 const { documentTypes } = require('../config/documents');
 
 const isStaff = (req) => Boolean(req.session && req.session.user);
@@ -21,13 +25,9 @@ const notFound = (res) => res.status(404).send('Not found');
 // Express 4 does not catch errors thrown by async handlers
 const safe = (handler) => (req, res, next) => handler(req, res, next).catch(next);
 
-function sendPrivate(res, dir, filename, { download = false, downloadName, cache = 'private, max-age=300' } = {}) {
-  res.set('Cache-Control', cache);
-  res.set('X-Content-Type-Options', 'nosniff');
-  const file = path.join(dir, path.basename(filename));
-  if (download) return res.download(file, downloadName || path.basename(filename), (err) => err && !res.headersSent && notFound(res));
-  return res.sendFile(file, (err) => err && !res.headersSent && notFound(res));
-}
+// Sends a stored file; `dir` is where an older copy may still be on disk
+const sendPrivate = (res, dir, filename, options = {}) =>
+  sendStoredFile(res, filename, { ...options, legacyPaths: [path.join(dir, path.basename(filename))] });
 
 // Student photo
 router.get('/students/:id/photo', safe(async (req, res) => {
@@ -87,6 +87,18 @@ router.get('/documents/:owner/:id/:docId', safe(async (req, res) => {
     downloadName: `${owner.name(person)} - ${type ? type.label : doc.type}${path.extname(doc.filename)}`,
     cache: 'private, no-store'
   });
+}));
+
+// Answer sheet scanned for a mark: /media/answer-sheets/:markId
+router.get('/answer-sheets/:markId', safe(async (req, res) => {
+  const { markId } = req.params;
+  if (!validId(markId)) return notFound(res);
+  if (!isStaff(req) && !studentId(req)) return res.redirect('/login');
+
+  const mark = await Mark.findById(markId).select('student answerSheetFile').lean();
+  if (!mark || !mark.answerSheetFile) return notFound(res);
+  if (!isStaff(req) && String(mark.student) !== studentId(req)) return res.status(403).send('Forbidden');
+  return sendPrivate(res, uploadsDir, mark.answerSheetFile);
 }));
 
 module.exports = router;

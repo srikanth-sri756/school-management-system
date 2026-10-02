@@ -49,7 +49,7 @@
             <h3><%= paper.title %></h3>
             <% if (paper.description) { %><p><%= paper.description %></p><% } %>
             <div class="item-foot">
-              <% if (paper.file && paper.file.path) { %>
+              <% if (paper.file && (paper.file.filename || paper.file.path)) { %>
                 <span class="attachment"><%- icon('file-text') %><span><%= (paper.file.size / 1024).toFixed(1) %> KB</span></span>
                 <a href="/student/testpapers/<%= paper._id %>/download" class="btn btn-sm btn-primary"><%- icon('download') %>Download</a>
               <% } else { %>

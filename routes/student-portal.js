@@ -7,6 +7,13 @@ const Mark = require('../models/Mark');
 const Subject = require('../models/Subject');
 const Class = require('../models/Class');
 const { withImportantDates } = require('../middleware/important-dates');
+const path = require('path');
+const mongoose = require('mongoose');
+const { sendStoredFile } = require('../config/file-store');
+
+const validId = (id) => mongoose.Types.ObjectId.isValid(id);
+// Where a file uploaded before storage moved to MongoDB may still be on disk
+const legacyPaths = (filePath) => (filePath ? [filePath, path.join(__dirname, '..', filePath)] : []);
 
 // Middleware to check if student is authenticated
 function isStudentAuthenticated(req, res, next) {
@@ -45,9 +52,9 @@ router.get('/login', (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const { studentId, password } = req.body;
-    
+
     const student = await Student.findOne({ studentId }).populate('class');
-    
+
     if (!student) {
       // For API/mobile app requests
       if (req.xhr || req.headers.accept.indexOf('json') > -1) {
@@ -68,7 +75,7 @@ router.post('/login', async (req, res) => {
 
     // Compare password
     const isMatch = await bcrypt.compare(password, student.password);
-    
+
     if (!isMatch) {
       if (req.xhr || req.headers.accept.indexOf('json') > -1) {
         return res.status(401).json({ success: false, message: 'Invalid Student ID or Password' });
@@ -100,8 +107,8 @@ router.post('/login', async (req, res) => {
 
     // For API/mobile app requests
     if (req.xhr || req.headers.accept.indexOf('json') > -1) {
-      return res.json({ 
-        success: true, 
+      return res.json({
+        success: true,
         message: 'Login successful',
         student: {
           _id: student._id,
@@ -146,13 +153,13 @@ router.get('/dashboard', isStudentAuthenticated, withImportantDates('students', 
     const totalClasses = await Attendance.countDocuments({
       student: student._id
     });
-    
+
     const presentClasses = await Attendance.countDocuments({
       student: student._id,
       status: 'Present'
     });
 
-    const attendancePercentage = totalClasses > 0 
+    const attendancePercentage = totalClasses > 0
       ? ((presentClasses / totalClasses) * 100).toFixed(2)
       : 0;
 
@@ -226,12 +233,12 @@ router.get('/dates', isStudentAuthenticated, withImportantDates('students'), (re
 router.get('/attendance', isStudentAuthenticated, async (req, res) => {
   try {
     const student = await Student.findById(req.session.student.id);
-    
+
     // Get filters (only month and year - no subject since attendance is daily)
     const { month, year } = req.query;
-    
+
     let filter = { student: student._id };
-    
+
     // Attendance is daily (not per subject), so only filter by date
     if (month && year) {
       const startDate = new Date(year, month - 1, 1);
@@ -287,15 +294,15 @@ router.get('/attendance', isStudentAuthenticated, async (req, res) => {
 router.get('/marks', isStudentAuthenticated, async (req, res) => {
   try {
     const student = await Student.findById(req.session.student.id);
-    
+
     const { subject, exam } = req.query;
-    
+
     let filter = { student: student._id };
-    
+
     if (subject) {
       filter.subject = subject;
     }
-    
+
     if (exam) {
       filter.examType = exam;
     }
@@ -305,7 +312,7 @@ router.get('/marks', isStudentAuthenticated, async (req, res) => {
       .sort({ createdAt: -1 });
 
     const subjects = await Subject.find();
-    
+
     // Get unique exam types from marks
     const examTypes = [...new Set(marks.map(mark => mark.examType).filter(Boolean))];
     const exams = examTypes.map(type => ({ name: type }));
@@ -313,7 +320,7 @@ router.get('/marks', isStudentAuthenticated, async (req, res) => {
     // Calculate overall statistics
     let totalMarks = 0;
     let obtainedMarks = 0;
-    
+
     marks.forEach(mark => {
       totalMarks += mark.maxMarks || 0;
       obtainedMarks += mark.obtainedMarks || 0;
@@ -367,15 +374,15 @@ router.get('/profile', isStudentAuthenticated, async (req, res) => {
       .populate('class');
 
     const Fee = require('../models/Fee');
-    
+
     // Get all fees for this student
     const fees = await Fee.find({ student: student._id }).sort({ createdAt: -1 });
-    
+
     // Calculate total fees
     const totalAmount = fees.reduce((sum, fee) => sum + fee.amount, 0);
     const totalPaid = fees.reduce((sum, fee) => sum + fee.paid, 0);
     const totalPending = totalAmount - totalPaid;
-    
+
     // Collect all payments from all fee records
     const allPayments = [];
     fees.forEach(fee => {
@@ -389,10 +396,10 @@ router.get('/profile', isStudentAuthenticated, async (req, res) => {
         });
       }
     });
-    
+
     // Sort payments by date (most recent first)
     allPayments.sort((a, b) => new Date(b.date) - new Date(a.date));
-    
+
     // Fee structure breakdown (you can customize this based on your fee types)
     const feeStructure = {
       tuitionFee: fees.find(f => f.term.includes('Tuition'))?.amount || 0,
@@ -439,15 +446,15 @@ router.get('/fees', isStudentAuthenticated, async (req, res) => {
       .populate('class');
 
     const Fee = require('../models/Fee');
-    
+
     // Get all fees for this student
     const fees = await Fee.find({ student: student._id }).sort({ createdAt: -1 });
-    
+
     // Calculate total fees
     const totalAmount = fees.reduce((sum, fee) => sum + fee.amount, 0);
     const totalPaid = fees.reduce((sum, fee) => sum + fee.paid, 0);
     const totalPending = totalAmount - totalPaid;
-    
+
     // Collect all payments from all fee records
     const allPayments = [];
     fees.forEach(fee => {
@@ -461,24 +468,24 @@ router.get('/fees', isStudentAuthenticated, async (req, res) => {
         });
       }
     });
-    
+
     // Sort payments by date (most recent first)
     allPayments.sort((a, b) => new Date(b.date) - new Date(a.date));
-    
+
     // Get installment notifications
     const notifications = [];
     const today = new Date();
-    
+
     fees.forEach(fee => {
       if (fee.hasInstallmentPlan && fee.installments) {
         fee.installments.forEach(installment => {
           if (installment.status !== 'Paid') {
             const dueDate = new Date(installment.dueDate);
             const daysUntilDue = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
-            
+
             let notificationType = 'info';
             let message = '';
-            
+
             if (daysUntilDue < 0) {
               notificationType = 'danger';
               message = `Installment ${installment.installmentNumber} for ${fee.term} is ${Math.abs(daysUntilDue)} days overdue!`;
@@ -493,7 +500,7 @@ router.get('/fees', isStudentAuthenticated, async (req, res) => {
               notificationType = 'info';
               message = `Installment ${installment.installmentNumber} for ${fee.term} is due in ${daysUntilDue} days`;
             }
-            
+
             if (message) {
               notifications.push({
                 type: notificationType,
@@ -512,10 +519,10 @@ router.get('/fees', isStudentAuthenticated, async (req, res) => {
         });
       }
     });
-    
+
     // Sort by urgency (overdue first, then by days until due)
     notifications.sort((a, b) => a.daysUntilDue - b.daysUntilDue);
-    
+
     // Fee structure breakdown
     const feeStructure = {
       tuitionFee: fees.find(f => f.term.includes('Tuition'))?.amount || 0,
@@ -549,7 +556,7 @@ router.get('/fees', isStudentAuthenticated, async (req, res) => {
 router.post('/profile/update', isStudentAuthenticated, async (req, res) => {
   try {
     const { email, parentPhone, parentEmail, address } = req.body;
-    
+
     await Student.findByIdAndUpdate(req.session.student.id, {
       email,
       parentPhone,
@@ -570,7 +577,7 @@ router.post('/profile/update', isStudentAuthenticated, async (req, res) => {
 router.post('/change-password', isStudentAuthenticated, async (req, res) => {
   try {
     const { currentPassword, newPassword, confirmPassword } = req.body;
-    
+
     if (newPassword !== confirmPassword) {
       if (req.xhr || req.headers.accept.indexOf('json') > -1) {
         return res.status(400).json({ success: false, message: 'New passwords do not match' });
@@ -580,10 +587,10 @@ router.post('/change-password', isStudentAuthenticated, async (req, res) => {
     }
 
     const student = await Student.findById(req.session.student.id);
-    
+
     // Verify current password
     const isMatch = await bcrypt.compare(currentPassword, student.password);
-    
+
     if (!isMatch) {
       if (req.xhr || req.headers.accept.indexOf('json') > -1) {
         return res.status(400).json({ success: false, message: 'Current password is incorrect' });
@@ -594,7 +601,7 @@ router.post('/change-password', isStudentAuthenticated, async (req, res) => {
 
     // Hash new password
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    
+
     await Student.findByIdAndUpdate(req.session.student.id, {
       password: hashedPassword
     });
@@ -621,18 +628,18 @@ router.get('/teachers', isStudentAuthenticated, async (req, res) => {
   try {
     const student = await Student.findById(req.session.student.id).populate('class');
     const Teacher = require('../models/Teacher');
-    
+
     // Get class teacher - find teacher assigned to this class
-    const classTeacher = await Teacher.findOne({ 
+    const classTeacher = await Teacher.findOne({
       class: student.class._id,
-      isClassTeacher: true 
+      isClassTeacher: true
     }).populate('subject');
-    
+
     // Get all subject teachers for this class
-    const subjectTeachers = await Teacher.find({ 
-      class: student.class._id 
+    const subjectTeachers = await Teacher.find({
+      class: student.class._id
     }).populate('subject');
-    
+
     const teachersData = {
       classTeacher: classTeacher || null,
       subjectTeachers: subjectTeachers.map(teacher => ({
@@ -644,7 +651,7 @@ router.get('/teachers', isStudentAuthenticated, async (req, res) => {
         }
       }))
     };
-    
+
     // For API response
     if (req.xhr || req.headers.accept.indexOf('json') > -1) {
       return res.json({
@@ -653,9 +660,9 @@ router.get('/teachers', isStudentAuthenticated, async (req, res) => {
         student
       });
     }
-    
+
     // For web view
-    res.render('student-portal/teachers', { 
+    res.render('student-portal/teachers', {
       student,
       ...teachersData,
       error: req.flash('error'),
@@ -676,32 +683,32 @@ router.post('/fees/pay', isStudentAuthenticated, async (req, res) => {
   try {
     const { feeId, amount, paymentMethod, paymentType, installmentId } = req.body;
     const Fee = require('../models/Fee');
-    
+
     const fee = await Fee.findById(feeId);
-    
+
     if (!fee) {
       return res.status(404).json({ success: false, message: 'Fee record not found' });
     }
-    
+
     // Validate payment amount
     const paymentAmount = parseFloat(amount);
     if (isNaN(paymentAmount) || paymentAmount <= 0) {
       return res.status(400).json({ success: false, message: 'Invalid payment amount' });
     }
-    
+
     // Check if student is paying for this fee
     if (fee.student.toString() !== req.session.student.id) {
       return res.status(403).json({ success: false, message: 'Unauthorized' });
     }
-    
+
     if (paymentType === 'full') {
       // Full Payment
       const remainingAmount = fee.amount - fee.paid;
-      
+
       if (paymentAmount > remainingAmount) {
         return res.status(400).json({ success: false, message: 'Payment amount exceeds remaining balance' });
       }
-      
+
       // Add payment record
       fee.payments.push({
         amount: paymentAmount,
@@ -711,44 +718,44 @@ router.post('/fees/pay', isStudentAuthenticated, async (req, res) => {
         receivedBy: 'Online Portal',
         remarks: 'Full payment'
       });
-      
+
       fee.paid += paymentAmount;
-      
+
       // Update status
       if (fee.paid >= fee.amount) {
         fee.status = 'Paid';
       } else if (fee.paid > 0) {
         fee.status = 'Partial';
       }
-      
+
     } else if (paymentType === 'installment') {
       // Installment Payment
       if (!fee.hasInstallmentPlan) {
         return res.status(400).json({ success: false, message: 'No installment plan exists for this fee' });
       }
-      
+
       const installment = fee.installments.id(installmentId);
-      
+
       if (!installment) {
         return res.status(404).json({ success: false, message: 'Installment not found' });
       }
-      
+
       const remainingInstallmentAmount = installment.amount - installment.paidAmount;
-      
+
       if (paymentAmount > remainingInstallmentAmount) {
         return res.status(400).json({ success: false, message: 'Payment amount exceeds installment balance' });
       }
-      
+
       // Update installment
       installment.paidAmount += paymentAmount;
       installment.paidDate = new Date();
-      
+
       if (installment.paidAmount >= installment.amount) {
         installment.status = 'Paid';
       } else if (installment.paidAmount > 0) {
         installment.status = 'Partial';
       }
-      
+
       // Add payment record
       fee.payments.push({
         amount: paymentAmount,
@@ -758,9 +765,9 @@ router.post('/fees/pay', isStudentAuthenticated, async (req, res) => {
         receivedBy: 'Online Portal',
         remarks: `Installment ${installment.installmentNumber} payment`
       });
-      
+
       fee.paid += paymentAmount;
-      
+
       // Update overall fee status
       if (fee.paid >= fee.amount) {
         fee.status = 'Paid';
@@ -768,11 +775,11 @@ router.post('/fees/pay', isStudentAuthenticated, async (req, res) => {
         fee.status = 'Partial';
       }
     }
-    
+
     await fee.save();
-    
-    res.json({ 
-      success: true, 
+
+    res.json({
+      success: true,
       message: 'Payment processed successfully',
       fee: {
         total: fee.amount,
@@ -781,7 +788,7 @@ router.post('/fees/pay', isStudentAuthenticated, async (req, res) => {
         status: fee.status
       }
     });
-    
+
   } catch (error) {
     console.error('Error processing payment:', error);
     res.status(500).json({ success: false, message: 'Error processing payment' });
@@ -792,24 +799,24 @@ router.post('/fees/pay', isStudentAuthenticated, async (req, res) => {
 router.get('/fees/installment-notifications', isStudentAuthenticated, async (req, res) => {
   try {
     const Fee = require('../models/Fee');
-    
-    const fees = await Fee.find({ 
+
+    const fees = await Fee.find({
       student: req.session.student.id,
-      hasInstallmentPlan: true 
+      hasInstallmentPlan: true
     });
-    
+
     const notifications = [];
     const today = new Date();
-    
+
     fees.forEach(fee => {
       fee.installments.forEach(installment => {
         if (installment.status !== 'Paid') {
           const dueDate = new Date(installment.dueDate);
           const daysUntilDue = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
-          
+
           let notificationType = 'info';
           let message = '';
-          
+
           if (daysUntilDue < 0) {
             notificationType = 'danger';
             message = `Installment ${installment.installmentNumber} for ${fee.term} is ${Math.abs(daysUntilDue)} days overdue!`;
@@ -823,7 +830,7 @@ router.get('/fees/installment-notifications', isStudentAuthenticated, async (req
             notificationType = 'info';
             message = `Installment ${installment.installmentNumber} for ${fee.term} is due in ${daysUntilDue} days`;
           }
-          
+
           if (message) {
             notifications.push({
               type: notificationType,
@@ -840,12 +847,12 @@ router.get('/fees/installment-notifications', isStudentAuthenticated, async (req
         }
       });
     });
-    
+
     // Sort by urgency (overdue first, then by days until due)
     notifications.sort((a, b) => a.daysUntilDue - b.daysUntilDue);
-    
+
     res.json({ success: true, notifications });
-    
+
   } catch (error) {
     console.error('Error fetching installment notifications:', error);
     res.status(500).json({ success: false, message: 'Error fetching notifications' });
@@ -857,27 +864,27 @@ router.get('/notes', isStudentAuthenticated, async (req, res) => {
   try {
     const student = await Student.findById(req.session.student.id).populate('class');
     const Note = require('../models/Note');
-    
+
     const { subject } = req.query;
-    
+
     let filter = {
       class: student.class._id,
       isPublic: true
     };
-    
+
     if (subject) {
       filter.subject = subject;
     }
-    
+
     const notes = await Note.find(filter)
       .populate('subject')
       .populate('teacher', 'name')
       .sort({ createdAt: -1 });
-    
+
     // Get unique subjects for filter
     const Subject = require('../models/Subject');
     const subjects = await Subject.find({ class: student.class._id });
-    
+
     // For API/mobile app requests
     if (req.xhr || req.headers.accept.indexOf('json') > -1) {
       return res.json({
@@ -888,7 +895,7 @@ router.get('/notes', isStudentAuthenticated, async (req, res) => {
         filters: { subject }
       });
     }
-    
+
     res.render('student-portal/notes', {
       student: req.session.student,
       studentDetails: student,
@@ -897,7 +904,7 @@ router.get('/notes', isStudentAuthenticated, async (req, res) => {
       filters: { subject: subject || '' },
       page: 'notes'
     });
-    
+
   } catch (error) {
     console.error('Error loading notes:', error);
     if (req.xhr || req.headers.accept.indexOf('json') > -1) {
@@ -911,17 +918,22 @@ router.get('/notes', isStudentAuthenticated, async (req, res) => {
 router.get('/notes/:id/download', isStudentAuthenticated, async (req, res) => {
   try {
     const Note = require('../models/Note');
-    const note = await Note.findById(req.params.id);
-    
-    if (!note || !note.attachment || !note.attachment.path) {
+    const student = await Student.findById(req.session.student.id).select('class').lean();
+    // Only shared notes for the student's own class
+    const note = validId(req.params.id) && student && student.class
+      ? await Note.findOne({ _id: req.params.id, class: student.class, isPublic: true })
+      : null;
+
+    if (!note || !note.attachment || !(note.attachment.filename || note.attachment.path)) {
       return res.status(404).json({ success: false, message: 'Attachment not found' });
     }
-    
-    const path = require('path');
-    const filePath = path.join(__dirname, '..', note.attachment.path);
-    
-    res.download(filePath, note.attachment.originalName);
-    
+
+    await sendStoredFile(res, note.attachment.filename || note.attachment.path, {
+      download: true,
+      downloadName: note.attachment.originalName,
+      legacyPaths: legacyPaths(note.attachment.path)
+    });
+
   } catch (error) {
     console.error('Error downloading note:', error);
     res.status(500).json({ success: false, message: 'Error downloading attachment' });
@@ -933,32 +945,32 @@ router.get('/testpapers', isStudentAuthenticated, async (req, res) => {
   try {
     const student = await Student.findById(req.session.student.id).populate('class');
     const TestPaper = require('../models/TestPaper');
-    
+
     const { subject, examType } = req.query;
-    
+
     let filter = {
       class: student.class._id
     };
-    
+
     if (subject) {
       filter.subject = subject;
     }
-    
+
     if (examType) {
       filter.examType = examType;
     }
-    
+
     const testPapers = await TestPaper.find(filter)
       .populate('subject')
       .populate('teacher', 'name')
       .sort({ date: -1 });
-    
+
     // Get unique subjects for filter
     const Subject = require('../models/Subject');
     const subjects = await Subject.find({ class: student.class._id });
-    
+
     const examTypes = ['Quiz', 'Test', 'Mid-Term', 'Final', 'Assignment', 'Practice'];
-    
+
     // For API/mobile app requests
     if (req.xhr || req.headers.accept.indexOf('json') > -1) {
       return res.json({
@@ -970,7 +982,7 @@ router.get('/testpapers', isStudentAuthenticated, async (req, res) => {
         filters: { subject, examType }
       });
     }
-    
+
     res.render('student-portal/testpapers', {
       student: req.session.student,
       studentDetails: student,
@@ -980,7 +992,7 @@ router.get('/testpapers', isStudentAuthenticated, async (req, res) => {
       filters: { subject: subject || '', examType: examType || '' },
       page: 'testpapers'
     });
-    
+
   } catch (error) {
     console.error('Error loading test papers:', error);
     if (req.xhr || req.headers.accept.indexOf('json') > -1) {
@@ -994,21 +1006,26 @@ router.get('/testpapers', isStudentAuthenticated, async (req, res) => {
 router.get('/testpapers/:id/download', isStudentAuthenticated, async (req, res) => {
   try {
     const TestPaper = require('../models/TestPaper');
-    const testPaper = await TestPaper.findById(req.params.id);
-    
-    if (!testPaper || !testPaper.file || !testPaper.file.path) {
+    const student = await Student.findById(req.session.student.id).select('class').lean();
+    // Only papers for the student's own class
+    const testPaper = validId(req.params.id) && student && student.class
+      ? await TestPaper.findOne({ _id: req.params.id, class: student.class })
+      : null;
+
+    if (!testPaper || !testPaper.file || !(testPaper.file.filename || testPaper.file.path)) {
       return res.status(404).json({ success: false, message: 'Test paper not found' });
     }
-    
+
     // Increment download count
-    testPaper.downloads += 1;
+    testPaper.downloads = (testPaper.downloads || 0) + 1;
     await testPaper.save();
-    
-    const path = require('path');
-    const filePath = path.join(__dirname, '..', testPaper.file.path);
-    
-    res.download(filePath, testPaper.file.originalName);
-    
+
+    await sendStoredFile(res, testPaper.file.filename || testPaper.file.path, {
+      download: true,
+      downloadName: testPaper.file.originalName,
+      legacyPaths: legacyPaths(testPaper.file.path)
+    });
+
   } catch (error) {
     console.error('Error downloading test paper:', error);
     res.status(500).json({ success: false, message: 'Error downloading test paper' });
@@ -1018,12 +1035,12 @@ router.get('/testpapers/:id/download', isStudentAuthenticated, async (req, res) 
 // Student Logout
 router.get('/logout', (req, res) => {
   req.session.destroy();
-  
+
   // For API/mobile app requests
   if (req.xhr || req.headers.accept.indexOf('json') > -1) {
     return res.json({ success: true, message: 'Logged out successfully' });
   }
-  
+
   res.redirect('/student/login');
 });
 

@@ -132,7 +132,7 @@
                   <td class="num"><%= m.percentage != null ? Math.round(m.percentage * 10) / 10 : '—' %></td>
                   <td><%- gradeBadge(m.grade) %></td>
                   <td><%= shortDate(m.date) %></td>
-                  <td><% if (m.answerSheetFile) { %><a href="/uploads/<%= m.answerSheetFile %>" target="_blank" rel="noopener" class="btn btn-sm btn-ghost" title="Open answer sheet" aria-label="Open answer sheet"><%- icon('file-text') %></a><% } else { %><span class="text-muted">—</span><% } %></td>
+                  <td><% if (m.answerSheetFile) { %><a href="/media/answer-sheets/<%= m._id %>" target="_blank" rel="noopener" class="btn btn-sm btn-ghost" title="Open answer sheet" aria-label="Open answer sheet"><%- icon('file-text') %></a><% } else { %><span class="text-muted">—</span><% } %></td>
                   <% if (canEdit) { %>
                     <td class="num">
                       <div class="actions actions--end">
