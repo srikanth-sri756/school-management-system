@@ -135,10 +135,13 @@ app.use(session({
 
 app.use(flash());
 
-// Make flash messages available in all views
+// Make flash messages available in all views. Reading them creates a session, so they
+// are only read when some were set: visitors who never sign in or send a form get no
+// session cookie (see /portfolio/cookie-policy).
 app.use((req, res, next) => {
-  res.locals.success = req.flash('success');
-  res.locals.error = req.flash('error');
+  const pending = Boolean(req.session && req.session.flash && Object.keys(req.session.flash).length);
+  res.locals.success = pending ? req.flash('success') : [];
+  res.locals.error = pending ? req.flash('error') : [];
   // Kept separately so pages that pass their own `error`/`success` still show the flash toast
   res.locals.flash = { success: res.locals.success, error: res.locals.error };
   next();

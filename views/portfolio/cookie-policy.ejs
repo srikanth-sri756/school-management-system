@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/public-head', { title: 'Cookie Policy', description: 'Which cookies the Akanksha Grammar High School website uses, and how to change your choice.' }) %>
+</head>
+<body class="site">
+    <%- include('../partials/public-navbar') %>
+
+    <main id="main">
+    <%- include('../partials/page-hero', {
+      heroCrumbs: [{ href: '/', label: 'Home' }, { label: 'Cookie Policy' }],
+      heroTitle: 'Cookie<br>Policy',
+      heroText: 'Last updated: 3 October 2026'
+    }) %>
+
+    <section class="section section--light"><div class="container container--narrow">
+        <div class="content-section prose">
+            <h2>1. What cookies are</h2>
+            <p>Cookies are small text files a website stores in your browser. We keep their use to a minimum: we do not use advertising cookies, and we do not use analytics or tracking cookies.</p>
+
+            <h2>2. Cookies we use</h2>
+            <div class="table-wrap">
+                <table class="table">
+                    <thead>
+                        <tr><th scope="col">Cookie</th><th scope="col">Why it is used</th><th scope="col">Type</th><th scope="col">How long</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>connect.sid</td>
+                            <td>Keeps you signed in to the Staff Portal or Student Portal, and shows a message after you send a form. Only set when you sign in or send a form.</td>
+                            <td>Essential</td>
+                            <td>Up to 1 hour, or until you sign out</td>
+                        </tr>
+                        <tr>
+                            <td>cookie_consent</td>
+                            <td>Remembers the choice you made in the cookie notice.</td>
+                            <td>Essential</td>
+                            <td>6 months</td>
+                        </tr>
+                        <tr>
+                            <td>Google Maps cookies</td>
+                            <td>Set by Google, only if you choose “Allow Google Maps” or press “Show map” on the Contact page. See <a href="https://policies.google.com/technologies/cookies" target="_blank" rel="noopener">Google’s cookie policy</a>.</td>
+                            <td>Optional</td>
+                            <td>Set by Google</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p>Essential cookies are needed for signing in and for remembering your choice, so they cannot be switched off on this site. You can still delete them in your browser at any time.</p>
+
+            <h2>3. Other services the website uses</h2>
+            <p>Our fonts come from Google Fonts and some photos from Unsplash. Your browser connects to these services to load them, which shares your IP address with them, but they do not set cookies on this website.</p>
+
+            <h2>4. Changing your choice</h2>
+            <ul>
+                <li>Use <button type="button" class="link-button prose-link" data-cookie-settings>Cookie settings</button> (also at the bottom of every page) to change your choice at any time.</li>
+                <li>You can also block or delete cookies in your browser’s settings. If you block essential cookies, signing in to the portals will not work.</li>
+            </ul>
+
+            <h2>5. Questions</h2>
+            <p>Please contact the school office on <a href="tel:+919912697521">+91 99126 97521</a>, or visit us at Ganesh Enclave, Mallapur, Hyderabad, Telangana 500005. See also our <a href="/portfolio/privacy-policy">Privacy Policy</a>.</p>
+        </div>
+    </div></section>
+    </main>
+
+    <%- include('../partials/footer') %>
+</body>
+</html>

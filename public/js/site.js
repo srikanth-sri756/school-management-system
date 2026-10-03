@@ -122,4 +122,69 @@
     }, { passive: true });
     move();
   }
+
+  // --- Cookie notice (partials/cookie-banner.ejs) ---
+  // The visitor's choice is kept for 6 months in the "cookie_consent" cookie:
+  // "essential" (only what the site needs) or "all" (also allows Google Maps).
+  const CONSENT_COOKIE = 'cookie_consent';
+  const SIX_MONTHS = 60 * 60 * 24 * 182;
+  const readConsent = () => {
+    const match = document.cookie.match(/(?:^|;\s*)cookie_consent=(all|essential)(?:;|$)/);
+    return match ? match[1] : null;
+  };
+  const saveConsent = (choice) => {
+    const secure = location.protocol === 'https:' ? '; Secure' : '';
+    document.cookie = `${CONSENT_COOKIE}=${choice}; Max-Age=${SIX_MONTHS}; Path=/; SameSite=Lax${secure}`;
+  };
+
+  // Replaces a map placeholder ([data-consent-map]) with the Google Maps frame
+  const loadMap = (holder) => {
+    if (!holder || holder.querySelector('iframe')) return;
+    const frame = document.createElement('iframe');
+    frame.src = holder.dataset.src;
+    frame.title = holder.dataset.title || 'Map';
+    frame.loading = 'lazy';
+    frame.allowFullscreen = true;
+    frame.referrerPolicy = 'no-referrer-when-downgrade';
+    holder.replaceChildren(frame);
+    holder.classList.add('is-loaded');
+  };
+  const loadAllMaps = () => document.querySelectorAll('[data-consent-map]').forEach(loadMap);
+  document.querySelectorAll('[data-load-map]').forEach((button) => {
+    button.addEventListener('click', () => loadMap(button.closest('[data-consent-map]')));
+  });
+
+  const banner = document.getElementById('cookieBanner');
+  const showBanner = () => {
+    if (!banner) return;
+    banner.hidden = false;
+    void banner.offsetWidth; // apply the hidden-state styles first so the fade-in runs
+    banner.classList.add('is-visible');
+  };
+  const hideBanner = () => {
+    if (!banner) return;
+    banner.classList.remove('is-visible');
+    banner.hidden = true;
+  };
+
+  const consent = readConsent();
+  if (consent === 'all') loadAllMaps();
+  if (!consent) showBanner();
+
+  document.querySelectorAll('[data-cookie-choice]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const choice = button.dataset.cookieChoice;
+      saveConsent(choice);
+      hideBanner();
+      if (choice === 'all') loadAllMaps();
+    });
+  });
+  // "Cookie settings" in the footer reopens the notice
+  document.querySelectorAll('[data-cookie-settings]').forEach((button) => {
+    button.addEventListener('click', () => {
+      showBanner();
+      const first = banner && banner.querySelector('button');
+      if (first) first.focus();
+    });
+  });
 })();

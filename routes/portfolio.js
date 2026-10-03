@@ -69,6 +69,10 @@ router.get('/portfolio/privacy-policy', (req, res) => {
   res.render('portfolio/privacy-policy', { currentPage: 'privacy' });
 });
 
+router.get('/portfolio/cookie-policy', (req, res) => {
+  res.render('portfolio/cookie-policy', { currentPage: 'cookies' });
+});
+
 router.get('/portfolio/terms-of-service', (req, res) => {
   res.render('portfolio/terms-of-service', { currentPage: 'terms' });
 });

@@ -55,6 +55,8 @@
       </div>
       <nav class="footer-legal" aria-label="Legal">
         <a href="/portfolio/privacy-policy">Privacy</a>
+        <a href="/portfolio/cookie-policy">Cookies</a>
+        <button type="button" class="link-button" data-cookie-settings>Cookie settings</button>
         <a href="/portfolio/terms-of-service">Terms of Service</a>
         <a href="/portfolio/sitemap">Sitemap</a>
         <span>&copy; <%= new Date().getFullYear() %> Akanksha Grammar High School</span>
@@ -63,3 +65,5 @@
   </div>
   <div class="footer-mark container" aria-hidden="true">Akanksha</div>
 </footer>
+
+<%- include('cookie-banner') %>
